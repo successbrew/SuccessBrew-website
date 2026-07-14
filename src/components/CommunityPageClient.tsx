@@ -175,7 +175,7 @@ function WordReveal({ text, className }: { text: string; className?: string }) {
     >
       {words.map((word, i) => (
         <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.05]">
+          <span className="inline-block overflow-hidden leading-[1.2]">
             <motion.span
               className="inline-block"
               variants={{
@@ -216,7 +216,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-24 lg:pt-40 lg:pb-32">
+        <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-16 lg:pt-40 lg:pb-20">
           <CommunityMapBackground />
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#0037D2]/15 blur-3xl" />
@@ -238,7 +238,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 className="text-balance text-[clamp(2.75rem,7vw,6.5rem)] font-black leading-[0.95] tracking-tight text-[#111111]">
                 {["Brew", "Your"].map((word, i) => (
                   <span key={i}>
-                    <span className="inline-block overflow-hidden leading-[1.05]">
+                    <span className="inline-block overflow-hidden leading-[1.2]">
                       <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
                     </span>
                     {i === 0 ? " " : ""}
@@ -249,7 +249,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                   <span className="relative z-10 text-[#0037D2]">
                     {["Own", "Success."].map((word, i) => (
                       <span key={i}>
-                        <span className="inline-block overflow-hidden leading-[1.05]">
+                        <span className="inline-block overflow-hidden leading-[1.2]">
                           <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
                         </span>
                         {i === 0 ? " " : ""}
@@ -352,7 +352,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         </motion.div>
 
         {/* ══ ECOSYSTEM ═════════════════════════════════════════════════ */}
-        <section id="ecosystem" className="bg-[#F0EBD8] py-24 lg:py-32">
+        <section id="ecosystem" className="bg-[#F0EBD8] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -400,7 +400,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         />
 
         {/* ══ COMMUNITY OFFERS (Membership Tiers) ══════════════════════════ */}
-        <section id="offers" className="bg-[#F2ECDD] py-24 lg:py-32">
+        <section id="offers" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -475,7 +475,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         </section>
 
         {/* ══ OUR WHY ═══════════════════════════════════════════════════ */}
-        <section className="bg-[#0037D2] py-24 text-white lg:py-32">
+        <section className="bg-[#0037D2] py-16 text-white lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
@@ -528,7 +528,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         </section>
 
         {/* ══ WINS (CMS) ════════════════════════════════════════════════ */}
-        <section id="wins" className="bg-[#F2ECDD] py-24 lg:py-32">
+        <section id="wins" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -560,7 +560,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         </section>
 
         {/* ══ EVENTS (CMS) ══════════════════════════════════════════════ */}
-        <section id="events" className="bg-[#F0EBD8] py-24 lg:py-32">
+        <section id="events" className="bg-[#F0EBD8] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -635,7 +635,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         </section>
 
         {/* ══ PODCAST (CMS) ═════════════════════════════════════════════ */}
-        <section id="podcast" className="bg-[#F2ECDD] py-24 lg:py-32">
+        <section id="podcast" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -711,7 +711,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         </section>
 
         {/* ══ COMMUNITY FEED (CMS) ══════════════════════════════════════ */}
-        <section className="bg-[#F0EBD8] py-24 lg:py-32">
+        <section className="bg-[#F0EBD8] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)} className="mb-16 max-w-3xl">
               <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Community Spotlight</motion.p>
@@ -772,7 +772,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         </section>
 
         {/* ══ LEARNING HUB ══════════════════════════════════════════════ */}
-        <section id="learning-hub" className="bg-[#F2ECDD] py-24 lg:py-32">
+        <section id="learning-hub" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">

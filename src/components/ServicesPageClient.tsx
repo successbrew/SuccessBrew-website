@@ -41,6 +41,7 @@ export interface Testimonial {
   name: string;
   role: string;
   initial: string;
+  avatarUrl?: string | null;
   cardStyle: "sand" | "dark";
   avatarStyle: "primary" | "accent";
 }
@@ -81,7 +82,7 @@ const statBg: Record<string, string> = {
 };
 const cardBg: Record<string, string> = {
   sand: "bg-sand text-ink",
-  dark: "bg-ink text-background",
+  dark: "bg-cream text-ink",
 };
 const avatarBg: Record<string, string> = {
   primary: "bg-primary text-primary-foreground",
@@ -102,7 +103,7 @@ function WordReveal({ text, className }: { text: string; className?: string }) {
     >
       {words.map((word, i) => (
         <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.05]">
+          <span className="inline-block overflow-hidden leading-[1.2]">
             <motion.span
               className="inline-block"
               variants={{
@@ -368,7 +369,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               <motion.div variants={fadeUp}
                 className="mb-10 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-background/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-ink/70 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Successbrew Â· Content Marketing Company
+                Successbrew · Content Marketing Company
               </motion.div>
 
               {/* Typewriter headline */}
@@ -423,7 +424,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                   transition={{ duration: 0.65, ease: E, delay: i * 0.1 }}
                   whileHover={{ y: -6, boxShadow: "0 24px 60px -10px rgba(0,0,0,0.18)", transition: { duration: 0.25, ease: E } }}
                   className={`group relative overflow-hidden rounded-3xl border border-ink/5 p-8 md:p-10 cursor-default ${statBg[s.colorScheme] ?? statBg.default}`}>
-                  <div className="text-3xl font-black tracking-tight sm:text-4xl lg:text-6xl">
+                  <div className="text-[clamp(1.5rem,4.5vw,2.75rem)] font-black tracking-tight whitespace-nowrap">
                     <AnimatedNumber value={s.number} inView={statsInView} />
                   </div>
                   <div className="mt-6 text-base font-medium opacity-60">{s.label}</div>
@@ -601,24 +602,29 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1, transition: { duration: 0.8, ease: E } }}
                 viewport={{ once: true, margin: "-60px" }}
                 className="-mx-6 lg:-mx-10">
-                <DraggableMarquee trackClassName="gap-5 px-6 lg:px-10">
+                <DraggableMarquee trackClassName="items-stretch gap-5 px-6 lg:px-10">
                   {[...testimonials, ...testimonials].map((t, i) => (
                     <figure key={`${t._id}-${i}`}
-                      className={`flex h-full w-[320px] shrink-0 flex-col justify-between rounded-3xl border border-ink/5 p-8 md:w-[380px] md:p-10 ${cardBg[t.cardStyle] ?? cardBg.sand}`}>
+                      className={`flex w-[320px] shrink-0 flex-col justify-between rounded-3xl border border-ink/5 p-8 md:w-[380px] md:p-10 ${cardBg[t.cardStyle] ?? cardBg.sand}`}>
                       <blockquote className="text-balance text-lg font-medium leading-snug md:text-xl">
                         <ExpandableQuote
                           quote={t.quote}
                           name={t.name}
                           role={t.role}
                           initial={t.initial}
+                          avatarUrl={t.avatarUrl}
                           readMoreClassName="mt-3 block text-sm font-semibold underline underline-offset-2 opacity-70 transition hover:opacity-100"
                         />
                       </blockquote>
                       <figcaption className="mt-10 flex items-center gap-4">
-                        <span className={`grid h-11 w-11 place-items-center rounded-full text-sm font-bold ${avatarBg[t.avatarStyle] ?? avatarBg.primary}`}>{t.initial}</span>
+                        {t.avatarUrl ? (
+                          <img src={t.avatarUrl} alt={t.name} className="h-11 w-11 shrink-0 rounded-full object-cover" />
+                        ) : (
+                          <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm font-bold ${avatarBg[t.avatarStyle] ?? avatarBg.primary}`}>{t.initial}</span>
+                        )}
                         <div>
                           <div className="text-sm font-semibold">{t.name}</div>
-                          <div className="text-xs opacity-60">{t.role}</div>
+                          <div className="line-clamp-2 text-xs opacity-60">{t.role}</div>
                         </div>
                       </figcaption>
                     </figure>

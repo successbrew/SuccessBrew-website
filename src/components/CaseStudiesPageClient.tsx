@@ -24,7 +24,7 @@ function WordReveal({ text, className }: { text: string; className?: string }) {
     <span className={className}>
       {words.map((word, i) => (
         <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.05]">
+          <span className="inline-block overflow-hidden leading-[1.2]">
             <motion.span
               className="inline-block"
               variants={{

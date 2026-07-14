@@ -5,6 +5,17 @@
   --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 
+  /* Montserrat loads as a true variable font here, so intermediate weights
+     interpolate cleanly (no synthetic bolding). Compressing the top of the
+     scale so 600 is the new heaviest weight sitewide, with proportional
+     steps below it so bold/semibold/medium text still reads as a hierarchy
+     rather than collapsing to one weight. */
+  --font-weight-medium: 450;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 550;
+  --font-weight-extrabold: 600;
+  --font-weight-black: 600;
+
   --color-brand: oklch(45% 0.22 264);
   --color-lime: oklch(93% 0.22 124);
   --color-cream: oklch(97% 0.04 95);
@@ -193,20 +204,19 @@
   color: #000 !important;
 }
 
-/* Scrolling Ticker Animation */
+/* Scrolling ticker/marquee: track is duplicated content, slides left by exactly
+   half its width so the loop point is seamless. Hover pauses it. */
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-
 .animate-marquee {
   display: flex;
   width: max-content;
   animation: marquee 25s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 /* ── Community Hero Image Animations ── */
@@ -251,15 +261,3 @@
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-/* Testimonials marquee: track is duplicated content, slides left by exactly
-   half its width so the loop point is seamless. */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee linear infinite;
-}
-.animate-marquee:hover {
-  animation-play-state: paused;
-}

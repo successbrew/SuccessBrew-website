@@ -101,6 +101,7 @@ model Testimonial {
   name           String
   role           String
   initial        String
+  avatarUrl      String?
   cardStyle      CardStyle        @default(SAND)
   avatarStyle    AvatarStyle      @default(PRIMARY)
   group          TestimonialGroup @default(SERVICE)

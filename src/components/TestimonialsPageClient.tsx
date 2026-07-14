@@ -36,7 +36,7 @@ function WordReveal({ text, className }: { text: string; className?: string }) {
     <span className={className}>
       {words.map((word, i) => (
         <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.05]">
+          <span className="inline-block overflow-hidden leading-[1.2]">
             <motion.span
               className="inline-block"
               variants={{
@@ -192,14 +192,19 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
                       name={t.name}
                       role={t.role}
                       initial={t.initial}
+                      avatarUrl={t.avatarUrl}
                       readMoreClassName={`mt-3 block text-sm font-semibold underline underline-offset-2 opacity-70 transition hover:opacity-100 ${t.cardStyle === "dark" ? "text-white" : ""}`}
                     />
                   </blockquote>
 
                   <figcaption className="mt-8 flex items-center gap-3">
-                    <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold ${avatarBg[t.avatarStyle] ?? avatarBg.primary}`}>
-                      {t.initial}
-                    </span>
+                    {t.avatarUrl ? (
+                      <img src={t.avatarUrl} alt={t.name} className="h-10 w-10 shrink-0 rounded-full object-cover" />
+                    ) : (
+                      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold ${avatarBg[t.avatarStyle] ?? avatarBg.primary}`}>
+                        {t.initial}
+                      </span>
+                    )}
                     <div>
                       <div className="text-sm font-semibold">{t.name}</div>
                       <div className={`text-xs ${t.cardStyle === "dark" ? "opacity-50" : "text-ink/50"}`}>{t.role}</div>

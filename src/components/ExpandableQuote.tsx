@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -16,6 +17,7 @@ export function ExpandableQuote({
   name,
   role,
   initial,
+  avatarUrl,
   quoteClassName,
   readMoreClassName,
   onOpenChange,
@@ -25,6 +27,7 @@ export function ExpandableQuote({
   name: string;
   role: string;
   initial: string;
+  avatarUrl?: string | null;
   quoteClassName?: string;
   readMoreClassName?: string;
   onOpenChange?: (open: boolean) => void;
@@ -56,9 +59,13 @@ export function ExpandableQuote({
           >
             <blockquote className="whitespace-pre-line text-base leading-relaxed">{quote}</blockquote>
             <div className="mt-6 flex items-center gap-3 border-t border-ink/10 pt-5">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                {initial}
-              </span>
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={name} className="h-10 w-10 shrink-0 rounded-full object-cover" />
+              ) : (
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                  {initial}
+                </span>
+              )}
               <div>
                 <div className="text-sm font-semibold">{name}</div>
                 <div className="text-xs text-ink/50">{role}</div>

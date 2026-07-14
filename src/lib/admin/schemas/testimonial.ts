@@ -8,6 +8,7 @@ export const testimonialSchema = z.object({
   name: z.string().min(1, "Required"),
   role: z.string().min(1, "Required"),
   initial: z.string().min(1, "Required"),
+  avatarUrl: z.string().optional(),
   cardStyle: z.enum(["SAND", "DARK"]),
   avatarStyle: z.enum(["PRIMARY", "ACCENT"]),
   group: z.enum(["SERVICE", "COMMUNITY"]).default("SERVICE"),
@@ -25,6 +26,7 @@ export const testimonialFields: FieldConfig[] = [
   { name: "name", label: "Name", type: "text" },
   { name: "role", label: "Role", type: "text" },
   { name: "initial", label: "Avatar Initial", type: "text", placeholder: "single letter" },
+  { name: "avatarUrl", label: "Profile Picture (optional — falls back to initial letter)", type: "image" },
   {
     name: "cardStyle",
     label: "Card Style",
