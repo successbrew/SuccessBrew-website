@@ -1,0 +1,265 @@
+@import "tailwindcss";
+@import "@neondatabase/auth-ui/tailwind";
+
+@theme {
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand: oklch(45% 0.22 264);
+  --color-lime: oklch(93% 0.22 124);
+  --color-cream: oklch(97% 0.04 95);
+  --color-sand: oklch(94% 0.025 90);
+  --color-ink: oklch(16% 0.02 260);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+  --animate-marquee: marquee 25s linear infinite;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes caret-blink {
+    0%, 70%, 100% {
+      opacity: 1;
+    }
+    20%, 50% {
+      opacity: 0;
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    --radius: 1.25rem;
+    --brand: oklch(45% .22 264);
+    --lime: oklch(93% .22 124);
+    --cream: oklch(97% .04 95);
+    --sand: oklch(94% .025 90);
+    --ink: oklch(16% .02 260);
+
+    --background: oklch(100% 0 0);
+    --foreground: var(--ink);
+
+    --card: oklch(100% 0 0);
+    --card-foreground: var(--ink);
+
+    --popover: oklch(100% 0 0);
+    --popover-foreground: var(--ink);
+
+    --primary: var(--brand);
+    --primary-foreground: oklch(99% 0 0);
+
+    --secondary: var(--cream);
+    --secondary-foreground: var(--ink);
+
+    --muted: var(--sand);
+    --muted-foreground: oklch(45% .02 260);
+
+    --accent: var(--lime);
+    --accent-foreground: var(--ink);
+
+    --destructive: oklch(57.7% .245 27.325);
+    --destructive-foreground: oklch(99% 0 0);
+
+    --border: oklch(90% .01 260);
+    --input: oklch(90% .01 260);
+    --ring: var(--brand);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+}
+
+/* Custom fonts */
+@font-face {
+  font-family: 'CameraPlainVariable';
+  src: url('https://cdn.gpteng.co/mcp-widgets/v1/fonts/CameraPlainVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Navigation Dropdown Menu Styles */
+.nav-dropdown-container {
+  position: relative;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12rem;
+  background-color: white;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  pointer-events: none;
+  margin-top: -10px;
+  z-index: 100;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nav-dropdown-container:hover .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.nav-dropdown-item {
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7) !important;
+  text-decoration: none !important;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #000 !important;
+}
+
+/* Scrolling Ticker Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+/* ── Community Hero Image Animations ── */
+
+/* Slide uses standalone `translate` property — completely separate from `transform`
+   so the hover's `transform` remains free and transitions work correctly. */
+@keyframes community-slide-up {
+  from { translate: 0 30px; }
+  to   { translate: none; }
+}
+
+@keyframes community-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.community-img-animate {
+  /* backwards: hold `from` state during delay (keeps element invisible while staggered)
+     forwards:  opacity stays at 1 after fade finishes
+     translate: fill-mode backwards only — after animation it returns to default (0),
+                which never conflicts with hover's `transform` property */
+  animation-name: community-slide-up, community-fade-in;
+  animation-duration: 0.9s, 0.9s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1), cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: backwards, forwards;
+  opacity: 0;
+}
+
+.community-img-wrapper {
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+}
+
+.community-img-wrapper:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 60px 80px -30px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Utility: hide scrollbar cross-browser */
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Testimonials marquee: track is duplicated content, slides left by exactly
+   half its width so the loop point is seamless. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

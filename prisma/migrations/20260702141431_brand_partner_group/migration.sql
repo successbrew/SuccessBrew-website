@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "BrandPartnerGroup" AS ENUM ('SERVICES_HOMEPAGE', 'COMMUNITY_PARTNER', 'COMMUNITY_MEMBER');
+
+-- AlterTable
+ALTER TABLE "BrandPartner" ADD COLUMN     "group" "BrandPartnerGroup" NOT NULL DEFAULT 'SERVICES_HOMEPAGE';

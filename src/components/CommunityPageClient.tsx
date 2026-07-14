@@ -1,0 +1,865 @@
+﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-html-link-for-pages, @next/next/no-img-element */
+"use client";
+
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import NavBar from "@/components/NavBar";
+import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
+import { CommunityPartnerGrid } from "@/components/CommunityPartnerGrid";
+import { CommunityMapBackground } from "@/components/CommunityMapBackground";
+import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
+// NetworkCanvas visualization temporarily removed from this page — component
+// file kept intact at @/components/CommunityNetworkCanvas for re-adding later.
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+export interface CommunityEvent {
+  _id: string;
+  tag: string;
+  title: string;
+  date: string;
+  location: string;
+  speaker?: string;
+  seatsNote?: string;
+  registerUrl?: string;
+  isFeatured: boolean;
+  imageUrl: string;
+}
+
+export interface PodcastEpisode {
+  _id: string;
+  episodeNumber: string;
+  duration: string;
+  guest: string;
+  title: string;
+  listenUrl?: string;
+  isFeatured: boolean;
+  thumbnailUrl?: string;
+}
+
+export interface CommunityWin {
+  _id: string;
+  quote: string;
+  name: string;
+  role: string;
+  initial: string;
+  cardStyle: "sand" | "blue" | "dark";
+  avatarStyle: "blue" | "lime";
+}
+
+export interface CommunityPost {
+  _id: string;
+  name: string;
+  role: string;
+  initial: string;
+  avatarStyle: "blue" | "dark";
+  tag: string;
+  tagStyle: "lime" | "dark" | "lightBlue";
+  content: string;
+  likes: number;
+  comments: number;
+  timeAgo: string;
+}
+
+export interface CommunityPageProps {
+  events: CommunityEvent[];
+  episodes: PodcastEpisode[];
+  wins: CommunityWin[];
+  posts: CommunityPost[];
+  communityPartners: BrandPartner[];
+  communityMembers: BrandPartner[];
+  siteSettings: SiteSettings;
+}
+
+// ── Animation config ──────────────────────────────────────────────────────────
+const E = [0.22, 1, 0.36, 1] as const;
+const fadeUp = { hidden: { opacity: 0, y: 26 }, visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: E } } };
+const cardUp = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } };
+const stagger = (d = 0.1) => ({ hidden: {}, visible: { transition: { staggerChildren: d } } });
+
+// ── Color maps ────────────────────────────────────────────────────────────────
+const winCardBg: Record<string, string> = {
+  sand: "bg-[#F0EBD8] text-[#111111]",
+  blue: "bg-[#0037D2] text-white",
+  dark: "bg-[#111111] text-white",
+};
+const winAvatarBg: Record<string, string> = {
+  blue: "bg-[#0037D2] text-white",
+  lime: "bg-[#C1FF3B] text-[#111111]",
+};
+const postAvatarBg: Record<string, string> = {
+  blue: "bg-[#0037D2] text-white",
+  dark: "bg-[#111111] text-white",
+};
+const postTagBg: Record<string, string> = {
+  lime:      "bg-[#C1FF3B] text-[#111111]",
+  dark:      "bg-[#111111] text-white",
+  lightBlue: "bg-[#D4F0FF] text-[#0a4a7a]",
+};
+
+// ── Static data (not CMS — product structure) ─────────────────────────────────
+const pillars = [
+  { num: "01", icon: "💬", title: "Citywise Whatsapp Groups",             badge: "50+ Cities",     tags: ["Local Network", "Daily Chats"], desc: "Hyperlocal WhatsApp groups connecting founders, freelancers and creators in your own city — real conversations, real meetups." },
+  { num: "02", icon: "🎙️", title: "The Successbrew Podcast",              badge: "100+ Episodes",  tags: ["Interviews", "Insights"],       desc: "Raw, unfiltered conversations with India's most ambitious founders, investors and creators — no PR filters, no fluff." },
+  { num: "03", icon: "🗓️", title: "Community Events",                     badge: "200+ Events",    tags: ["Summits", "Demo Days"],         desc: "High-energy meetups, summits and demo days that turn strangers into co-founders, early customers and collaborators." },
+  { num: "04", icon: "📚", title: "Learning Hub for Founders and Teams",  badge: "200+ Resources", tags: ["Playbooks", "Templates"],       desc: "Practical playbooks, templates, ebooks and webinars built specifically for the Indian startup journey." },
+  { num: "05", icon: "🤝", title: "Network of Experts",                  badge: "500+ Experts",   tags: ["Operators", "VCs"],             desc: "Direct access to battle-tested operators, VCs, agencies and founders who open doors and challenge your thinking." },
+  { num: "06", icon: "🌴", title: "Retreats (Fun, Learning, Wellness)",  badge: "Members Only",   tags: ["Wellness", "Offsites"],         desc: "Curated getaways that blend deep work, wellness and genuine connection — where the best ideas and friendships are born." },
+];
+
+const membershipTiers = [
+  {
+    name: "Free",
+    price: "₹0",
+    period: "",
+    desc: "Everything you need to join the community and start showing up.",
+    features: [
+      "Access to 8,000+ member network",
+      "Citywise WhatsApp groups",
+      "Weekly community digest & newsletter",
+      "Free events & open meetups",
+      "Community feed & announcements",
+    ],
+    cta: "Join Free",
+    highlight: false,
+  },
+  {
+    name: "Growth",
+    price: "₹5,000",
+    period: "/ year",
+    desc: "For members ready to plug into mentorship, content and priority access.",
+    features: [
+      "Everything in Free",
+      "Priority seats at every event",
+      "Mentor Match programme access",
+      "Discounted content studio sessions",
+      "Learning Hub premium resources",
+    ],
+    cta: "Become a Growth Member",
+    highlight: true,
+  },
+  {
+    name: "Founder",
+    price: "₹25,000",
+    period: "/ year",
+    desc: "Our top tier — deep access, real relationships, and hands-on support.",
+    features: [
+      "Everything in Growth",
+      "Invites to Retreats (fun, learning, wellness)",
+      "1:1 concierge intros to experts & VCs",
+      "Free content studio production day",
+      "Direct line to the Successbrew team",
+    ],
+    cta: "Apply for Founder Tier",
+    highlight: false,
+  },
+];
+
+const resources = [
+  { type: "Blogs",     count: "120+", desc: "Tactical articles on growth, fundraising and product-market fit.",    icon: "📝", bg: "bg-[#0037D2] text-white",    countColor: "text-[#C1FF3B]" },
+  { type: "Playbooks", count: "35+",  desc: "Step-by-step frameworks for go-to-market, hiring and content.",       icon: "📖", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#0037D2]" },
+  { type: "Templates", count: "80+",  desc: "Investor decks, SOPs, content calendars — grab and go.",              icon: "📄", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#0037D2]" },
+  { type: "Ebooks",    count: "18+",  desc: "Deep dives from founders who did it and documented it.",               icon: "📘", bg: "bg-[#C1FF3B] text-[#111111]", countColor: "text-[#0037D2]" },
+  { type: "Webinars",  count: "60+",  desc: "Recorded sessions with operators, VCs and brand builders.",           icon: "🎥", bg: "bg-[#111111] text-white",      countColor: "text-[#C1FF3B]" },
+];
+
+// ── WordReveal — word-by-word slide-up for section headings ──────────────────
+function WordReveal({ text, className }: { text: string; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <motion.span
+      className={className}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+    >
+      {words.map((word, i) => (
+        <span key={i}>
+          <span className="inline-block overflow-hidden leading-[1.05]">
+            <motion.span
+              className="inline-block"
+              variants={{
+                hidden: { y: "110%", opacity: 0 },
+                visible: { y: "0%", opacity: 1, transition: { duration: 0.6, ease: E } },
+              }}
+            >
+              {word}
+            </motion.span>
+          </span>
+          {i < words.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </motion.span>
+  );
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+export function CommunityPageClient({ events, episodes, wins, posts, communityPartners, communityMembers, siteSettings }: CommunityPageProps) {
+  const [activeResource, setActiveResource] = useState("Blogs");
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+
+  const toggleLike = (id: string) =>
+    setLikedPosts(prev => {
+      const n = new Set(prev);
+      if (n.has(id)) n.delete(id); else n.add(id);
+      return n;
+    });
+
+  const featuredEvent   = events.find((e) => e.isFeatured) ?? events[0];
+  const listEvents      = events.filter((e) => !e.isFeatured).slice(0, 3);
+  const featuredEpisode = episodes.find((e) => e.isFeatured) ?? episodes[0];
+  const listEpisodes    = episodes.filter((e) => !e.isFeatured).slice(0, 3);
+
+  return (
+    <>
+      <NavBar activePage="Community" ctaText="Join Community" ctaHref="#cta" />
+      <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
+
+        {/* ══ HERO ══════════════════════════════════════════════════════ */}
+        <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-24 lg:pt-40 lg:pb-32">
+          <CommunityMapBackground />
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#0037D2]/15 blur-3xl" />
+            <div className="absolute right-[-120px] top-40 h-[520px] w-[520px] rounded-full bg-[#C1FF3B]/30 blur-3xl" />
+            <div className="absolute bottom-[-80px] left-1/3 h-[380px] w-[380px] rounded-full bg-[#0037D2]/8 blur-3xl" />
+          </div>
+
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
+              <motion.div variants={fadeUp}
+                className="mb-10 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                Successbrew · India's Most Loved Startup Ecosystem
+              </motion.div>
+
+              <motion.h1
+                initial="hidden" animate="visible"
+                variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } }}
+                className="text-balance text-[clamp(2.75rem,7vw,6.5rem)] font-black leading-[0.95] tracking-tight text-[#111111]">
+                {["Brew", "Your"].map((word, i) => (
+                  <span key={i}>
+                    <span className="inline-block overflow-hidden leading-[1.05]">
+                      <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
+                    </span>
+                    {i === 0 ? " " : ""}
+                  </span>
+                ))}
+                {" "}<br className="hidden md:block" />
+                <span className="relative inline-block">
+                  <span className="relative z-10 text-[#0037D2]">
+                    {["Own", "Success."].map((word, i) => (
+                      <span key={i}>
+                        <span className="inline-block overflow-hidden leading-[1.05]">
+                          <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
+                        </span>
+                        {i === 0 ? " " : ""}
+                      </span>
+                    ))}
+                  </span>
+                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
+                </span>
+              </motion.h1>
+
+              <motion.div variants={fadeUp} className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+                <p className="max-w-xl text-balance text-lg text-[#111111]/70 md:text-xl">
+                  8000+ Founders, Freelancers, Agencies, Angels, Creators, and VCs — growing through shared opportunities, real visibility, and meaningful connections across India.
+                </p>
+                <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+                  <a href="#cta" className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,55,210,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
+                  <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#F0EBD8]">Explore Ecosystem</a>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Photo mosaic */}
+            <div className="mt-16 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4" style={{ gridTemplateRows: "280px 180px" }}>
+              <motion.div initial={{ opacity: 0, scale: 0.92, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
+                className="group relative col-span-2 row-span-2 overflow-hidden rounded-[1.75rem] border border-[#111111]/5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.2)] md:col-span-1">
+                <img src="/grid-images/IMG_9736.JPG" alt="Community at summit" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <span className="absolute left-4 top-4 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-black text-[#111111]">Live Community</span>
+                <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/15 bg-black/30 p-3 backdrop-blur-md">
+                  <p className="text-xs font-bold text-white/80 uppercase tracking-wider">8,000+ Members</p>
+                  <p className="mt-0.5 text-sm font-semibold text-white">Successbrew Summit, Mumbai</p>
+                </div>
+              </motion.div>
+              {[
+                { src: "/grid-images/20220423062049_IMG_2072.JPG", alt: "Community event", delay: 0.55, float: false },
+                { src: "/grid-images/TEdx 1.jpeg",                 alt: "TEDx event",      delay: 0.7,  float: true,  badge: "54+ Events" },
+                { src: "/grid-images/IMG-20220514-WA0017.jpg",     alt: "Workshop",        delay: 0.85, float: false },
+                { src: "/grid-images/IMG20241127141737.jpg",       alt: "Gathering",       delay: 1.0,  float: false, caption: "150K Monthly Reach" },
+                { src: "/grid-images/IMG_6949.JPG",                alt: "Event",           delay: 1.15, float: false, badge2: "Real Founders" },
+                { src: "/grid-images/IMG-20220315-WA0059.jpg",     alt: "Workshop group",  delay: 1.3,  float: false, caption2: "Building Together" },
+              ].map(({ src, alt, delay, float: shouldFloat, badge, caption, badge2, caption2 }) => (
+                <motion.div key={src}
+                  initial={{ opacity: 0, y: 28 }}
+                  animate={shouldFloat ? { opacity: 1, y: [0, -7, 0] } : { opacity: 1, y: 0 }}
+                  transition={shouldFloat
+                    ? { opacity: { delay, duration: 0.8 }, y: { delay: delay + 0.9, duration: 3.8, repeat: Infinity, ease: "easeInOut" } }
+                    : { delay, duration: 0.8, ease: E }
+                  }
+                  className="group relative overflow-hidden rounded-[1.5rem] border border-[#111111]/5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.2)]">
+                  <img src={src} alt={alt} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  {badge  && <span className="absolute right-3 top-3 rounded-full bg-[#0037D2] px-2.5 py-1 text-[10px] font-black text-white">{badge}</span>}
+                  {badge2 && <span className="absolute left-3 top-3 rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black text-[#111111]">{badge2}</span>}
+                  {caption  && <div className="absolute bottom-3 left-3 right-3 rounded-xl bg-white/20 px-3 py-2 backdrop-blur-sm"><p className="text-xs font-bold text-white">{caption}</p></div>}
+                  {caption2 && <div className="absolute bottom-3 left-3 right-3 rounded-xl bg-white/20 px-3 py-2 backdrop-blur-sm"><p className="text-xs font-bold text-white">{caption2}</p></div>}
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Stat boxes */}
+            <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}
+              className="mt-8 flex flex-wrap justify-center gap-4">
+              {([
+                { num: "8000+",  label: "Members",         sub: "Founders · Creators · Investors", bg: "bg-[#0037D2] text-white",     subColor: "text-white/70",     floatDelay: 0   },
+                { num: "200K+",  label: "Followers",       sub: "Across social platforms",          bg: "bg-[#F0EBD8] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 0.6 },
+                { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[#C1FF3B] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
+                { num: "50+",    label: "Brand Partners",  sub: "Collaborations & partnerships",   bg: "bg-[#F0EBD8] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.8 },
+                { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[#0037D2] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
+              ] as const).map(({ num, label, sub, bg, subColor, floatDelay }) => (
+                <motion.div key={label}
+                  variants={{ hidden: { opacity: 0, y: 18, scale: 0.94 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: E } } }}
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ y: { delay: 1.4 + floatDelay, duration: 3.2, repeat: Infinity, ease: "easeInOut" } }}
+                  whileHover={{ scale: 1.05, transition: { duration: 0.25, ease: E } }}
+                  className={`relative w-[calc(50%-8px)] cursor-default overflow-hidden rounded-3xl border border-[#111111]/5 p-6 text-center shadow-[0_8px_32px_-8px_rgba(0,0,0,0.14)] sm:w-44 md:w-48 ${bg}`}>
+                  <div className="text-3xl font-black tracking-tight sm:text-4xl">{num}</div>
+                  <div className="mt-2 text-sm font-bold">{label}</div>
+                  <div className={`mt-1 text-[11px] font-medium ${subColor}`}>{sub}</div>
+                  <div aria-hidden className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══ TICKER ════════════════════════════════════════════════════ */}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          className="overflow-hidden bg-[#0037D2] py-3.5 text-white">
+          <div className="flex w-max whitespace-nowrap animate-marquee">
+            {Array.from({ length: 2 }).map((_, g) => (
+              <div key={g} className="flex">
+                {["Community", "Content Studio", "Podcast", "Events", "Learning Hub", "Mentor Network", "Visibility", "Momentum", "Belonging", "1L by 2030"].map(item => (
+                  <span key={item} className="inline-flex items-center gap-8 px-6 text-[12px] font-bold uppercase tracking-[0.12em]">
+                    {item}<span className="opacity-40">·</span>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ══ ECOSYSTEM ═════════════════════════════════════════════════ */}
+        <section id="ecosystem" className="bg-[#F0EBD8] py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <motion.div variants={fadeUp}>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">The Ecosystem</p>
+                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="6 Pillars of Successbrew Ecosystem" /></h2>
+              </motion.div>
+              <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+                Join the ecosystem
+              </motion.a>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
+              className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {pillars.map((p) => (
+                <motion.article key={p.num} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#111111]/5 bg-white p-8 hover:border-[#0037D2]/30 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.2)] md:p-10">
+                  <div>
+                    <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/40">
+                      <span>{p.num}</span>
+                      <span aria-hidden className="h-2 w-2 rounded-full bg-[#C1FF3B] transition group-hover:bg-[#0037D2]" />
+                    </div>
+                    <div className="mt-6 text-3xl">{p.icon}</div>
+                    <h3 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">{p.title}</h3>
+                    <p className="mt-4 text-[#111111]/60">{p.desc}</p>
+                  </div>
+                  <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap gap-2">
+                      {p.tags.map(t => <span key={t} className="rounded-full bg-[#F0EBD8] px-3 py-1 text-xs font-semibold text-[#111111]/70">{t}</span>)}
+                    </div>
+                    <span className="rounded-full bg-[#0037D2]/8 px-3 py-1 text-[11px] font-bold text-[#0037D2]">{p.badge}</span>
+                  </div>
+                </motion.article>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        <CommunityPartnerGrid partners={communityPartners} />
+        <LogoShowcase
+          brandPartners={communityMembers}
+          eyebrow="Who's Inside"
+          heading="Community Members From"
+          alwaysColor
+          sectionBg="bg-[#F0EBD8]"
+        />
+
+        {/* ══ COMMUNITY OFFERS (Membership Tiers) ══════════════════════════ */}
+        <section id="offers" className="bg-[#F2ECDD] py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <motion.div variants={fadeUp}>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Community Offers</p>
+                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Pick your level of access." /></h2>
+              </motion.div>
+              <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+                Join to unlock all offers
+              </motion.a>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.75, ease: E }}
+              className="mb-5 overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-[#0037D2] text-white">
+              <div className="grid gap-0 lg:grid-cols-[1.2fr_1fr]">
+                <div className="p-10 lg:p-14">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#C1FF3B]" /> Free · Always
+                  </span>
+                  <h3 className="mt-6 text-3xl font-black tracking-tight md:text-5xl">Free Community<br />Membership</h3>
+                  <p className="mt-4 max-w-md text-base text-white/70">No cost to join. Get immediate access to India's largest startup and creator community — network, learn, and grow from day one.</p>
+                  <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                    {["Access to 8,000+ member network", "Weekly community digest & newsletter", "Free events & open meetups", "Select learning resources", "Community feed & announcements", "Peer accountability groups"].map(item => (
+                      <li key={item} className="flex items-center gap-2.5 text-sm text-white/80">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#C1FF3B] text-[10px] font-black text-[#111111]">✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#cta" className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-7 py-3.5 text-sm font-bold text-[#111111] transition hover:bg-white">Join Free</a>
+                </div>
+                <div className="relative hidden overflow-hidden lg:block">
+                  <img src="/grid-images/IMG_9736.JPG" alt="Community members" className="h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#0037D2]/80 via-[#0037D2]/20 to-transparent" />
+                  <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }}
+                    className="absolute bottom-8 left-8 right-8 rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
+                    <p className="text-2xl font-black text-white">8,000+</p>
+                    <p className="mt-1 text-sm text-white/65">Members already inside</p>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="grid gap-6 lg:grid-cols-3">
+              {membershipTiers.map((tier) => (
+                <motion.div key={tier.name} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+                  className={`relative flex flex-col rounded-3xl border p-8 md:p-10 ${tier.highlight ? "border-[#0037D2] bg-[#0037D2] text-white shadow-[0_30px_60px_-30px_rgba(0,55,210,0.4)]" : "border-[#111111]/5 bg-[#F0EBD8]"}`}>
+                  {tier.highlight && (
+                    <span className="absolute -top-3 left-8 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-black text-[#111111]">Most Popular</span>
+                  )}
+                  <p className={`text-xs font-bold uppercase tracking-[0.22em] ${tier.highlight ? "text-white/60" : "text-[#0037D2]"}`}>{tier.name}</p>
+                  <div className="mt-4 flex items-baseline gap-2">
+                    <span className="text-4xl font-black tracking-tight md:text-5xl">{tier.price}</span>
+                    {tier.period && <span className={tier.highlight ? "text-white/60" : "text-[#111111]/50"}>{tier.period}</span>}
+                  </div>
+                  <p className={`mt-4 text-sm ${tier.highlight ? "text-white/70" : "text-[#111111]/60"}`}>{tier.desc}</p>
+                  <ul className="mt-8 flex-1 space-y-3">
+                    {tier.features.map((f) => (
+                      <li key={f} className={`flex items-center gap-2.5 text-sm ${tier.highlight ? "text-white/80" : "text-[#111111]/75"}`}>
+                        <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black ${tier.highlight ? "bg-[#C1FF3B] text-[#111111]" : "bg-[#0037D2] text-white"}`}>✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#cta" className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#0037D2]"}`}>{tier.cta}</a>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══ OUR WHY ═══════════════════════════════════════════════════ */}
+        <section className="bg-[#0037D2] py-24 text-white lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
+                <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-white/55">Our Why</motion.p>
+                <h2 className="mt-3 text-balance text-[clamp(2.6rem,5vw,5rem)] font-black leading-[0.95] tracking-tight">
+                  <WordReveal text="Talent is everywhere." />{" "}<br />
+                  <span className="text-[#C1FF3B]"><WordReveal text="Opportunity is not." /></span>
+                </h2>
+                <motion.p variants={fadeUp} className="mt-6 max-w-xl text-balance text-lg text-white/75">
+                  Most ambitious Indians never get the room, the mentor, or the mic. Successbrew exists to close that gap — not by replacing hard work, but by amplifying it with access, visibility and a community that actually shows up.
+                </motion.p>
+                <motion.div variants={fadeUp} className="mt-14">
+                  <ol className="relative grid grid-cols-5 gap-0">
+                    <div aria-hidden className="absolute left-0 right-0 top-6 h-px bg-white/20" />
+                    {[["2022", "Founded"], ["2023", "8K+"], ["2024", "54 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
+                      <li key={yr} className="relative text-center">
+                        <div className={`relative z-10 mx-auto grid h-12 w-12 place-items-center rounded-full border text-sm font-bold ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#0037D2] text-white"}`}>{yr}</div>
+                        <div className={`mt-3 text-xs font-bold ${i === 4 ? "text-[#C1FF3B]" : "text-white/60"}`}>{lbl}</div>
+                      </li>
+                    ))}
+                  </ol>
+                </motion.div>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.9, ease: E }} className="relative">
+                <div className="overflow-hidden rounded-[2rem] border border-white/10">
+                  <img src="/grid-images/Sourabh-sir.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-top" style={{ minHeight: 420 }} />
+                </div>
+                <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
+                  className="absolute -bottom-5 left-6 rounded-2xl bg-[#C1FF3B] px-6 py-4 text-[#111111] shadow-lg">
+                  <div className="text-2xl font-black">1 Lakh</div>
+                  <div className="text-xs font-medium text-black/60">Entrepreneurs · Vision 2030</div>
+                </motion.div>
+              </motion.div>
+            </div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
+              className="mt-20 grid gap-6 md:grid-cols-3">
+              {[
+                { label: "Access",     value: "The room. The mentor. The mic.", desc: "Members get intros, speaking slots and investment conversations they couldn't manufacture alone." },
+                { label: "Visibility", value: "150K eyes. Every month.",        desc: "Studio, podcast and community put your story in front of the right people at the right moment." },
+                { label: "Momentum",   value: "From idea to traction.",         desc: "Playbooks, cohorts and accountability structures that compress years of learning into months." },
+              ].map(({ label, value, desc }) => (
+                <motion.div key={label} variants={cardUp} className="rounded-2xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">{label}</p>
+                  <p className="mt-2 text-lg font-black text-white">{value}</p>
+                  <p className="mt-3 text-sm leading-7 text-white/60">{desc}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══ WINS (CMS) ════════════════════════════════════════════════ */}
+        <section id="wins" className="bg-[#F2ECDD] py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <motion.div variants={fadeUp}>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Community Wins</p>
+                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Success stories brewed here." /></h2>
+              </motion.div>
+              <motion.a variants={fadeUp} href="/community/testimonials" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+                Read all community stories
+              </motion.a>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
+              className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {wins.map((w) => (
+                <motion.figure key={w._id} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.3, ease: E } }}
+                  className={`flex h-full flex-col justify-between rounded-3xl border border-[#111111]/5 p-8 md:p-10 ${winCardBg[w.cardStyle] ?? winCardBg.sand}`}>
+                  <blockquote className="text-balance text-lg font-medium leading-snug">&ldquo;{w.quote}&rdquo;</blockquote>
+                  <figcaption className="mt-10 flex items-center gap-4">
+                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm font-bold ${winAvatarBg[w.avatarStyle] ?? winAvatarBg.blue}`}>{w.initial}</span>
+                    <div>
+                      <div className="text-sm font-semibold">{w.name}</div>
+                      <div className="mt-0.5 text-xs opacity-60">{w.role}</div>
+                    </div>
+                  </figcaption>
+                </motion.figure>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══ EVENTS (CMS) ══════════════════════════════════════════════ */}
+        <section id="events" className="bg-[#F0EBD8] py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <motion.div variants={fadeUp}>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Upcoming Events</p>
+                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Be in the room where it happens." /></h2>
+              </motion.div>
+              <motion.a variants={fadeUp} href="#" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+                All events
+              </motion.a>
+            </motion.div>
+
+            <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+              {/* Featured event */}
+              {featuredEvent && (
+                <motion.article initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.8, ease: E }} whileHover={{ scale: 1.01, transition: { duration: 0.3 } }}
+                  className="overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-white">
+                  <div className="relative h-72 overflow-hidden md:h-96">
+                    {featuredEvent.imageUrl ? (
+                      <img src={featuredEvent.imageUrl} alt={featuredEvent.title} className="h-full w-full object-cover transition-transform duration-700 hover:scale-105" />
+                    ) : (
+                      <div className="h-full w-full bg-[#111111]/10" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/85 via-[#111111]/20 to-transparent" />
+                    <span className="absolute left-6 top-6 rounded-full bg-[#C1FF3B] px-3 py-1 text-xs font-bold text-[#111111]">{featuredEvent.tag}</span>
+                    <div className="absolute bottom-0 left-0 right-0 p-7 text-white">
+                      <h3 className="text-2xl font-black md:text-3xl">{featuredEvent.title}</h3>
+                      <div className="mt-3 flex flex-wrap gap-4 text-sm text-white/70">
+                        <span>📅 {featuredEvent.date}</span>
+                        <span>📍 {featuredEvent.location}</span>
+                        {featuredEvent.speaker && <span>👤 {featuredEvent.speaker}</span>}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-[#111111]/5 px-7 py-5">
+                    <span className="text-sm text-[#111111]/55">{featuredEvent.seatsNote ?? "Register to secure your seat"}</span>
+                    <a href={featuredEvent.registerUrl ?? "#"} className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#0037D2]">Register Now</a>
+                  </div>
+                </motion.article>
+              )}
+
+              {/* Event list */}
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
+                className="flex flex-col gap-5">
+                {listEvents.map((ev) => (
+                  <motion.a key={ev._id} href={ev.registerUrl ?? "#"}
+                    variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: E } } }}
+                    whileHover={{ x: 5, transition: { duration: 0.2 } }}
+                    className="grid grid-cols-[80px_1fr] gap-4 overflow-hidden rounded-2xl border border-[#111111]/5 bg-white p-4 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-shadow">
+                    <div className="h-20 w-20 overflow-hidden rounded-xl">
+                      {ev.imageUrl ? (
+                        <img src={ev.imageUrl} alt={ev.title} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full bg-[#111111]/10" />
+                      )}
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <span className="text-[11px] font-bold text-[#0037D2]">{ev.tag}</span>
+                      <h4 className="mt-1 text-sm font-bold text-[#111111]">{ev.title}</h4>
+                      <p className="mt-1 text-xs text-[#111111]/45">{ev.date} · {ev.location}</p>
+                    </div>
+                  </motion.a>
+                ))}
+                <motion.div variants={cardUp} className="rounded-2xl border border-dashed border-[#0037D2]/30 bg-[#0037D2]/5 p-6 text-center">
+                  <p className="text-sm font-bold text-[#0037D2]">54+ events hosted across India</p>
+                  <p className="mt-1 text-xs text-[#111111]/50">Mumbai · Delhi · Bengaluru · Hyderabad · Pune</p>
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══ PODCAST (CMS) ═════════════════════════════════════════════ */}
+        <section id="podcast" className="bg-[#F2ECDD] py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <motion.div variants={fadeUp}>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Successbrew Podcast</p>
+                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Real talk. Real founders." /></h2>
+              </motion.div>
+              <motion.a variants={fadeUp} href="#" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+                All Episodes
+              </motion.a>
+            </motion.div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Featured episode */}
+              {featuredEpisode && (
+                <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.8, ease: E }}
+                  className="overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-white">
+                  <div className="relative h-72 overflow-hidden md:h-80">
+                    <img src={featuredEpisode.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt="Podcast cover" className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent" />
+                    <span className="absolute left-5 top-5 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-bold text-[#111111]">{featuredEpisode.episodeNumber} · {featuredEpisode.duration}</span>
+                    <div className="absolute inset-0 grid place-items-center">
+                      <motion.a href={featuredEpisode.listenUrl ?? "#"} aria-label="Play" whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.95 }}
+                        className="grid h-16 w-16 place-items-center rounded-full bg-[#C1FF3B] text-[#111111] shadow-[0_10px_30px_rgba(193,255,59,0.3)]">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      </motion.a>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-7">
+                      <h3 className="text-xl font-black text-white md:text-2xl">{featuredEpisode.title}</h3>
+                      <p className="mt-2 text-sm text-white/60">{featuredEpisode.guest}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Episode list */}
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+                className="flex flex-col gap-4">
+                {listEpisodes.map((ep) => (
+                  <motion.a key={ep._id} href={ep.listenUrl ?? "#"}
+                    variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: E } } }}
+                    whileHover={{ x: 4, transition: { duration: 0.2 } }}
+                    className="flex gap-4 rounded-2xl border border-[#111111]/5 bg-white p-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
+                      <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt="Ep thumb" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 grid place-items-center bg-black/30">
+                        <span className="grid h-8 w-8 place-items-center rounded-full bg-[#C1FF3B] text-[#111111]">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-bold text-[#0037D2]">{ep.episodeNumber} · <span className="font-medium text-[#111111]/45">{ep.duration}</span></div>
+                      <h4 className="mt-1 text-[15px] font-bold leading-6 text-[#111111]">{ep.title}</h4>
+                      <p className="mt-1 text-xs text-[#111111]/45">{ep.guest}</p>
+                    </div>
+                  </motion.a>
+                ))}
+                <motion.div variants={cardUp} className="rounded-2xl border border-[#111111]/5 bg-white p-6">
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/45">100+ Episodes · 60+ Guests</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {[["K","bg-[#0037D2] text-white"],["N","bg-[#111111] text-white"],["A","bg-[#C1FF3B] text-[#111111]"],["P","bg-[#0037D2] text-white"],["V","bg-[#111111] text-white"],["S","bg-[#C1FF3B] text-[#111111]"],["R","bg-[#0037D2] text-white"],["M","bg-[#111111] text-white"]].map(([l, bg], i) => (
+                      <motion.span key={i} whileHover={{ scale: 1.18 }} className={`grid h-10 w-10 place-items-center rounded-full text-sm font-bold ${bg}`}>{l}</motion.span>
+                    ))}
+                    <span className="grid h-10 w-10 place-items-center rounded-full bg-[#C1FF3B] text-sm font-bold text-[#111111]">+52</span>
+                  </div>
+                  <a href="#" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#0037D2] hover:underline">All Episodes</a>
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══ COMMUNITY FEED (CMS) ══════════════════════════════════════ */}
+        <section className="bg-[#F0EBD8] py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)} className="mb-16 max-w-3xl">
+              <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Community Spotlight</motion.p>
+              <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Wins happen every single day." /></h2>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
+              className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+              {posts.map((post) => (
+                <motion.div key={post._id} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.3, ease: E } }}
+                  className="flex h-full flex-col justify-between rounded-3xl border border-[#111111]/5 bg-white p-7">
+                  <div>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-bold ${postAvatarBg[post.avatarStyle] ?? postAvatarBg.blue}`}>{post.initial}</span>
+                        <div>
+                          <div className="text-sm font-bold">{post.name}</div>
+                          <div className="text-[11px] text-[#111111]/50">{post.role}</div>
+                        </div>
+                      </div>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${postTagBg[post.tagStyle] ?? postTagBg.lime}`}>{post.tag}</span>
+                    </div>
+                    <p className="mt-4 text-sm leading-7 text-[#444444]">{post.content}</p>
+                  </div>
+                  <div className="mt-5 flex items-center justify-between border-t border-black/5 pt-4 text-xs text-[#999999]">
+                    <button
+                      onClick={() => toggleLike(post._id)}
+                      className="flex items-center gap-1.5 transition hover:text-[#0037D2]"
+                      aria-label="Like post"
+                    >
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={likedPosts.has(post._id) ? "liked" : "unliked"}
+                          initial={{ scale: 0.6, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 1.4, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className={likedPosts.has(post._id) ? "text-red-500" : ""}
+                        >
+                          {likedPosts.has(post._id) ? "♥" : "♡"}
+                        </motion.span>
+                      </AnimatePresence>
+                      {post.likes + (likedPosts.has(post._id) ? 1 : 0)}
+                      &nbsp;
+                      <span>💬 {post.comments}</span>
+                    </button>
+                    <span>{post.timeAgo}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.3 }}
+              className="mt-10 text-center">
+              <a href="#" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-3.5 text-sm font-semibold text-[#111111] transition hover:bg-[#F2ECDD] hover:border-[#111111]/25">
+                View Full Community Feed
+              </a>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══ LEARNING HUB ══════════════════════════════════════════════ */}
+        <section id="learning-hub" className="bg-[#F2ECDD] py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <motion.div variants={fadeUp}>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Learning Hub</p>
+                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="200+ resources built for builders." /></h2>
+              </motion.div>
+              <motion.div variants={fadeUp} className="flex flex-wrap gap-2">
+                {resources.map(r => (
+                  <button key={r.type} onClick={() => setActiveResource(r.type)}
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeResource === r.type ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30 hover:text-[#111111]"}`}>
+                    {r.type}
+                  </button>
+                ))}
+              </motion.div>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
+              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+              {resources.map((r) => (
+                <motion.div key={r.type} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.25, ease: E } }} onClick={() => setActiveResource(r.type)}
+                  className={`flex cursor-pointer flex-col justify-between rounded-3xl p-7 transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.14)] ${r.bg} ${activeResource === r.type ? "ring-2 ring-offset-2 ring-[#0037D2]" : ""}`}>
+                  <div>
+                    <div className="text-3xl">{r.icon}</div>
+                    <h3 className="mt-4 text-lg font-black">{r.type}</h3>
+                    <p className={`mt-0.5 text-2xl font-black ${r.countColor}`}>{r.count}</p>
+                    <p className="mt-3 text-sm leading-7 opacity-70">{r.desc}</p>
+                  </div>
+                  <a href="#" className={`mt-6 inline-flex items-center gap-2 text-sm font-bold ${r.countColor} hover:underline`}>Browse</a>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══ CTA ═══════════════════════════════════════════════════════ */}
+        <section id="cta" className="relative overflow-hidden bg-[#111111] text-white">
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute -left-32 top-10 h-[400px] w-[400px] rounded-full bg-[#0037D2]/30 blur-3xl" />
+            <div className="absolute right-[-100px] bottom-[-80px] h-[500px] w-[500px] rounded-full bg-[#C1FF3B]/10 blur-3xl" />
+          </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.14)}
+            className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
+            <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">8,000+ already inside</motion.p>
+            <motion.h2 variants={fadeUp} className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
+              Ready to <span className="text-[#C1FF3B]">Brew Yours?</span>
+            </motion.h2>
+            <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-lg text-white/60">
+              Join a community of founders, creators and students building India's next decade — together.
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
+              <a href="#" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
+              <a href="/about" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">Our Story</a>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* ══ FOOTER ════════════════════════════════════════════════════ */}
+        <footer className="bg-[#111111] text-white">
+          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
+            <div>
+              <a href="/" className="mb-5 inline-block">
+                <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+              </a>
+              <p className="mt-2 max-w-xs text-sm text-white/60">India's startup ecosystem — community, content studio, podcast, learning and events.</p>
+              <SocialLinks settings={siteSettings} showLabel className="mt-6 text-white/70 hover:text-white" />
+            </div>
+            {([["Community", ["Members", "Events", "Podcast", "Learning Hub"]], ["Studio", ["Services", "Case Studies", "Process", "Testimonials"]], ["Company", ["About", "Careers", "Press", "Contact"]]] as [string, string[]][]).map(([title, items]) => (
+              <div key={title}>
+                <div className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">{title}</div>
+                <ul className="mt-5 space-y-3 text-sm">
+                  {items.map(item => <li key={item}><a href="#" className="text-white/80 hover:text-[#C1FF3B]">{item}</a></li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-white/10">
+            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-xs text-white/50 md:flex-row md:items-center md:justify-between lg:px-10">
+              <div>© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</div>
+              <div className="flex items-center gap-5">
+                <a href="#" className="hover:text-white">Privacy</a>
+                <a href="#" className="hover:text-white">Terms</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+      </main>
+    </>
+  );
+}

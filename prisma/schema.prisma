@@ -1,0 +1,229 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CardStyle {
+  SAND
+  BLUE
+  DARK
+}
+
+enum AvatarStyle {
+  PRIMARY
+  ACCENT
+  BLUE
+  LIME
+  DARK
+}
+
+enum TagStyle {
+  LIME
+  DARK
+  LIGHT_BLUE
+}
+
+enum ColorScheme {
+  DEFAULT
+  PRIMARY
+  ACCENT
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum AdminTier {
+  SUPER_ADMIN
+  EDITOR
+}
+
+/// Our own Super Admin/Editor distinction, layered on top of Neon Auth's
+/// built-in binary "admin" role (Neon Auth's hosted role field only supports
+/// "user" | "admin", not arbitrary custom roles). Keyed by the Neon Auth user id.
+model AdminProfile {
+  id        String    @id
+  tier      AdminTier @default(EDITOR)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  order       Int      @default(0)
+  num         String
+  title       String
+  description String
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ProcessStep {
+  id          String   @id @default(cuid())
+  order       Int      @default(0)
+  stepNumber  String
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CaseStudy {
+  id             String   @id @default(cuid())
+  order          Int      @default(0)
+  tag            String
+  title          String
+  imageUrl       String
+  problem        String
+  strategy       String
+  results        String
+  reverseLayout  Boolean  @default(false)
+  showOnHomepage Boolean  @default(false)
+  pdfUrl         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum TestimonialGroup {
+  SERVICE
+  COMMUNITY
+}
+
+model Testimonial {
+  id             String           @id @default(cuid())
+  order          Int              @default(0)
+  quote          String
+  name           String
+  role           String
+  initial        String
+  cardStyle      CardStyle        @default(SAND)
+  avatarStyle    AvatarStyle      @default(PRIMARY)
+  group          TestimonialGroup @default(SERVICE)
+  showOnHomepage Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model Stat {
+  id          String      @id @default(cuid())
+  order       Int         @default(0)
+  number      String
+  label       String
+  colorScheme ColorScheme @default(DEFAULT)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model CommunityEvent {
+  id          String   @id @default(cuid())
+  order       Int      @default(0)
+  isFeatured  Boolean  @default(false)
+  tag         String
+  title       String
+  date        String
+  location    String
+  speaker     String?
+  imageUrl    String?
+  registerUrl String?
+  seatsNote   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PodcastEpisode {
+  id            String   @id @default(cuid())
+  order         Int      @default(0)
+  isFeatured    Boolean  @default(false)
+  episodeNumber String
+  duration      String
+  guest         String
+  title         String
+  thumbnailUrl  String?
+  listenUrl     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CommunityWin {
+  id          String      @id @default(cuid())
+  order       Int         @default(0)
+  quote       String
+  name        String
+  role        String
+  initial     String
+  cardStyle   CardStyle   @default(SAND)
+  avatarStyle AvatarStyle @default(BLUE)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model CommunityPost {
+  id          String      @id @default(cuid())
+  order       Int         @default(0)
+  name        String
+  role        String
+  initial     String
+  avatarStyle AvatarStyle @default(BLUE)
+  tag         String
+  tagStyle    TagStyle    @default(LIME)
+  content     String
+  likes       Int         @default(0)
+  comments    Int         @default(0)
+  timeAgo     String      @default("1d ago")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Blog {
+  id            String     @id @default(cuid())
+  order         Int        @default(0)
+  title         String
+  slug          String     @unique
+  coverImageUrl String?
+  /// Tiptap JSON document; rendered to HTML server-side via @tiptap/html's generateHTML()
+  body          Json
+  excerpt       String?
+  status        BlogStatus @default(DRAFT)
+  publishedAt   DateTime?
+  /// Neon Auth user id of the author. Not a Prisma relation — Neon Auth's user
+  /// table lives outside our schema, so this is a plain reference resolved via auth.admin.listUsers().
+  authorId      String?
+  authorName    String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+}
+
+enum BrandPartnerGroup {
+  SERVICES_HOMEPAGE
+  COMMUNITY_PARTNER
+  COMMUNITY_MEMBER
+}
+
+model BrandPartner {
+  id         String            @id @default(cuid())
+  order      Int               @default(0)
+  name       String
+  logoUrl    String
+  websiteUrl String?
+  group      BrandPartnerGroup @default(SERVICES_HOMEPAGE)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+/** Singleton row (id is always "singleton") holding site-wide settings like social links. */
+model SiteSettings {
+  id            String   @id @default("singleton")
+  instagramUrl  String?
+  linkedinUrl   String?
+  youtubeUrl    String?
+  twitterUrl    String?
+  facebookUrl   String?
+  updatedAt     DateTime @updatedAt
+}
