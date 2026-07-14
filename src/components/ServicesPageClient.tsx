@@ -688,7 +688,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           </div>
           <div className="border-t border-background/10">
             <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-xs text-background/50 md:flex-row md:items-center md:justify-between lg:px-10">
-              <div>Â© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</div>
+              <div>© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</div>
               <div className="flex items-center gap-5">
                 <a href="#" className="hover:text-background">Privacy</a>
                 <a href="#" className="hover:text-background">Terms</a>
