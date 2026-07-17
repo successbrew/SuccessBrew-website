@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { PageTransition } from "@/components/PageTransition";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={montserrat.variable}>
       <body className="font-sans antialiased bg-background text-foreground">
         <Providers>
+          <SmoothScroll />
           <PageTransition>{children}</PageTransition>
         </Providers>
       </body>

@@ -1,13 +1,18 @@
-﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-html-link-for-pages, @next/next/no-img-element */
+﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-img-element */
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useAnimationFrame } from "framer-motion";
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useAnimationFrame, useScroll } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { Carousel, type CarouselHandle } from "@/components/ui/carousel";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
-import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
+import type { SiteSettings } from "@/components/SocialLinks";
 import { ExpandableQuote } from "@/components/ExpandableQuote";
+import { Footer } from "@/components/Footer";
+import { WordReveal } from "@/components/WordReveal";
+import { AmbientBackground } from "@/components/AmbientBackground";
+import { SectionWave } from "@/components/SectionWave";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 // â"€â"€ Types â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 export interface Service {
@@ -90,41 +95,11 @@ const avatarBg: Record<string, string> = {
 };
 
 
-// ── WordReveal — word-by-word slide-up (for section headings, uses whileInView) ─
-function WordReveal({ text, className }: { text: string; className?: string }) {
-  const words = text.split(" ");
-  return (
-    <motion.span
-      className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
-    >
-      {words.map((word, i) => (
-        <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.2]">
-            <motion.span
-              className="inline-block"
-              variants={{
-                hidden: { y: "110%", opacity: 0 },
-                visible: { y: "0%", opacity: 1, transition: { duration: 0.6, ease: E } },
-              }}
-            >
-              {word}
-            </motion.span>
-          </span>
-          {i < words.length - 1 ? " " : ""}
-        </span>
-      ))}
-    </motion.span>
-  );
-}
-
-// ── Typewriter — letter-by-letter typing effect â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// ── Typewriter — letter-by-letter typing effect ─────────────────────────────
 function Typewriter({ text, delay = 300, speed = 42 }: { text: string; delay?: number; speed?: number }) {
   const [count, setCount] = useState(0);
   const [started, setStarted] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const t = setTimeout(() => setStarted(true), delay);
@@ -136,6 +111,8 @@ function Typewriter({ text, delay = 300, speed = 42 }: { text: string; delay?: n
     const id = setTimeout(() => setCount((c) => c + 1), speed);
     return () => clearTimeout(id);
   }, [started, count, text.length, speed]);
+
+  if (reducedMotion) return <>{text}</>;
 
   return (
     <>
@@ -220,13 +197,18 @@ function DraggableMarquee({
   const x = useMotionValue(0);
   const [loopWidth, setLoopWidth] = useState(0);
   const isPaused = useRef(false);
+  const reducedMotion = useRef(false);
 
   useEffect(() => {
     if (trackRef.current) setLoopWidth(trackRef.current.scrollWidth / 2);
   }, [children]);
 
+  useEffect(() => {
+    reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
   useAnimationFrame((_, delta) => {
-    if (!loopWidth || isPaused.current) return;
+    if (!loopWidth || isPaused.current || reducedMotion.current) return;
     let next = x.get() - (pxPerSecond * delta) / 1000;
     // content is duplicated once, so wrapping at -loopWidth is a seamless loop point
     if (next <= -loopWidth) next += loopWidth;
@@ -346,11 +328,57 @@ function CaseStudyGrid({ caseStudies }: { caseStudies: CaseStudy[] }) {
   );
 }
 
-// â"€â"€ Component â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// ── ServiceCard — click-to-expand card, wired to open the details modal ──────
+function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
+  return (
+    <motion.article
+      variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } }}
+      whileHover={{ y: -8, transition: { duration: 0.3, ease: E } }}
+      role="button"
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border border-ink/5 bg-background p-8 hover:border-primary/30 hover:shadow-[0_30px_60px_-30px_oklch(0.16_0.02_260_/_0.35)] md:p-10">
+      <div>
+        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.22em] text-ink/40">
+          <span>{svc.num}</span>
+          <motion.span
+            aria-hidden="true"
+            className="h-2 w-2 rounded-full bg-accent"
+            whileHover={{ scale: 1.6 }}
+            transition={{ duration: 0.2 }}
+          />
+        </div>
+        <h3 className="mt-8 text-2xl font-extrabold tracking-tight md:text-3xl">{svc.title}</h3>
+        <p className="mt-4 text-ink/60">{svc.description}</p>
+      </div>
+      <div className="mt-10 flex flex-wrap gap-2">
+        {(svc.tags ?? []).map((t) => (
+          <span key={t} className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-ink/70 transition group-hover:bg-primary/8">{t}</span>
+        ))}
+      </div>
+      <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        View details <span aria-hidden="true">→</span>
+      </span>
+      {/* shimmer border on hover */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ boxShadow: "inset 0 0 0 1px oklch(0.45 0.22 264 / 0.2)" }} />
+    </motion.article>
+  );
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 export function ServicesPageClient({ services, processSteps, caseStudies, testimonials, stats, brandPartners, siteSettings }: ServicesPageProps) {
   const statsRef = useRef<HTMLDivElement>(null);
+  const processRef = useRef<HTMLOListElement>(null);
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const statsInView = useInView(statsRef, { once: true, margin: "-80px" });
+  const { scrollYProgress: processProgress } = useScroll({ target: processRef, offset: ["start 85%", "end 65%"] });
 
   return (
     <>
@@ -359,11 +387,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
 
         {/* â•â• HERO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section className="relative overflow-hidden bg-cream pt-32 pb-24 lg:pt-40 lg:pb-32">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-            <div className="blob-a absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-primary/20 blur-3xl" />
-            <div className="blob-b absolute right-[-120px] top-40 h-[520px] w-[520px] rounded-full bg-accent/40 blur-3xl" />
-            <div className="blob-a absolute bottom-[-80px] left-1/3 h-[380px] w-[380px] rounded-full bg-primary/10 blur-3xl" />
-          </div>
+          <AmbientBackground tone="light" />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div variants={fadeUp}
@@ -402,6 +426,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.div>
           </div>
         </section>
+        <SectionWave from="var(--cream)" to="var(--background)" />
 
         <LogoShowcase brandPartners={brandPartners} />
 
@@ -435,6 +460,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </div>
           </div>
         </section>
+        <SectionWave from="var(--background)" to="var(--sand)" />
 
         {/* â•â• SERVICES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="services" className="bg-sand py-24 lg:py-32">
@@ -452,38 +478,12 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.08)} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {services.map((svc) => (
-                <motion.article key={svc._id}
-                  variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } }}
-                  whileHover={{ y: -8, transition: { duration: 0.3, ease: E } }}
-                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-ink/5 bg-background p-8 hover:border-primary/30 hover:shadow-[0_30px_60px_-30px_oklch(0.16_0.02_260_/_0.35)] md:p-10">
-                  <div>
-                    <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.22em] text-ink/40">
-                      <span>{svc.num}</span>
-                      <motion.span
-                        aria-hidden="true"
-                        className="h-2 w-2 rounded-full bg-accent"
-                        whileHover={{ scale: 1.6 }}
-                        transition={{ duration: 0.2 }}
-                      />
-                    </div>
-                    <h3 className="mt-8 text-2xl font-extrabold tracking-tight md:text-3xl">{svc.title}</h3>
-                    <p className="mt-4 text-ink/60">{svc.description}</p>
-                  </div>
-                  <div className="mt-10 flex flex-wrap gap-2">
-                    {(svc.tags ?? []).map((t) => (
-                      <span key={t} className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-ink/70 transition group-hover:bg-primary/8">{t}</span>
-                    ))}
-                  </div>
-                  {/* shimmer border on hover */}
-                  <div aria-hidden className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                    style={{ boxShadow: "inset 0 0 0 1px oklch(0.45 0.22 264 / 0.2)" }} />
-                </motion.article>
+                <ServiceCard key={svc._id} svc={svc} onOpen={() => setExpandedCard(svc._id)} />
               ))}
             </motion.div>
           </div>
         </section>
-
-        
+        <SectionWave from="var(--sand)" to="var(--background)" />
 
         {/* Service card expanded modal */}
         <AnimatePresence>
@@ -542,9 +542,11 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-primary">How we work</motion.p>
               <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="A five-step process." /></h2>
             </motion.div>
-            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+            <motion.ol ref={processRef} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.14)} className="relative grid gap-6 md:grid-cols-5">
               <div aria-hidden="true" className="absolute left-0 right-0 top-6 hidden h-px bg-ink/10 md:block" />
+              <motion.div aria-hidden="true" style={{ scaleX: processProgress }}
+                className="absolute left-0 right-0 top-6 hidden h-px origin-left bg-primary md:block" />
               {processSteps.map((step, i) => (
                 <motion.li key={step._id}
                   variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: E } } }}
@@ -567,6 +569,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.ol>
           </div>
         </section>
+        <SectionWave from="var(--background)" to="var(--cream)" />
 
         {/* â•â• WORK â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="work" className="bg-cream py-24 lg:py-32">
@@ -584,6 +587,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <CaseStudyGrid caseStudies={caseStudies} />
           </div>
         </section>
+        <SectionWave from="var(--cream)" to="var(--background)" />
 
         {/* â•â• VOICES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="voices" className="bg-background py-24 lg:py-32">
@@ -634,13 +638,11 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             )}
           </div>
         </section>
+        <SectionWave from="var(--background)" to="var(--primary)" />
 
         {/* â•â• CTA â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="cta" className="relative overflow-hidden bg-primary text-primary-foreground">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-            <div className="blob-a absolute -left-32 top-10 h-[400px] w-[400px] rounded-full bg-accent/30 blur-3xl" />
-            <div className="blob-b absolute right-[-100px] bottom-[-80px] h-[500px] w-[500px] rounded-full bg-background/10 blur-3xl" />
-          </div>
+          <AmbientBackground tone="dark" />
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.14)}
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
@@ -653,7 +655,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               A 30-minute call with our strategy team. No pitch deck. Just clarity on what your next 90 days could look like.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <MagneticButton href="#"
+              <MagneticButton href="mailto:team@successbrew.in?subject=Strategy%20Call%20Request"
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink">
                 Book A Strategy Call
               </MagneticButton>
@@ -664,38 +666,10 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.div>
           </motion.div>
         </section>
+        <SectionWave from="var(--primary)" to="var(--ink)" />
 
         {/* â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-        <footer className="bg-ink text-background">
-          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
-            <div>
-              <a href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", marginBottom: "20px" }}>
-                <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
-              </a>
-              <p className="mt-2 max-w-xs text-sm text-background/60">India's startup ecosystem â€" community, content studio, podcast, learning and events.</p>
-              <SocialLinks settings={siteSettings} showLabel className="mt-6 text-background/70 hover:text-background" />
-            </div>
-            {([["Studio", ["Services", "Case Studies", "Process", "Pricing"]], ["Ecosystem", ["Community", "Events", "Podcast", "Learning"]], ["Company", ["About", "Careers", "Press", "Contact"]]] as [string, string[]][]).map(([title, items]) => (
-              <div key={title}>
-                <div className="text-xs font-bold uppercase tracking-[0.22em] text-background/50">{title}</div>
-                <ul className="mt-5 space-y-3 text-sm">
-                  {items.map((item) => (
-                    <li key={item}><a href="#" className="text-background/80 transition hover:text-accent">{item}</a></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="border-t border-background/10">
-            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-xs text-background/50 md:flex-row md:items-center md:justify-between lg:px-10">
-              <div>© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</div>
-              <div className="flex items-center gap-5">
-                <a href="#" className="hover:text-background">Privacy</a>
-                <a href="#" className="hover:text-background">Terms</a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer siteSettings={siteSettings} />
 
       </main>
     </>

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useEffect, useRef } from "react";
@@ -9,7 +8,10 @@ import { Users, BookOpen, TrendingUp, Globe, Star, Zap, ArrowRight } from "lucid
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
+import type { SiteSettings } from "@/components/SocialLinks";
+import { Footer } from "@/components/Footer";
+import { AmbientBackground } from "@/components/AmbientBackground";
+import { SectionWave } from "@/components/SectionWave";
 
 // ── Easing curve ─────────────────────────────────────────────────────────────
 const E = [0.22, 1, 0.36, 1] as const;
@@ -91,14 +93,10 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           SECTION 1 — HERO  (dark, two-column, real founder photo)
       ════════════════════════════════════════════════════════════════════ */}
       <section className="relative flex min-h-screen items-center bg-[#111111] pt-16 overflow-hidden">
-        {/* ambient glows */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-40 top-1/4 h-[600px] w-[600px] rounded-full bg-[#0037D2]/12 blur-3xl" />
-          <div className="absolute right-0 bottom-1/4 h-[500px] w-[500px] rounded-full bg-[#C1FF3B]/5 blur-3xl" />
-          {/* grid texture */}
-          <div className="absolute inset-0 opacity-[0.02]"
-            style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "60px 60px" }} />
-        </div>
+        <AmbientBackground tone="dark" noise={false} />
+        {/* grid texture */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.02]"
+          style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "60px 60px" }} />
 
         <div className="relative mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-10 lg:py-32">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -189,6 +187,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             className="h-8 w-px bg-gradient-to-b from-white/30 to-transparent" />
         </motion.div>
       </section>
+      <SectionWave from="#111111" to="#0a0a0a" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 2 — THE BEGINNING  (dark editorial)
@@ -248,6 +247,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
+      <SectionWave from="#0a0a0a" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 3 — THE JOURNEY  (dark, timeline)
@@ -316,6 +316,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
+      <SectionWave from="#111111" to="#0037D2" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 4 — THE MISSION  (Persian Blue, enormous type)
@@ -333,6 +334,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </p>
         </motion.div>
       </section>
+      <SectionWave from="#0037D2" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 5 — VALUES  (dark cards, dark bg — NOT white/cream)
@@ -368,6 +370,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
+      <SectionWave from="#111111" to="#0a0a0a" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 6 — GALLERY  (dark, local images, masonry columns)
@@ -400,6 +403,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
+      <SectionWave from="#0a0a0a" to="#F2ECDD" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 7 — LETTER  (THE ONE LIGHT SECTION — cream by intent)
@@ -447,6 +451,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </motion.div>
         </div>
       </section>
+      <SectionWave from="#F2ECDD" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 8 — THE IMPACT  (dark, lime counters)
@@ -477,6 +482,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
+      <SectionWave from="#111111" to="#0037D2" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 9 — PEOPLE OVER PRODUCTS  (blue, full-viewport reveal)
@@ -508,6 +514,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </motion.p>
         </div>
       </section>
+      <SectionWave from="#0037D2" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 10 — WHAT COMES NEXT  (dark, horizontal scroll on mobile)
@@ -581,41 +588,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
         </div>
       </section>
 
-      {/* ── FOOTER ──────────────────────────────────────────────────────── */}
-      <footer className="bg-black text-white border-t border-white/8">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
-          <div>
-            <Link href="/" className="inline-flex items-center mb-5">
-              <img src="/SB-logo.png" alt="Successbrew" style={{ height: 36, width: "auto", filter: "brightness(0) invert(1)" }} />
-            </Link>
-            <p className="mt-2 max-w-xs text-sm text-white/55 leading-7">India&apos;s startup ecosystem — community, content studio, podcast, learning and events.</p>
-            <SocialLinks settings={siteSettings} showLabel className="mt-6 text-white/60 hover:text-white" />
-          </div>
-          {([
-            ["Studio",    ["Services", "Case Studies", "Process", "Pricing"]],
-            ["Ecosystem", ["Community", "Events", "Podcast", "Learning"]],
-            ["Company",   ["About", "Careers", "Press", "Contact"]],
-          ] as [string, string[]][]).map(([title, items]) => (
-            <div key={title}>
-              <div className="mb-5 text-[11px] font-bold uppercase tracking-[0.22em] text-white/40">{title}</div>
-              <ul className="space-y-3 text-sm">
-                {items.map(item => (
-                  <li key={item}><a href="#" className="text-white/70 transition hover:text-white">{item}</a></li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="border-t border-white/8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-6 text-xs text-white/40 md:flex-row md:items-center md:justify-between lg:px-10">
-            <span>© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</span>
-            <div className="flex gap-5">
-              <a href="#" className="hover:text-white transition">Privacy</a>
-              <a href="#" className="hover:text-white transition">Terms</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer siteSettings={siteSettings} />
     </main>
     </>
   );

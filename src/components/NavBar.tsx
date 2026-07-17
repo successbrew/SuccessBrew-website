@@ -199,15 +199,30 @@ export default function NavBar({
   const [open, setOpen]               = useState<string | null>(null);
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [scrolled, setScrolled]       = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const openTimer  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
-    if (variant !== "dark") return;
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [variant]);
+  }, []);
+
+  useEffect(() => {
+    const sections = document.querySelectorAll("section[id]");
+    if (sections.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -229,7 +244,7 @@ export default function NavBar({
   const headerBg =
     isDark
       ? scrolled ? "bg-[#111111]/95 backdrop-blur-xl border-white/8" : "bg-transparent border-transparent"
-      : "bg-[#F2ECDD] border-[#111111]/5";
+      : scrolled ? "bg-[#F2ECDD]/95 backdrop-blur-xl border-[#111111]/5" : "bg-[#F2ECDD]/65 backdrop-blur-md border-[#111111]/5";
 
   const logoFilter = isDark ? "brightness(0) invert(1)" : "contrast(1.5) brightness(1.1)";
   const logoBlend  = isDark ? undefined : ("multiply" as const);
@@ -309,23 +324,34 @@ export default function NavBar({
                             animate="visible"
                             className={`grid gap-1 ${entry.dropdown.items.length > 4 ? "grid-cols-2" : "grid-cols-1"}`}
                           >
-                            {entry.dropdown.items.map((item) => (
-                              <motion.li key={item.title} variants={itemVariants}>
-                                <Link
-                                  href={item.href}
-                                  onClick={() => setOpen(null)}
-                                  className="group flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F3]"
-                                >
-                                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-lg ${item.iconBg}`}>
-                                    {item.icon}
-                                  </span>
-                                  <div>
-                                    <div className="text-[13px] font-semibold text-[#111111] group-hover:text-[#0037D2] transition-colors">{item.title}</div>
-                                    <div className="text-[11px] text-[#111111]/45 leading-tight">{item.desc}</div>
-                                  </div>
-                                </Link>
-                              </motion.li>
-                            ))}
+                            {entry.dropdown.items.map((item) => {
+                              const hash = item.href.includes("#") ? item.href.split("#")[1] : null;
+                              const isHere = hash !== null && hash === activeSection;
+                              return (
+                                <motion.li key={item.title} variants={itemVariants}>
+                                  <Link
+                                    href={item.href}
+                                    onClick={() => setOpen(null)}
+                                    className="group flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F3]"
+                                  >
+                                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-lg ${item.iconBg}`}>
+                                      {item.icon}
+                                    </span>
+                                    <div>
+                                      <div className="text-[13px] font-semibold text-[#111111] group-hover:text-[#0037D2] transition-colors">{item.title}</div>
+                                      {isHere ? (
+                                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0037D2]">
+                                          <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                                          You&apos;re here
+                                        </div>
+                                      ) : (
+                                        <div className="text-[11px] text-[#111111]/45 leading-tight">{item.desc}</div>
+                                      )}
+                                    </div>
+                                  </Link>
+                                </motion.li>
+                              );
+                            })}
                           </motion.ul>
                         </div>
 

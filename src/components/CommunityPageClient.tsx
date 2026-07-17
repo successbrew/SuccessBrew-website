@@ -1,4 +1,4 @@
-﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-html-link-for-pages, @next/next/no-img-element */
+﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
@@ -7,7 +7,11 @@ import NavBar from "@/components/NavBar";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
 import { CommunityPartnerGrid } from "@/components/CommunityPartnerGrid";
 import { CommunityMapBackground } from "@/components/CommunityMapBackground";
-import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
+import type { SiteSettings } from "@/components/SocialLinks";
+import { Footer } from "@/components/Footer";
+import { WordReveal } from "@/components/WordReveal";
+import { AmbientBackground } from "@/components/AmbientBackground";
+import { SectionWave } from "@/components/SectionWave";
 // NetworkCanvas visualization temporarily removed from this page — component
 // file kept intact at @/components/CommunityNetworkCanvas for re-adding later.
 
@@ -162,37 +166,6 @@ const resources = [
   { type: "Webinars",  count: "60+",  desc: "Recorded sessions with operators, VCs and brand builders.",           icon: "🎥", bg: "bg-[#111111] text-white",      countColor: "text-[#C1FF3B]" },
 ];
 
-// ── WordReveal — word-by-word slide-up for section headings ──────────────────
-function WordReveal({ text, className }: { text: string; className?: string }) {
-  const words = text.split(" ");
-  return (
-    <motion.span
-      className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
-    >
-      {words.map((word, i) => (
-        <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.2]">
-            <motion.span
-              className="inline-block"
-              variants={{
-                hidden: { y: "110%", opacity: 0 },
-                visible: { y: "0%", opacity: 1, transition: { duration: 0.6, ease: E } },
-              }}
-            >
-              {word}
-            </motion.span>
-          </span>
-          {i < words.length - 1 ? " " : ""}
-        </span>
-      ))}
-    </motion.span>
-  );
-}
-
 // ── Component ─────────────────────────────────────────────────────────────────
 export function CommunityPageClient({ events, episodes, wins, posts, communityPartners, communityMembers, siteSettings }: CommunityPageProps) {
   const [activeResource, setActiveResource] = useState("Blogs");
@@ -218,11 +191,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-16 lg:pt-40 lg:pb-20">
           <CommunityMapBackground />
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#0037D2]/15 blur-3xl" />
-            <div className="absolute right-[-120px] top-40 h-[520px] w-[520px] rounded-full bg-[#C1FF3B]/30 blur-3xl" />
-            <div className="absolute bottom-[-80px] left-1/3 h-[380px] w-[380px] rounded-full bg-[#0037D2]/8 blur-3xl" />
-          </div>
+          <AmbientBackground tone="light" noise={false} />
 
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
@@ -334,6 +303,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </motion.div>
           </div>
         </section>
+        <SectionWave from="#F2ECDD" to="#0037D2" />
 
         {/* ══ TICKER ════════════════════════════════════════════════════ */}
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
@@ -350,6 +320,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             ))}
           </div>
         </motion.div>
+        <SectionWave from="#0037D2" to="#F0EBD8" />
 
         {/* ══ ECOSYSTEM ═════════════════════════════════════════════════ */}
         <section id="ecosystem" className="bg-[#F0EBD8] py-16 lg:py-20">
@@ -389,8 +360,10 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </motion.div>
           </div>
         </section>
+        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         <CommunityPartnerGrid partners={communityPartners} />
+        <SectionWave from="#F2ECDD" to="#F0EBD8" />
         <LogoShowcase
           brandPartners={communityMembers}
           eyebrow="Who's Inside"
@@ -398,6 +371,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
           alwaysColor
           sectionBg="bg-[#F0EBD8]"
         />
+        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         {/* ══ COMMUNITY OFFERS (Membership Tiers) ══════════════════════════ */}
         <section id="offers" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -473,6 +447,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </motion.div>
           </div>
         </section>
+        <SectionWave from="#F2ECDD" to="#0037D2" />
 
         {/* ══ OUR WHY ═══════════════════════════════════════════════════ */}
         <section className="bg-[#0037D2] py-16 text-white lg:py-20">
@@ -526,6 +501,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </motion.div>
           </div>
         </section>
+        <SectionWave from="#0037D2" to="#F2ECDD" />
 
         {/* ══ WINS (CMS) ════════════════════════════════════════════════ */}
         <section id="wins" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -558,6 +534,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </motion.div>
           </div>
         </section>
+        <SectionWave from="#F2ECDD" to="#F0EBD8" />
 
         {/* ══ EVENTS (CMS) ══════════════════════════════════════════════ */}
         <section id="events" className="bg-[#F0EBD8] py-16 lg:py-20">
@@ -568,7 +545,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Upcoming Events</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Be in the room where it happens." /></h2>
               </motion.div>
-              <motion.a variants={fadeUp} href="#" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+              <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
                 All events
               </motion.a>
             </motion.div>
@@ -633,6 +610,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </div>
           </div>
         </section>
+        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         {/* ══ PODCAST (CMS) ═════════════════════════════════════════════ */}
         <section id="podcast" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -643,7 +621,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Successbrew Podcast</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Real talk. Real founders." /></h2>
               </motion.div>
-              <motion.a variants={fadeUp} href="#" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+              <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
                 All Episodes
               </motion.a>
             </motion.div>
@@ -703,12 +681,13 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                     ))}
                     <span className="grid h-10 w-10 place-items-center rounded-full bg-[#C1FF3B] text-sm font-bold text-[#111111]">+52</span>
                   </div>
-                  <a href="#" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#0037D2] hover:underline">All Episodes</a>
+                  <a href="#cta" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#0037D2] hover:underline">All Episodes</a>
                 </motion.div>
               </motion.div>
             </div>
           </div>
         </section>
+        <SectionWave from="#F2ECDD" to="#F0EBD8" />
 
         {/* ══ COMMUNITY FEED (CMS) ══════════════════════════════════════ */}
         <section className="bg-[#F0EBD8] py-16 lg:py-20">
@@ -764,12 +743,13 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.3 }}
               className="mt-10 text-center">
-              <a href="#" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-3.5 text-sm font-semibold text-[#111111] transition hover:bg-[#F2ECDD] hover:border-[#111111]/25">
+              <a href="#cta" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-3.5 text-sm font-semibold text-[#111111] transition hover:bg-[#F2ECDD] hover:border-[#111111]/25">
                 View Full Community Feed
               </a>
             </motion.div>
           </div>
         </section>
+        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         {/* ══ LEARNING HUB ══════════════════════════════════════════════ */}
         <section id="learning-hub" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -800,19 +780,23 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                     <p className={`mt-0.5 text-2xl font-black ${r.countColor}`}>{r.count}</p>
                     <p className="mt-3 text-sm leading-7 opacity-70">{r.desc}</p>
                   </div>
-                  <a href="#" className={`mt-6 inline-flex items-center gap-2 text-sm font-bold ${r.countColor} hover:underline`}>Browse</a>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setActiveResource(r.type); }}
+                    className={`mt-6 inline-flex items-center gap-2 text-sm font-bold ${r.countColor} hover:underline`}
+                  >
+                    Browse
+                  </button>
                 </motion.div>
               ))}
             </motion.div>
           </div>
         </section>
+        <SectionWave from="#F2ECDD" to="#111111" />
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section id="cta" className="relative overflow-hidden bg-[#111111] text-white">
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-32 top-10 h-[400px] w-[400px] rounded-full bg-[#0037D2]/30 blur-3xl" />
-            <div className="absolute right-[-100px] bottom-[-80px] h-[500px] w-[500px] rounded-full bg-[#C1FF3B]/10 blur-3xl" />
-          </div>
+          <AmbientBackground tone="dark" />
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.14)}
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
             <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">8,000+ already inside</motion.p>
@@ -823,41 +807,13 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
               Join a community of founders, creators and students building India's next decade — together.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <a href="#" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
+              <a href="mailto:team@successbrew.in?subject=Join%20the%20Successbrew%20Community" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
               <a href="/about" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">Our Story</a>
             </motion.div>
           </motion.div>
         </section>
 
-        {/* ══ FOOTER ════════════════════════════════════════════════════ */}
-        <footer className="bg-[#111111] text-white">
-          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
-            <div>
-              <a href="/" className="mb-5 inline-block">
-                <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
-              </a>
-              <p className="mt-2 max-w-xs text-sm text-white/60">India's startup ecosystem — community, content studio, podcast, learning and events.</p>
-              <SocialLinks settings={siteSettings} showLabel className="mt-6 text-white/70 hover:text-white" />
-            </div>
-            {([["Community", ["Members", "Events", "Podcast", "Learning Hub"]], ["Studio", ["Services", "Case Studies", "Process", "Testimonials"]], ["Company", ["About", "Careers", "Press", "Contact"]]] as [string, string[]][]).map(([title, items]) => (
-              <div key={title}>
-                <div className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">{title}</div>
-                <ul className="mt-5 space-y-3 text-sm">
-                  {items.map(item => <li key={item}><a href="#" className="text-white/80 hover:text-[#C1FF3B]">{item}</a></li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="border-t border-white/10">
-            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-xs text-white/50 md:flex-row md:items-center md:justify-between lg:px-10">
-              <div>© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</div>
-              <div className="flex items-center gap-5">
-                <a href="#" className="hover:text-white">Privacy</a>
-                <a href="#" className="hover:text-white">Terms</a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer siteSettings={siteSettings} />
 
       </main>
     </>

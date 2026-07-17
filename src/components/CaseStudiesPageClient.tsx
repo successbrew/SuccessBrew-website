@@ -6,7 +6,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import NavBar from "@/components/NavBar";
 import type { CaseStudy } from "@/components/ServicesPageClient";
-import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
+import type { SiteSettings } from "@/components/SocialLinks";
+import { Footer } from "@/components/Footer";
+import { WordReveal } from "@/components/WordReveal";
+import { AmbientBackground } from "@/components/AmbientBackground";
+import { SectionWave } from "@/components/SectionWave";
 
 export type { CaseStudy };
 
@@ -16,30 +20,6 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } },
 };
 const stagger = (d = 0.1) => ({ hidden: {}, visible: { transition: { staggerChildren: d } } });
-
-// Kinetic word reveal (same as ServicesPageClient)
-function WordReveal({ text, className }: { text: string; className?: string }) {
-  const words = text.split(" ");
-  return (
-    <span className={className}>
-      {words.map((word, i) => (
-        <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.2]">
-            <motion.span
-              className="inline-block"
-              variants={{
-                hidden: { y: "110%", opacity: 0 },
-                visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E, delay: i * 0.07 } },
-              }}>
-              {word}
-            </motion.span>
-          </span>
-          {i < words.length - 1 ? " " : ""}
-        </span>
-      ))}
-    </span>
-  );
-}
 
 export function CaseStudiesPageClient({
   caseStudies,
@@ -64,10 +44,7 @@ export function CaseStudiesPageClient({
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-ink pt-32 pb-20 lg:pt-40 lg:pb-28">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-40 top-10 h-[400px] w-[400px] rounded-full bg-primary/30 blur-3xl" />
-            <div className="absolute right-[-100px] bottom-0 h-[350px] w-[350px] rounded-full bg-accent/20 blur-3xl" />
-          </div>
+          <AmbientBackground tone="dark" />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div variants={fadeUp}
@@ -80,11 +57,11 @@ export function CaseStudiesPageClient({
               <motion.h1
                 initial="hidden" animate="visible" variants={stagger(0.06)}
                 className="max-w-3xl text-[clamp(2.5rem,6vw,5.5rem)] font-black leading-[0.95] tracking-tight text-white">
-                <WordReveal text="Results that" />
+                <WordReveal text="Results that" mode="nested" staggerDelay={0.07} />
                 {" "}
                 <span className="relative inline-block">
                   <span className="relative z-10">
-                    <WordReveal text="compound." />
+                    <WordReveal text="compound." mode="nested" staggerDelay={0.07} />
                   </span>
                   <span aria-hidden="true" className="absolute inset-x-0 bottom-1 -z-0 h-3 bg-accent md:h-5" />
                 </span>
@@ -96,6 +73,7 @@ export function CaseStudiesPageClient({
             </motion.div>
           </div>
         </section>
+        <SectionWave from="var(--ink)" to="var(--background)" />
 
         {/* ══ CASE STUDIES — list + PDF viewer ══════════════════════════ */}
         <section className="bg-background py-20 lg:py-28">
@@ -178,6 +156,7 @@ export function CaseStudiesPageClient({
             )}
           </div>
         </section>
+        <SectionWave from="var(--background)" to="var(--primary)" />
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section className="bg-primary py-20 lg:py-28">
@@ -202,38 +181,9 @@ export function CaseStudiesPageClient({
             </motion.div>
           </div>
         </section>
+        <SectionWave from="var(--primary)" to="var(--ink)" />
 
-        {/* ══ FOOTER ════════════════════════════════════════════════════ */}
-        <footer className="bg-ink text-background">
-          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
-            <div>
-              <Link href="/" className="mb-5 inline-block">
-                <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
-              </Link>
-              <p className="mt-2 max-w-xs text-sm text-background/60">India&apos;s startup ecosystem — community, content studio, podcast, learning and events.</p>
-              <SocialLinks settings={siteSettings} showLabel className="mt-6 text-background/70 hover:text-background" />
-            </div>
-            {([["Studio", ["Services", "Case Studies", "Process", "Testimonials"]], ["Ecosystem", ["Community", "Events", "Podcast", "Learning"]], ["Company", ["About", "Careers", "Press", "Contact"]]] as [string, string[]][]).map(([title, items]) => (
-              <div key={title}>
-                <div className="text-xs font-bold uppercase tracking-[0.22em] text-background/50">{title}</div>
-                <ul className="mt-5 space-y-3 text-sm">
-                  {items.map((item) => (
-                    <li key={item}><a href="#" className="text-background/80 transition hover:text-accent">{item}</a></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="border-t border-background/10">
-            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-xs text-background/50 md:flex-row md:items-center md:justify-between lg:px-10">
-              <div>© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</div>
-              <div className="flex items-center gap-5">
-                <a href="#" className="hover:text-background">Privacy</a>
-                <a href="#" className="hover:text-background">Terms</a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer siteSettings={siteSettings} />
 
       </main>
     </>

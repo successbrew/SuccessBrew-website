@@ -1,11 +1,13 @@
-﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-img-element */
+﻿/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import Link from "next/link";
 import NavBar from "@/components/NavBar";
-import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
+import type { SiteSettings } from "@/components/SocialLinks";
+import { Footer } from "@/components/Footer";
+import { AmbientBackground } from "@/components/AmbientBackground";
+import { SectionWave } from "@/components/SectionWave";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
@@ -24,6 +26,7 @@ function ScrambleText({ text, trigger }: { text: string; trigger: boolean }) {
   useEffect(() => {
     if (!trigger || done.current) return;
     done.current = true;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let iteration = 0;
     const total = text.length * 4;
     const id = setInterval(() => {
@@ -44,12 +47,18 @@ function ScrambleText({ text, trigger }: { text: string; trigger: boolean }) {
 }
 
 const sections = [
-  { icon: "📂", label: "Course Categories" },
-  { icon: "🎓", label: "Featured Courses" },
-  { icon: "🤝", label: "Mentor Network" },
-  { icon: "📖", label: "Resource Library" },
-  { icon: "⭐", label: "Success Stories" },
+  { icon: "📂", label: "Course Categories", desc: "Curated tracks across growth, content, and fundraising." },
+  { icon: "🎓", label: "Featured Courses", desc: "Deep-dive programs taught by operators who've done it." },
+  { icon: "🤝", label: "Mentor Network", desc: "1:1 access to founders, VCs and specialists who open doors." },
+  { icon: "📖", label: "Resource Library", desc: "Templates, playbooks and frameworks ready to use." },
+  { icon: "⭐", label: "Success Stories", desc: "Real outcomes from founders who leveled up with us." },
 ];
+
+function bentoSpan(i: number, total: number) {
+  if (i === 0 || i === total - 1) return "lg:col-span-2";
+  if (i === 2) return "lg:col-span-1 lg:row-span-2";
+  return "lg:col-span-1";
+}
 
 export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings }) {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -62,10 +71,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-ink pt-36 pb-28 lg:pt-44 lg:pb-36">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-primary/25 blur-3xl" />
-            <div className="absolute right-[-80px] bottom-0 h-[400px] w-[400px] rounded-full bg-accent/15 blur-3xl" />
-          </div>
+          <AmbientBackground tone="dark" />
           <div ref={heroRef} className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div variants={fadeUp}
@@ -96,6 +102,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
             </motion.div>
           </div>
         </section>
+        <SectionWave from="var(--ink)" to="var(--background)" />
 
         {/* ══ SECTIONS PREVIEW ═══════════════════════════════════════════ */}
         <section className="bg-background py-20 lg:py-28">
@@ -109,27 +116,29 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.08)}
-              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              {sections.map((s) => (
+              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
+              {sections.map((s, i) => (
                 <motion.div
                   key={s.label}
                   variants={fadeUp}
                   whileHover={{ y: -6, boxShadow: "0 20px 40px -12px rgba(0,55,210,0.12)", transition: { duration: 0.25, ease: E } }}
-                  className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-ink/10 bg-sand px-6 py-10 text-center cursor-default">
+                  className={`group relative flex flex-col justify-center gap-3 overflow-hidden rounded-3xl border border-dashed border-ink/10 bg-sand px-7 py-8 cursor-default ${bentoSpan(i, sections.length)}`}>
+                  <span className="absolute right-5 top-5 rounded-full bg-ink/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-ink/30">
+                    Coming Soon
+                  </span>
                   <motion.span
-                    className="text-3xl"
+                    className="block text-5xl"
                     whileHover={{ scale: 1.2, rotate: 5, transition: { duration: 0.2 } }}>
                     {s.icon}
                   </motion.span>
-                  <p className="text-sm font-semibold text-ink/40">{s.label}</p>
-                  <span className="rounded-full bg-ink/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-ink/30">
-                    Coming Soon
-                  </span>
+                  <p className="mt-2 text-lg font-bold text-ink/70">{s.label}</p>
+                  <p className="text-sm leading-6 text-ink/40">{s.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
           </div>
         </section>
+        <SectionWave from="var(--background)" to="var(--sand)" />
 
         {/* ══ NOTIFY CTA ════════════════════════════════════════════════ */}
         <section className="bg-sand py-20 lg:py-24">
@@ -148,38 +157,9 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
             </motion.div>
           </div>
         </section>
+        <SectionWave from="var(--sand)" to="var(--ink)" />
 
-        {/* ══ FOOTER ════════════════════════════════════════════════════ */}
-        <footer className="bg-ink text-background">
-          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
-            <div>
-              <Link href="/" className="mb-5 inline-block">
-                <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
-              </Link>
-              <p className="mt-2 max-w-xs text-sm text-background/60">India&apos;s startup ecosystem — community, content studio, podcast, learning and events.</p>
-              <SocialLinks settings={siteSettings} showLabel className="mt-6 text-background/70 hover:text-background" />
-            </div>
-            {([["Studio", ["Services", "Case Studies", "Process", "Testimonials"]], ["Ecosystem", ["Community", "Events", "Podcast", "Learning"]], ["Company", ["About", "Careers", "Press", "Contact"]]] as [string, string[]][]).map(([title, items]) => (
-              <div key={title}>
-                <div className="text-xs font-bold uppercase tracking-[0.22em] text-background/50">{title}</div>
-                <ul className="mt-5 space-y-3 text-sm">
-                  {items.map((item) => (
-                    <li key={item}><a href="#" className="text-background/80 transition hover:text-accent">{item}</a></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="border-t border-background/10">
-            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-xs text-background/50 md:flex-row md:items-center md:justify-between lg:px-10">
-              <div>© 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.</div>
-              <div className="flex items-center gap-5">
-                <a href="#" className="hover:text-background">Privacy</a>
-                <a href="#" className="hover:text-background">Terms</a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer siteSettings={siteSettings} />
 
       </main>
     </>
