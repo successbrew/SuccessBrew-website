@@ -7,7 +7,7 @@ interface SectionWaveProps {
 export function SectionWave({
   from,
   to,
-  className = "h-16 md:h-28",
+  className = "h-16 md:h-26",
 }: SectionWaveProps) {
   return (
     <div
