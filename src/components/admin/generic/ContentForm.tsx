@@ -136,6 +136,14 @@ export function ContentForm<T extends FieldValues>({
               />
             )}
 
+            {field.type === "date" && (
+              <Input
+                id={field.name}
+                type="date"
+                {...form.register(field.name as never, { required: field.required })}
+              />
+            )}
+
             {field.type === "tags" && (
               <Controller
                 control={form.control}

@@ -11,7 +11,7 @@ export const metadata = {
 export default async function TestimonialsPage() {
   const [testimonials, siteSettings] = await Promise.all([
     getServiceTestimonials().catch(() => []),
-    getSiteSettings().catch(() => ({ instagramUrl: null, linkedinUrl: null, youtubeUrl: null, twitterUrl: null, facebookUrl: null })),
+    getSiteSettings().catch(() => ({ instagramUrl: null, instagramUrl2: null, linkedinUrl: null, youtubeUrl: null })),
   ]);
 
   return <TestimonialsPageClient testimonials={testimonials} siteSettings={siteSettings} />;

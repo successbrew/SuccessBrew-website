@@ -1,9 +1,8 @@
 export interface SiteSettings {
   instagramUrl?: string | null;
+  instagramUrl2?: string | null;
   linkedinUrl?: string | null;
   youtubeUrl?: string | null;
-  twitterUrl?: string | null;
-  facebookUrl?: string | null;
 }
 
 function InstagramIcon() {
@@ -33,22 +32,6 @@ function YouTubeIcon() {
   );
 }
 
-function XIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-      <path d="M4 3h3.6l4.2 5.8L16.6 3H20l-6.4 8.4L20.4 21H16.8l-4.6-6.3L7.2 21H4l6.8-8.9L4 3Z" />
-    </svg>
-  );
-}
-
-function FacebookIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-      <path d="M14 22v-8.4h2.8l.42-3.27H14V8.2c0-.95.26-1.6 1.63-1.6H17.3V3.67c-.28-.04-1.25-.12-2.37-.12-2.35 0-3.96 1.43-3.96 4.06v2.27H8.16v3.27h2.8V22h3.03Z" />
-    </svg>
-  );
-}
-
 /** Icon-only social links; renders nothing for any URL left blank. */
 export function SocialLinks({
   settings,
@@ -61,10 +44,9 @@ export function SocialLinks({
 }) {
   const links = [
     { url: settings.instagramUrl, label: "Instagram", Icon: InstagramIcon },
+    { url: settings.instagramUrl2, label: "Instagram (2)", Icon: InstagramIcon },
     { url: settings.linkedinUrl, label: "LinkedIn", Icon: LinkedInIcon },
     { url: settings.youtubeUrl, label: "YouTube", Icon: YouTubeIcon },
-    { url: settings.twitterUrl, label: "X (Twitter)", Icon: XIcon },
-    { url: settings.facebookUrl, label: "Facebook", Icon: FacebookIcon },
   ].filter((l) => l.url);
 
   if (links.length === 0) return null;

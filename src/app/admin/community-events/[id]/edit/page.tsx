@@ -24,6 +24,7 @@ export default async function EditCommunityEventPage({
         fields={communityEventFields}
         defaultValues={{
           ...communityEvent,
+          eventDate: communityEvent.eventDate.toISOString().slice(0, 10),
           speaker: communityEvent.speaker ?? undefined,
           imageUrl: communityEvent.imageUrl ?? undefined,
           registerUrl: communityEvent.registerUrl ?? undefined,

@@ -12,6 +12,8 @@ import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { SectionWave } from "@/components/SectionWave";
+import { ExpandableQuote } from "@/components/ExpandableQuote";
+import type { Testimonial } from "@/components/ServicesPageClient";
 // NetworkCanvas visualization temporarily removed from this page — component
 // file kept intact at @/components/CommunityNetworkCanvas for re-adding later.
 
@@ -67,7 +69,7 @@ export interface CommunityPost {
 export interface CommunityPageProps {
   events: CommunityEvent[];
   episodes: PodcastEpisode[];
-  wins: CommunityWin[];
+  communityTestimonials: Testimonial[];
   posts: CommunityPost[];
   communityPartners: BrandPartner[];
   communityMembers: BrandPartner[];
@@ -89,6 +91,8 @@ const winCardBg: Record<string, string> = {
 const winAvatarBg: Record<string, string> = {
   blue: "bg-[#0037D2] text-white",
   lime: "bg-[#C1FF3B] text-[#111111]",
+  primary: "bg-[#0037D2] text-white",
+  accent: "bg-[#C1FF3B] text-[#111111]",
 };
 const postAvatarBg: Record<string, string> = {
   blue: "bg-[#0037D2] text-white",
@@ -102,11 +106,11 @@ const postTagBg: Record<string, string> = {
 
 // ── Static data (not CMS — product structure) ─────────────────────────────────
 const pillars = [
-  { num: "01", icon: "💬", title: "Citywise Whatsapp Groups",             badge: "50+ Cities",     tags: ["Local Network", "Daily Chats"], desc: "Hyperlocal WhatsApp groups connecting founders, freelancers and creators in your own city — real conversations, real meetups." },
-  { num: "02", icon: "🎙️", title: "The Successbrew Podcast",              badge: "100+ Episodes",  tags: ["Interviews", "Insights"],       desc: "Raw, unfiltered conversations with India's most ambitious founders, investors and creators — no PR filters, no fluff." },
-  { num: "03", icon: "🗓️", title: "Community Events",                     badge: "200+ Events",    tags: ["Summits", "Demo Days"],         desc: "High-energy meetups, summits and demo days that turn strangers into co-founders, early customers and collaborators." },
+  { num: "01", icon: "💬", title: "Citywise Whatsapp Groups",             badge: "20+ Cities",     tags: ["Local Network", "Daily Chats"], desc: "Hyperlocal WhatsApp groups connecting founders, freelancers and creators in your own city — real conversations, real meetups." },
+  { num: "02", icon: "🎙️", title: "The Successbrew Podcast",              badge: "20+ Episodes",  tags: ["Interviews", "Insights"],       desc: "Raw, unfiltered conversations with India's most ambitious founders, investors and creators — no PR filters, no fluff." },
+  { num: "03", icon: "🗓️", title: "Community Events",                     badge: "300+ Events",    tags: ["Summits", "Demo Days"],         desc: "High-energy meetups, summits and demo days that turn strangers into co-founders, early customers and collaborators." },
   { num: "04", icon: "📚", title: "Learning Hub for Founders and Teams",  badge: "200+ Resources", tags: ["Playbooks", "Templates"],       desc: "Practical playbooks, templates, ebooks and webinars built specifically for the Indian startup journey." },
-  { num: "05", icon: "🤝", title: "Network of Experts",                  badge: "500+ Experts",   tags: ["Operators", "VCs"],             desc: "Direct access to battle-tested operators, VCs, agencies and founders who open doors and challenge your thinking." },
+  { num: "05", icon: "🤝", title: "Network of Experts",                  badge: "100+ Experts",   tags: ["Operators", "VCs"],             desc: "Direct access to battle-tested operators, VCs, agencies and founders who open doors and challenge your thinking." },
   { num: "06", icon: "🌴", title: "Retreats (Fun, Learning, Wellness)",  badge: "Members Only",   tags: ["Wellness", "Offsites"],         desc: "Curated getaways that blend deep work, wellness and genuine connection — where the best ideas and friendships are born." },
 ];
 
@@ -167,7 +171,7 @@ const resources = [
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export function CommunityPageClient({ events, episodes, wins, posts, communityPartners, communityMembers, siteSettings }: CommunityPageProps) {
+export function CommunityPageClient({ events, episodes, communityTestimonials, posts, communityPartners, communityMembers, siteSettings }: CommunityPageProps) {
   const [activeResource, setActiveResource] = useState("Blogs");
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
 
@@ -180,8 +184,10 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
 
   const featuredEvent   = events.find((e) => e.isFeatured) ?? events[0];
   const listEvents      = events.filter((e) => !e.isFeatured).slice(0, 3);
+  const previewEvents   = (featuredEvent ? [featuredEvent, ...listEvents] : listEvents).slice(0, 3);
   const featuredEpisode = episodes.find((e) => e.isFeatured) ?? episodes[0];
   const listEpisodes    = episodes.filter((e) => !e.isFeatured).slice(0, 3);
+  const previewEpisodes = (featuredEpisode ? [featuredEpisode, ...listEpisodes] : listEpisodes).slice(0, 3);
 
   return (
     <>
@@ -204,7 +210,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
               <motion.h1
                 initial="hidden" animate="visible"
                 variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } }}
-                className="text-balance text-[clamp(2.75rem,7vw,6.5rem)] font-black leading-[0.95] tracking-tight text-[#111111]">
+                className="whitespace-nowrap text-[clamp(1.6rem,5.6vw,6.5rem)] font-black leading-[0.95] tracking-tight text-[#111111]">
                 {["Brew", "Your"].map((word, i) => (
                   <span key={i}>
                     <span className="inline-block overflow-hidden leading-[1.2]">
@@ -213,8 +219,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                     {i === 0 ? " " : ""}
                   </span>
                 ))}
-                {" "}<br className="hidden md:block" />
-                <span className="relative inline-block">
+                {" "}<span className="relative inline-block">
                   <span className="relative z-10 text-[#0037D2]">
                     {["Own", "Success."].map((word, i) => (
                       <span key={i}>
@@ -240,43 +245,27 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
               </motion.div>
             </motion.div>
 
-            {/* Photo mosaic */}
-            <div className="mt-16 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4" style={{ gridTemplateRows: "280px 180px" }}>
-              <motion.div initial={{ opacity: 0, scale: 0.92, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
-                className="group relative col-span-2 row-span-2 overflow-hidden rounded-[1.75rem] border border-[#111111]/5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.2)] md:col-span-1">
-                <img src="/grid-images/IMG_9736.JPG" alt="Community at summit" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <span className="absolute left-4 top-4 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-black text-[#111111]">Live Community</span>
-                <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/15 bg-black/30 p-3 backdrop-blur-md">
-                  <p className="text-xs font-bold text-white/80 uppercase tracking-wider">8,000+ Members</p>
-                  <p className="mt-0.5 text-sm font-semibold text-white">Successbrew Summit, Mumbai</p>
+            {/* Community video */}
+            <motion.div initial={{ opacity: 0, scale: 0.97, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
+              className="group relative mt-16 aspect-video w-full overflow-hidden rounded-[1.75rem] border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
+              {/* TODO: swap for the real community video — set `src` on the <video> tag below */}
+              <video className="h-full w-full object-cover" poster="/grid-images/IMG_9736.JPG" muted loop playsInline controls>
+                Your browser does not support embedded video.
+              </video>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                <span className="grid h-20 w-20 place-items-center rounded-full bg-[#C1FF3B] text-[#111111] shadow-[0_10px_30px_rgba(193,255,59,0.4)] transition-transform group-hover:scale-110">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </span>
+              </div>
+              <span className="absolute left-5 top-5 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-black text-[#111111]">Live Community</span>
+              <div className="absolute bottom-5 left-5 right-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/15 bg-black/30 p-4 backdrop-blur-md">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-white/80">8,000+ Members</p>
+                  <p className="mt-0.5 text-sm font-semibold text-white">See the Successbrew community in action</p>
                 </div>
-              </motion.div>
-              {[
-                { src: "/grid-images/20220423062049_IMG_2072.JPG", alt: "Community event", delay: 0.55, float: false },
-                { src: "/grid-images/TEdx 1.jpeg",                 alt: "TEDx event",      delay: 0.7,  float: true,  badge: "54+ Events" },
-                { src: "/grid-images/IMG-20220514-WA0017.jpg",     alt: "Workshop",        delay: 0.85, float: false },
-                { src: "/grid-images/IMG20241127141737.jpg",       alt: "Gathering",       delay: 1.0,  float: false, caption: "150K Monthly Reach" },
-                { src: "/grid-images/IMG_6949.JPG",                alt: "Event",           delay: 1.15, float: false, badge2: "Real Founders" },
-                { src: "/grid-images/IMG-20220315-WA0059.jpg",     alt: "Workshop group",  delay: 1.3,  float: false, caption2: "Building Together" },
-              ].map(({ src, alt, delay, float: shouldFloat, badge, caption, badge2, caption2 }) => (
-                <motion.div key={src}
-                  initial={{ opacity: 0, y: 28 }}
-                  animate={shouldFloat ? { opacity: 1, y: [0, -7, 0] } : { opacity: 1, y: 0 }}
-                  transition={shouldFloat
-                    ? { opacity: { delay, duration: 0.8 }, y: { delay: delay + 0.9, duration: 3.8, repeat: Infinity, ease: "easeInOut" } }
-                    : { delay, duration: 0.8, ease: E }
-                  }
-                  className="group relative overflow-hidden rounded-[1.5rem] border border-[#111111]/5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.2)]">
-                  <img src={src} alt={alt} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  {badge  && <span className="absolute right-3 top-3 rounded-full bg-[#0037D2] px-2.5 py-1 text-[10px] font-black text-white">{badge}</span>}
-                  {badge2 && <span className="absolute left-3 top-3 rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black text-[#111111]">{badge2}</span>}
-                  {caption  && <div className="absolute bottom-3 left-3 right-3 rounded-xl bg-white/20 px-3 py-2 backdrop-blur-sm"><p className="text-xs font-bold text-white">{caption}</p></div>}
-                  {caption2 && <div className="absolute bottom-3 left-3 right-3 rounded-xl bg-white/20 px-3 py-2 backdrop-blur-sm"><p className="text-xs font-bold text-white">{caption2}</p></div>}
-                </motion.div>
-              ))}
-            </div>
+              </div>
+            </motion.div>
 
             {/* Stat boxes */}
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}
@@ -303,7 +292,6 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F2ECDD" to="#0037D2" />
 
         {/* ══ TICKER ════════════════════════════════════════════════════ */}
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
@@ -320,7 +308,6 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
             ))}
           </div>
         </motion.div>
-        <SectionWave from="#0037D2" to="#F0EBD8" />
 
         {/* ══ ECOSYSTEM ═════════════════════════════════════════════════ */}
         <section id="ecosystem" className="bg-[#F0EBD8] py-16 lg:py-20">
@@ -462,17 +449,6 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 <motion.p variants={fadeUp} className="mt-6 max-w-xl text-balance text-lg text-white/75">
                   Most ambitious Indians never get the room, the mentor, or the mic. Successbrew exists to close that gap — not by replacing hard work, but by amplifying it with access, visibility and a community that actually shows up.
                 </motion.p>
-                <motion.div variants={fadeUp} className="mt-14">
-                  <ol className="relative grid grid-cols-5 gap-0">
-                    <div aria-hidden className="absolute left-0 right-0 top-6 h-px bg-white/20" />
-                    {[["2022", "Founded"], ["2023", "8K+"], ["2024", "54 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
-                      <li key={yr} className="relative text-center">
-                        <div className={`relative z-10 mx-auto grid h-12 w-12 place-items-center rounded-full border text-sm font-bold ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#0037D2] text-white"}`}>{yr}</div>
-                        <div className={`mt-3 text-xs font-bold ${i === 4 ? "text-[#C1FF3B]" : "text-white/60"}`}>{lbl}</div>
-                      </li>
-                    ))}
-                  </ol>
-                </motion.div>
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.9, ease: E }} className="relative">
                 <div className="overflow-hidden rounded-[2rem] border border-white/10">
@@ -485,6 +461,20 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 </motion.div>
               </motion.div>
             </div>
+
+            {/* Timeline — full section width, below the text/picture row */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mt-20">
+              <ol className="relative grid grid-cols-5 gap-0">
+                <div aria-hidden className="absolute left-0 right-0 top-6 h-px bg-white/20" />
+                {[["2022", "Founded"], ["2023", "8K+"], ["2024", "54 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
+                  <li key={yr} className="relative text-center">
+                    <div className={`relative z-10 mx-auto grid h-12 w-12 place-items-center rounded-full border text-sm font-bold ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#0037D2] text-white"}`}>{yr}</div>
+                    <div className={`mt-3 text-xs font-bold ${i === 4 ? "text-[#C1FF3B]" : "text-white/60"}`}>{lbl}</div>
+                  </li>
+                ))}
+              </ol>
+            </motion.div>
+
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
               className="mt-20 grid gap-6 md:grid-cols-3">
               {[
@@ -516,22 +506,39 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 Read all community stories
               </motion.a>
             </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
-              className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {wins.map((w) => (
-                <motion.figure key={w._id} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.3, ease: E } }}
-                  className={`flex h-full flex-col justify-between rounded-3xl border border-[#111111]/5 p-8 md:p-10 ${winCardBg[w.cardStyle] ?? winCardBg.sand}`}>
-                  <blockquote className="text-balance text-lg font-medium leading-snug">&ldquo;{w.quote}&rdquo;</blockquote>
-                  <figcaption className="mt-10 flex items-center gap-4">
-                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm font-bold ${winAvatarBg[w.avatarStyle] ?? winAvatarBg.blue}`}>{w.initial}</span>
-                    <div>
-                      <div className="text-sm font-semibold">{w.name}</div>
-                      <div className="mt-0.5 text-xs opacity-60">{w.role}</div>
-                    </div>
-                  </figcaption>
-                </motion.figure>
-              ))}
-            </motion.div>
+            {communityTestimonials.length > 0 ? (
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
+                className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {communityTestimonials.slice(0, 6).map((t) => (
+                  <motion.figure key={t._id} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.3, ease: E } }}
+                    className={`flex h-full flex-col justify-between rounded-3xl border border-[#111111]/5 p-8 md:p-10 ${winCardBg[t.cardStyle] ?? winCardBg.sand}`}>
+                    <blockquote className="text-balance text-lg font-medium leading-snug">
+                      <ExpandableQuote
+                        quote={t.quote}
+                        name={t.name}
+                        role={t.role}
+                        initial={t.initial}
+                        avatarUrl={t.avatarUrl}
+                        readMoreClassName={`mt-3 block text-sm font-semibold underline underline-offset-4 opacity-70 transition hover:opacity-100 ${t.cardStyle === "dark" ? "text-white" : ""}`}
+                      />
+                    </blockquote>
+                    <figcaption className="mt-10 flex items-center gap-4">
+                      {t.avatarUrl ? (
+                        <img src={t.avatarUrl} alt={t.name} className="h-11 w-11 shrink-0 rounded-full object-cover" />
+                      ) : (
+                        <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm font-bold ${winAvatarBg[t.avatarStyle] ?? winAvatarBg.blue}`}>{t.initial}</span>
+                      )}
+                      <div>
+                        <div className="text-sm font-semibold">{t.name}</div>
+                        <div className="mt-0.5 text-xs opacity-60">{t.role}</div>
+                      </div>
+                    </figcaption>
+                  </motion.figure>
+                ))}
+              </motion.div>
+            ) : (
+              <p className="text-sm text-[#111111]/50">No community stories yet — add them in /admin/testimonials.</p>
+            )}
           </div>
         </section>
         <SectionWave from="#F2ECDD" to="#F0EBD8" />
@@ -545,69 +552,46 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Upcoming Events</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Be in the room where it happens." /></h2>
               </motion.div>
-              <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+              <motion.a variants={fadeUp} href="/community/events" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
                 All events
               </motion.a>
             </motion.div>
 
-            <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-              {/* Featured event */}
-              {featuredEvent && (
-                <motion.article initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.8, ease: E }} whileHover={{ scale: 1.01, transition: { duration: 0.3 } }}
-                  className="overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-white">
-                  <div className="relative h-72 overflow-hidden md:h-96">
-                    {featuredEvent.imageUrl ? (
-                      <img src={featuredEvent.imageUrl} alt={featuredEvent.title} className="h-full w-full object-cover transition-transform duration-700 hover:scale-105" />
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {previewEvents.map((ev) => (
+                <motion.a key={ev._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+                  href={ev.registerUrl ?? "#"}
+                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#111111]/5">
+                    {ev.imageUrl ? (
+                      <img src={ev.imageUrl} alt={ev.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     ) : (
                       <div className="h-full w-full bg-[#111111]/10" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/85 via-[#111111]/20 to-transparent" />
-                    <span className="absolute left-6 top-6 rounded-full bg-[#C1FF3B] px-3 py-1 text-xs font-bold text-[#111111]">{featuredEvent.tag}</span>
-                    <div className="absolute bottom-0 left-0 right-0 p-7 text-white">
-                      <h3 className="text-2xl font-black md:text-3xl">{featuredEvent.title}</h3>
-                      <div className="mt-3 flex flex-wrap gap-4 text-sm text-white/70">
-                        <span>📅 {featuredEvent.date}</span>
-                        <span>📍 {featuredEvent.location}</span>
-                        {featuredEvent.speaker && <span>👤 {featuredEvent.speaker}</span>}
-                      </div>
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <span className="absolute left-3 top-3 rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#111111]">{ev.tag}</span>
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <p className="text-xs font-bold text-white/80">📅 {ev.date}</p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between border-t border-[#111111]/5 px-7 py-5">
-                    <span className="text-sm text-[#111111]/55">{featuredEvent.seatsNote ?? "Register to secure your seat"}</span>
-                    <a href={featuredEvent.registerUrl ?? "#"} className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#0037D2]">Register Now</a>
+                  <div className="flex flex-1 flex-col justify-between p-5">
+                    <div>
+                      <h3 className="text-lg font-black leading-snug text-[#111111]">{ev.title}</h3>
+                      <p className="mt-2 text-xs text-[#111111]/50">📍 {ev.location}{ev.speaker ? ` · 👤 ${ev.speaker}` : ""}</p>
+                    </div>
+                    <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
+                      Register now →
+                    </span>
                   </div>
-                </motion.article>
-              )}
-
-              {/* Event list */}
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
-                className="flex flex-col gap-5">
-                {listEvents.map((ev) => (
-                  <motion.a key={ev._id} href={ev.registerUrl ?? "#"}
-                    variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: E } } }}
-                    whileHover={{ x: 5, transition: { duration: 0.2 } }}
-                    className="grid grid-cols-[80px_1fr] gap-4 overflow-hidden rounded-2xl border border-[#111111]/5 bg-white p-4 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-shadow">
-                    <div className="h-20 w-20 overflow-hidden rounded-xl">
-                      {ev.imageUrl ? (
-                        <img src={ev.imageUrl} alt={ev.title} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="h-full w-full bg-[#111111]/10" />
-                      )}
-                    </div>
-                    <div className="flex flex-col justify-center">
-                      <span className="text-[11px] font-bold text-[#0037D2]">{ev.tag}</span>
-                      <h4 className="mt-1 text-sm font-bold text-[#111111]">{ev.title}</h4>
-                      <p className="mt-1 text-xs text-[#111111]/45">{ev.date} · {ev.location}</p>
-                    </div>
-                  </motion.a>
-                ))}
-                <motion.div variants={cardUp} className="rounded-2xl border border-dashed border-[#0037D2]/30 bg-[#0037D2]/5 p-6 text-center">
-                  <p className="text-sm font-bold text-[#0037D2]">54+ events hosted across India</p>
-                  <p className="mt-1 text-xs text-[#111111]/50">Mumbai · Delhi · Bengaluru · Hyderabad · Pune</p>
-                </motion.div>
-              </motion.div>
-            </div>
+                </motion.a>
+              ))}
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
+              className="mt-6 rounded-2xl border border-dashed border-[#0037D2]/30 bg-[#0037D2]/5 p-6 text-center">
+              <p className="text-sm font-bold text-[#0037D2]">54+ events hosted across India</p>
+              <p className="mt-1 text-xs text-[#111111]/50">Mumbai · Delhi · Bengaluru · Hyderabad · Pune</p>
+            </motion.div>
           </div>
         </section>
         <SectionWave from="#F0EBD8" to="#F2ECDD" />
@@ -621,135 +605,52 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Successbrew Podcast</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Real talk. Real founders." /></h2>
               </motion.div>
-              <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
+              <motion.a variants={fadeUp} href="/community/podcast" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
                 All Episodes
               </motion.a>
             </motion.div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-              {/* Featured episode */}
-              {featuredEpisode && (
-                <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.8, ease: E }}
-                  className="overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-white">
-                  <div className="relative h-72 overflow-hidden md:h-80">
-                    <img src={featuredEpisode.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt="Podcast cover" className="h-full w-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent" />
-                    <span className="absolute left-5 top-5 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-bold text-[#111111]">{featuredEpisode.episodeNumber} · {featuredEpisode.duration}</span>
-                    <div className="absolute inset-0 grid place-items-center">
-                      <motion.a href={featuredEpisode.listenUrl ?? "#"} aria-label="Play" whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.95 }}
-                        className="grid h-16 w-16 place-items-center rounded-full bg-[#C1FF3B] text-[#111111] shadow-[0_10px_30px_rgba(193,255,59,0.3)]">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                      </motion.a>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {previewEpisodes.map((ep) => (
+                <motion.a key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+                  href={ep.listenUrl ?? "#"}
+                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
+                  <div className="relative aspect-square w-full overflow-hidden">
+                    <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                    {ep.isFeatured && (
+                      <span className="absolute left-3 top-3 rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black uppercase text-[#111111]">Featured</span>
+                    )}
+                    <div className="absolute inset-0 grid place-items-center opacity-0 transition-opacity group-hover:opacity-100">
+                      <span className="grid h-14 w-14 place-items-center rounded-full bg-[#C1FF3B] text-[#111111] shadow-lg">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      </span>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-7">
-                      <h3 className="text-xl font-black text-white md:text-2xl">{featuredEpisode.title}</h3>
-                      <p className="mt-2 text-sm text-white/60">{featuredEpisode.guest}</p>
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <p className="text-xs font-bold text-white/80">{ep.episodeNumber} · {ep.duration}</p>
                     </div>
                   </div>
-                </motion.div>
-              )}
-
-              {/* Episode list */}
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
-                className="flex flex-col gap-4">
-                {listEpisodes.map((ep) => (
-                  <motion.a key={ep._id} href={ep.listenUrl ?? "#"}
-                    variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: E } } }}
-                    whileHover={{ x: 4, transition: { duration: 0.2 } }}
-                    className="flex gap-4 rounded-2xl border border-[#111111]/5 bg-white p-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
-                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
-                      <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt="Ep thumb" className="h-full w-full object-cover" />
-                      <div className="absolute inset-0 grid place-items-center bg-black/30">
-                        <span className="grid h-8 w-8 place-items-center rounded-full bg-[#C1FF3B] text-[#111111]">
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        </span>
-                      </div>
-                    </div>
+                  <div className="flex flex-1 flex-col justify-between p-5">
                     <div>
-                      <div className="text-[11px] font-bold text-[#0037D2]">{ep.episodeNumber} · <span className="font-medium text-[#111111]/45">{ep.duration}</span></div>
-                      <h4 className="mt-1 text-[15px] font-bold leading-6 text-[#111111]">{ep.title}</h4>
-                      <p className="mt-1 text-xs text-[#111111]/45">{ep.guest}</p>
+                      <h3 className="text-lg font-black leading-snug text-[#111111]">{ep.title}</h3>
+                      <p className="mt-1.5 text-xs text-[#111111]/50">{ep.guest}</p>
                     </div>
-                  </motion.a>
-                ))}
-                <motion.div variants={cardUp} className="rounded-2xl border border-[#111111]/5 bg-white p-6">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/45">100+ Episodes · 60+ Guests</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {[["K","bg-[#0037D2] text-white"],["N","bg-[#111111] text-white"],["A","bg-[#C1FF3B] text-[#111111]"],["P","bg-[#0037D2] text-white"],["V","bg-[#111111] text-white"],["S","bg-[#C1FF3B] text-[#111111]"],["R","bg-[#0037D2] text-white"],["M","bg-[#111111] text-white"]].map(([l, bg], i) => (
-                      <motion.span key={i} whileHover={{ scale: 1.18 }} className={`grid h-10 w-10 place-items-center rounded-full text-sm font-bold ${bg}`}>{l}</motion.span>
-                    ))}
-                    <span className="grid h-10 w-10 place-items-center rounded-full bg-[#C1FF3B] text-sm font-bold text-[#111111]">+52</span>
+                    <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
+                      Listen now →
+                    </span>
                   </div>
-                  <a href="#cta" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#0037D2] hover:underline">All Episodes</a>
-                </motion.div>
-              </motion.div>
-            </div>
+                </motion.a>
+              ))}
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
+              className="mt-6 rounded-2xl border border-[#111111]/5 bg-white p-6 text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/45">100+ Episodes · 60+ Guests</p>
+              <a href="/community/podcast" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#0037D2] hover:underline">All Episodes →</a>
+            </motion.div>
           </div>
         </section>
         <SectionWave from="#F2ECDD" to="#F0EBD8" />
-
-        {/* ══ COMMUNITY FEED (CMS) ══════════════════════════════════════ */}
-        <section className="bg-[#F0EBD8] py-16 lg:py-20">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)} className="mb-16 max-w-3xl">
-              <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Community Spotlight</motion.p>
-              <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Wins happen every single day." /></h2>
-            </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
-              className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-              {posts.map((post) => (
-                <motion.div key={post._id} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.3, ease: E } }}
-                  className="flex h-full flex-col justify-between rounded-3xl border border-[#111111]/5 bg-white p-7">
-                  <div>
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2.5">
-                        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-bold ${postAvatarBg[post.avatarStyle] ?? postAvatarBg.blue}`}>{post.initial}</span>
-                        <div>
-                          <div className="text-sm font-bold">{post.name}</div>
-                          <div className="text-[11px] text-[#111111]/50">{post.role}</div>
-                        </div>
-                      </div>
-                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${postTagBg[post.tagStyle] ?? postTagBg.lime}`}>{post.tag}</span>
-                    </div>
-                    <p className="mt-4 text-sm leading-7 text-[#444444]">{post.content}</p>
-                  </div>
-                  <div className="mt-5 flex items-center justify-between border-t border-black/5 pt-4 text-xs text-[#999999]">
-                    <button
-                      onClick={() => toggleLike(post._id)}
-                      className="flex items-center gap-1.5 transition hover:text-[#0037D2]"
-                      aria-label="Like post"
-                    >
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={likedPosts.has(post._id) ? "liked" : "unliked"}
-                          initial={{ scale: 0.6, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 1.4, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className={likedPosts.has(post._id) ? "text-red-500" : ""}
-                        >
-                          {likedPosts.has(post._id) ? "♥" : "♡"}
-                        </motion.span>
-                      </AnimatePresence>
-                      {post.likes + (likedPosts.has(post._id) ? 1 : 0)}
-                      &nbsp;
-                      <span>💬 {post.comments}</span>
-                    </button>
-                    <span>{post.timeAgo}</span>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-10 text-center">
-              <a href="#cta" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-3.5 text-sm font-semibold text-[#111111] transition hover:bg-[#F2ECDD] hover:border-[#111111]/25">
-                View Full Community Feed
-              </a>
-            </motion.div>
-          </div>
-        </section>
-        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         {/* ══ LEARNING HUB ══════════════════════════════════════════════ */}
         <section id="learning-hub" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -785,7 +686,7 @@ export function CommunityPageClient({ events, episodes, wins, posts, communityPa
                     onClick={(e) => { e.stopPropagation(); setActiveResource(r.type); }}
                     className={`mt-6 inline-flex items-center gap-2 text-sm font-bold ${r.countColor} hover:underline`}
                   >
-                    Browse
+                    Coming Soon...
                   </button>
                 </motion.div>
               ))}

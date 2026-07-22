@@ -18,10 +18,9 @@ export default async function CaseStudiesPage({
     getCaseStudies().catch(() => []),
     getSiteSettings().catch(() => ({
       instagramUrl: null,
+      instagramUrl2: null,
       linkedinUrl: null,
       youtubeUrl: null,
-      twitterUrl: null,
-      facebookUrl: null,
     })),
   ]);
 

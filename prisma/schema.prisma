@@ -120,20 +120,31 @@ model Stat {
   updatedAt   DateTime    @updatedAt
 }
 
+enum EventCategory {
+  TECH_INTEGRATE
+  D2C
+  INVESTORS
+  RETREATS
+  MEGA_EVENTS
+  GENERAL
+}
+
 model CommunityEvent {
-  id          String   @id @default(cuid())
-  order       Int      @default(0)
-  isFeatured  Boolean  @default(false)
+  id          String        @id @default(cuid())
+  order       Int           @default(0)
+  isFeatured  Boolean       @default(false)
   tag         String
   title       String
   date        String
+  eventDate   DateTime      @default(now())
+  category    EventCategory @default(GENERAL)
   location    String
   speaker     String?
   imageUrl    String?
   registerUrl String?
   seatsNote   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model PodcastEpisode {
@@ -222,9 +233,8 @@ model BrandPartner {
 model SiteSettings {
   id            String   @id @default("singleton")
   instagramUrl  String?
+  instagramUrl2 String?
   linkedinUrl   String?
   youtubeUrl    String?
-  twitterUrl    String?
-  facebookUrl   String?
   updatedAt     DateTime @updatedAt
 }

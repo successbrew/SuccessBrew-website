@@ -1,0 +1,6 @@
+-- CreateEnum
+CREATE TYPE "EventCategory" AS ENUM ('TECH_INTEGRATE', 'D2C', 'INVESTORS', 'RETREATS', 'MEGA_EVENTS', 'GENERAL');
+
+-- AlterTable
+ALTER TABLE "CommunityEvent" ADD COLUMN     "category" "EventCategory" NOT NULL DEFAULT 'GENERAL',
+ADD COLUMN     "eventDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

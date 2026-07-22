@@ -6,7 +6,7 @@ import { runCreate, runUpdate, runDelete } from "@/lib/admin/crud";
 import { podcastEpisodeSchema } from "@/lib/admin/schemas/podcast-episode";
 import { formDataToObject } from "@/lib/admin/form-data";
 
-const REVALIDATE = ["/admin/podcast-episodes", "/community"];
+const REVALIDATE = ["/admin/podcast-episodes", "/community", "/community/podcast"];
 
 export async function createPodcastEpisode(formData: FormData) {
   await verifyAdminSession();

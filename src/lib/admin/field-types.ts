@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 export type FieldConfig =
   | { name: string; label: string; type: "text" | "textarea" | "url"; required?: boolean; placeholder?: string }
   | { name: string; label: string; type: "number"; required?: boolean }
+  | { name: string; label: string; type: "date"; required?: boolean }
   | { name: string; label: string; type: "boolean" }
   | { name: string; label: string; type: "select"; options: { value: string; label: string }[] }
   | { name: string; label: string; type: "tags"; placeholder?: string }

@@ -297,6 +297,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blob-a, .blob-b, .animate-marquee, .wave-flow { animation: none; }
+  .blob-a, .blob-b, .animate-marquee, .wave-flow, .animate-word-bob { animation: none; }
 }
 

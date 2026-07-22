@@ -19,7 +19,7 @@ export default async function ServicesPage() {
     getHomepageTestimonials().catch(() => []),
     getStats().catch(() => []),
     getBrandPartners().catch(() => []),
-    getSiteSettings().catch(() => ({ instagramUrl: null, linkedinUrl: null, youtubeUrl: null, twitterUrl: null, facebookUrl: null })),
+    getSiteSettings().catch(() => ({ instagramUrl: null, instagramUrl2: null, linkedinUrl: null, youtubeUrl: null })),
   ]);
 
   return (

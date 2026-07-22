@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useAnimationFrame, useScroll } from "framer-motion";
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useAnimationFrame, useScroll, useMotionValueEvent } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { Carousel, type CarouselHandle } from "@/components/ui/carousel";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
@@ -379,6 +379,12 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const statsInView = useInView(statsRef, { once: true, margin: "-80px" });
   const { scrollYProgress: processProgress } = useScroll({ target: processRef, offset: ["start 85%", "end 65%"] });
+  const [activeStep, setActiveStep] = useState(-1);
+  useMotionValueEvent(processProgress, "change", (v) => {
+    const n = processSteps.length;
+    if (n === 0) return;
+    setActiveStep(Math.min(n - 1, Math.floor(v * n)));
+  });
 
   return (
     <>
@@ -421,8 +427,17 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.9, ease: E }}
-              className="mt-16 overflow-hidden rounded-[2rem] border border-ink/5 shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
-              <img src="/grid-images/service-page.jpg" alt="Successbrew studio team working with founders" width="1600" height="1200" className="h-[280px] w-full object-cover md:h-[520px]" />
+              className="group relative mt-16 overflow-hidden rounded-[2rem] border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
+              {/* TODO: swap for the real studio video — set `src` on the <video> tag below */}
+              <video className="h-[280px] w-full object-cover md:h-[520px]" poster="/grid-images/service-page.jpg" muted loop playsInline controls>
+                Your browser does not support embedded video.
+              </video>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                <span className="grid h-16 w-16 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_10px_30px_-6px_oklch(0.45_0.22_264_/_0.5)] transition-transform group-hover:scale-110">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </span>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -547,16 +562,24 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               <div aria-hidden="true" className="absolute left-0 right-0 top-6 hidden h-px bg-ink/10 md:block" />
               <motion.div aria-hidden="true" style={{ scaleX: processProgress }}
                 className="absolute left-0 right-0 top-6 hidden h-px origin-left bg-primary md:block" />
-              {processSteps.map((step, i) => (
+              {processSteps.map((step, i) => {
+                const isActive = i <= activeStep;
+                return (
                 <motion.li key={step._id}
                   variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: E } } }}
                   className="relative">
                   <motion.div
-                    whileHover={{ scale: 1.12, backgroundColor: "oklch(0.45 0.22 264)", color: "#fff", transition: { duration: 0.2 } }}
-                    className="relative z-10 grid h-12 w-12 place-items-center rounded-full border border-ink/10 bg-background text-sm font-bold tracking-tight cursor-default">
+                    animate={{
+                      backgroundColor: isActive ? "oklch(0.45 0.22 264)" : "oklch(1 0 0)",
+                      color: isActive ? "#fff" : "oklch(0.16 0.02 260)",
+                      scale: isActive ? 1.08 : 1,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    whileHover={{ scale: 1.12, backgroundColor: "oklch(0.45 0.22 264)", color: "#fff" }}
+                    className="relative z-10 grid h-12 w-12 place-items-center rounded-full border border-ink/10 text-sm font-bold tracking-tight cursor-default">
                     {step.stepNumber}
                   </motion.div>
-                  <h3 className="mt-6 text-xl font-extrabold tracking-tight">{step.title}</h3>
+                  <h3 className={`mt-6 text-xl font-extrabold tracking-tight transition-colors duration-300 ${isActive ? "text-primary" : "text-ink"}`}>{step.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-ink/60">{step.description}</p>
                   {i === processSteps.length - 1 && (
                     <motion.span
@@ -565,7 +588,8 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                       className="absolute -top-1 right-0 hidden h-4 w-4 rounded-full bg-accent md:block" />
                   )}
                 </motion.li>
-              ))}
+                );
+              })}
             </motion.ol>
           </div>
         </section>

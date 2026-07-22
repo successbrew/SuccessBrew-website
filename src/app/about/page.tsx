@@ -11,10 +11,9 @@ export const metadata = {
 export default async function AboutPage() {
   const siteSettings = await getSiteSettings().catch(() => ({
     instagramUrl: null,
+    instagramUrl2: null,
     linkedinUrl: null,
     youtubeUrl: null,
-    twitterUrl: null,
-    facebookUrl: null,
   }));
 
   return <AboutPageClient siteSettings={siteSettings} />;

@@ -3,6 +3,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import {
+  Clapperboard, Settings, Sparkles, MessageCircle,
+  Globe, Gift, Calendar, Mic, Trophy, BookOpen,
+  FolderOpen, GraduationCap, Handshake, BookText, Star,
+  User, Rocket, type LucideIcon,
+} from "lucide-react";
 
 // Magnetic button — nudges toward the cursor on hover
 function MagneticLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
@@ -29,8 +35,7 @@ import Link from "next/link";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface DropdownItem {
-  icon: string;
-  iconBg: string;
+  icon: LucideIcon;
   title: string;
   desc: string;
   href: string;
@@ -67,10 +72,10 @@ const NAV: NavEntry[] = [
     href: "/",
     dropdown: {
       items: [
-        { icon: "🎬", iconBg: "bg-[#EEF3FF]", title: "What We Do",    desc: "Full studio service offerings",       href: "/#services" },
-        { icon: "⚙️", iconBg: "bg-[#F4F4F6]", title: "Our Process",   desc: "How we collaborate with you",         href: "/#process"  },
-        { icon: "✨", iconBg: "bg-[#FFFBEB]",  title: "Selected Work", desc: "Case studies & brand results",        href: "/#work"        },
-        { icon: "💬", iconBg: "bg-[#F0FDF4]",  title: "Client Voices", desc: "What our founders say",               href: "/#voices"   },
+        { icon: Clapperboard, title: "What We Do",    desc: "Full studio service offerings",       href: "/#services" },
+        { icon: Settings,     title: "Our Process",   desc: "How we collaborate with you",         href: "/#process"  },
+        { icon: Sparkles,     title: "Selected Work", desc: "Case studies & brand results",        href: "/#work"        },
+        { icon: MessageCircle, title: "Client Voices", desc: "What our founders say",               href: "/#voices"   },
       ],
       featured: {
         bg: "bg-[#0037D2]",
@@ -91,12 +96,12 @@ const NAV: NavEntry[] = [
     href: "/community",
     dropdown: {
       items: [
-        { icon: "🌐", iconBg: "bg-[#EEF3FF]", title: "Ecosystem",      desc: "The 6 pillars of Successbrew",        href: "/community#ecosystem"    },
-        { icon: "🎁", iconBg: "bg-[#F0FDF4]",  title: "Offers",         desc: "What every member unlocks",           href: "/community#offers"       },
-        { icon: "🗓️", iconBg: "bg-[#FFF7ED]",  title: "Events",         desc: "Meetups, summits & workshops",        href: "/community#events"       },
-        { icon: "🎙️", iconBg: "bg-[#FAF5FF]",  title: "Podcast",        desc: "100+ raw founder conversations",      href: "/community#podcast"      },
-        { icon: "🏆", iconBg: "bg-[#FFFBEB]",  title: "Community Wins", desc: "Stories from our members",            href: "/community#wins"         },
-        { icon: "📚", iconBg: "bg-[#F0FDFA]",  title: "Learning Hub",   desc: "200+ playbooks, templates & ebooks", href: "/community#learning-hub" },
+        { icon: Globe,    title: "Ecosystem",      desc: "The 6 pillars of Successbrew",        href: "/community#ecosystem"    },
+        { icon: Gift,     title: "Offers",         desc: "What every member unlocks",           href: "/community#offers"       },
+        { icon: Calendar, title: "Events",         desc: "Meetups, summits & workshops",        href: "/community/events"       },
+        { icon: Mic,      title: "Podcast",        desc: "100+ raw founder conversations",      href: "/community/podcast"      },
+        { icon: Trophy,   title: "Community Wins", desc: "Stories from our members",            href: "/community#wins"         },
+        { icon: BookOpen, title: "Learning Hub",   desc: "200+ playbooks, templates & ebooks", href: "/community#learning-hub" },
       ],
       featured: {
         bg: "bg-[#C1FF3B]",
@@ -117,11 +122,11 @@ const NAV: NavEntry[] = [
     href: "/courses",
     dropdown: {
       items: [
-        { icon: "📂", iconBg: "bg-[#EEF3FF]", title: "Course Categories",  desc: "Coming soon",  href: "/courses" },
-        { icon: "🎓", iconBg: "bg-[#FAF5FF]",  title: "Featured Courses",   desc: "Coming soon",  href: "/courses" },
-        { icon: "🤝", iconBg: "bg-[#F0FDF4]",  title: "Mentor Network",     desc: "Coming soon",  href: "/courses" },
-        { icon: "📖", iconBg: "bg-[#FFFBEB]",  title: "Resource Library",   desc: "Coming soon",  href: "/courses" },
-        { icon: "⭐", iconBg: "bg-[#FFF0F5]",  title: "Success Stories",    desc: "Coming soon",  href: "/courses" },
+        { icon: FolderOpen,    title: "Course Categories",  desc: "Coming soon",  href: "/courses" },
+        { icon: GraduationCap, title: "Featured Courses",   desc: "Coming soon",  href: "/courses" },
+        { icon: Handshake,     title: "Mentor Network",     desc: "Coming soon",  href: "/courses" },
+        { icon: BookText,      title: "Resource Library",   desc: "Coming soon",  href: "/courses" },
+        { icon: Star,          title: "Success Stories",    desc: "Coming soon",  href: "/courses" },
       ],
       featured: {
         bg: "bg-[#111111]",
@@ -142,8 +147,8 @@ const NAV: NavEntry[] = [
     href: "/about",
     dropdown: {
       items: [
-        { icon: "👤", iconBg: "bg-[#F4F4F6]", title: "Our Story",         desc: "How Successbrew began in 2022",       href: "/about#story" },
-        { icon: "🚀", iconBg: "bg-[#EEF3FF]", title: "Join the Mission",  desc: "Be part of something bigger",         href: "/about#join"  },
+        { icon: User,   title: "Our Story",         desc: "How Successbrew began in 2022",       href: "/about#story" },
+        { icon: Rocket, title: "Join the Mission",  desc: "Be part of something bigger",         href: "/about#join"  },
       ],
       featured: {
         bg: "bg-[#0037D2]",
@@ -334,8 +339,8 @@ export default function NavBar({
                                     onClick={() => setOpen(null)}
                                     className="group flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F3]"
                                   >
-                                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-lg ${item.iconBg}`}>
-                                      {item.icon}
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0037D2]/8">
+                                      <item.icon className="h-[18px] w-[18px] text-[#0037D2]" strokeWidth={2} />
                                     </span>
                                     <div>
                                       <div className="text-[13px] font-semibold text-[#111111] group-hover:text-[#0037D2] transition-colors">{item.title}</div>
@@ -454,8 +459,8 @@ export default function NavBar({
                           <Link key={item.title} href={item.href}
                             onClick={() => setMobileOpen(false)}
                             className="flex items-center gap-2.5 rounded-xl bg-[#F5F5F3] p-2.5 transition hover:bg-[#EEEDE9]">
-                            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base ${item.iconBg}`}>
-                              {item.icon}
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0037D2]/8">
+                              <item.icon className="h-4 w-4 text-[#0037D2]" strokeWidth={2} />
                             </span>
                             <span className="text-[12px] font-semibold text-[#111111]">{item.title}</span>
                           </Link>

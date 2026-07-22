@@ -6,7 +6,7 @@ import { runCreate, runUpdate, runDelete } from "@/lib/admin/crud";
 import { communityEventSchema } from "@/lib/admin/schemas/community-event";
 import { formDataToObject } from "@/lib/admin/form-data";
 
-const REVALIDATE = ["/admin/community-events", "/community"];
+const REVALIDATE = ["/admin/community-events", "/community", "/community/events"];
 
 export async function createCommunityEvent(formData: FormData) {
   await verifyAdminSession();

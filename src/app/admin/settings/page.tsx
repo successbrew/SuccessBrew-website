@@ -18,10 +18,9 @@ export default async function SiteSettingsPage() {
         fields={siteSettingsFields}
         defaultValues={{
           instagramUrl: settings?.instagramUrl ?? "",
+          instagramUrl2: settings?.instagramUrl2 ?? "",
           linkedinUrl: settings?.linkedinUrl ?? "",
           youtubeUrl: settings?.youtubeUrl ?? "",
-          twitterUrl: settings?.twitterUrl ?? "",
-          facebookUrl: settings?.facebookUrl ?? "",
         }}
         action={updateSiteSettings}
         redirectTo="/admin/settings"

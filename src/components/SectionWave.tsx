@@ -17,7 +17,7 @@ export function SectionWave({
     >
       <div className="wave-flow absolute inset-0">
         <svg
-          className="h-full w-[220%]"
+          className="h-full w-[200%]"
           viewBox="0 0 2880 120"
           preserveAspectRatio="none"
         >

@@ -6,10 +6,9 @@ export const revalidate = 0;
 export default async function CoursesPage() {
   const siteSettings = await getSiteSettings().catch(() => ({
     instagramUrl: null,
+    instagramUrl2: null,
     linkedinUrl: null,
     youtubeUrl: null,
-    twitterUrl: null,
-    facebookUrl: null,
   }));
 
   return <CoursesPageClient siteSettings={siteSettings} />;

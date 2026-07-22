@@ -147,9 +147,8 @@ export async function getSiteSettings() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
   return {
     instagramUrl: settings?.instagramUrl ?? null,
+    instagramUrl2: settings?.instagramUrl2 ?? null,
     linkedinUrl: settings?.linkedinUrl ?? null,
     youtubeUrl: settings?.youtubeUrl ?? null,
-    twitterUrl: settings?.twitterUrl ?? null,
-    facebookUrl: settings?.facebookUrl ?? null,
   };
 }

@@ -19,6 +19,8 @@ export default async function NewCommunityEventPage() {
           tag: "",
           title: "",
           date: "",
+          eventDate: new Date().toISOString().slice(0, 10),
+          category: "GENERAL",
           location: "",
           speaker: "",
           imageUrl: "",
