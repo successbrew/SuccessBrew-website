@@ -12,7 +12,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Successbrew Ecosystem",
+  title: "Successbrew - Where Brands, Creators, and Founders Scale Together    successbrew.in",
   description: "Content, community, and visibility for ambitious brands.",
 };
 
