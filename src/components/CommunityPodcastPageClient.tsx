@@ -70,7 +70,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                   <motion.a key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
                     href={ep.listenUrl ?? "#"}
                     className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
-                    <div className="relative aspect-square w-full overflow-hidden">
+                    <div className="relative aspect-video w-full overflow-hidden">
                       <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                       {ep.isFeatured && (

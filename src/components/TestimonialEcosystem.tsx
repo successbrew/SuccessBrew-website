@@ -19,6 +19,7 @@ type Theme = "studio" | "community";
 
 interface ThemeTokens {
   cardBg: Record<string, string>;
+  cardIsDark: Record<string, boolean>;
   avatarBg: Record<string, string>;
   quoteMark: Record<string, string>;
   gridBg: string;
@@ -33,9 +34,10 @@ interface ThemeTokens {
 
 const THEMES: Record<Theme, ThemeTokens> = {
   studio: {
-    cardBg: { sand: "bg-sand text-ink", dark: "bg-ink text-background" },
+    cardBg: { sand: "bg-sand text-ink", dark: "bg-sand text-ink" },
+    cardIsDark: { sand: false, dark: false },
     avatarBg: { primary: "bg-primary text-white", accent: "bg-accent text-ink" },
-    quoteMark: { sand: "text-primary/15", dark: "text-white/10" },
+    quoteMark: { sand: "text-primary/15", dark: "text-primary/15" },
     gridBg: "bg-background",
     gridWave: "var(--background)",
     emptyText: "text-ink/40",
@@ -46,9 +48,10 @@ const THEMES: Record<Theme, ThemeTokens> = {
     dotInactive: "rgba(255,255,255,0.25)",
   },
   community: {
-    cardBg: { sand: "bg-[#F0EBD8] text-[#111111]", dark: "bg-[#111111] text-white" },
+    cardBg: { sand: "bg-white text-[#111111]", dark: "bg-white text-[#111111]" },
+    cardIsDark: { sand: false, dark: false },
     avatarBg: { primary: "bg-[#0037D2] text-white", accent: "bg-[#C1FF3B] text-[#111111]" },
-    quoteMark: { sand: "text-[#0037D2]/15", dark: "text-white/10" },
+    quoteMark: { sand: "text-[#0037D2]/15", dark: "text-[#0037D2]/15" },
     gridBg: "bg-[#F0EBD8]",
     gridWave: "#F0EBD8",
     emptyText: "text-[#111111]/40",
@@ -93,6 +96,7 @@ function useTiltSpotlight(maxTilt = 5) {
 
 function TestimonialCard({ t, tokens, index }: { t: Testimonial; tokens: ThemeTokens; index: number }) {
   const { ref, rotateX, rotateY, spotlight, onMouseMove, onMouseLeave } = useTiltSpotlight();
+  const isDark = tokens.cardIsDark[t.cardStyle] ?? false;
 
   return (
     <motion.figure
@@ -114,7 +118,7 @@ function TestimonialCard({ t, tokens, index }: { t: Testimonial; tokens: ThemeTo
           role={t.role}
           initial={t.initial}
           avatarUrl={t.avatarUrl}
-          readMoreClassName={`mt-3 block text-sm font-semibold underline underline-offset-2 opacity-70 transition hover:opacity-100 ${t.cardStyle === "dark" ? "text-white" : ""}`}
+          readMoreClassName={`mt-3 block text-sm font-semibold underline underline-offset-2 opacity-70 transition hover:opacity-100 ${isDark ? "text-white" : ""}`}
         />
       </blockquote>
 
@@ -128,11 +132,11 @@ function TestimonialCard({ t, tokens, index }: { t: Testimonial; tokens: ThemeTo
         )}
         <div>
           <div className="text-sm font-semibold">{t.name}</div>
-          <div className={`text-xs ${t.cardStyle === "dark" ? "opacity-50" : "opacity-60"}`}>{t.role}</div>
+          <div className={`text-xs ${isDark ? "opacity-50" : "opacity-60"}`}>{t.role}</div>
         </div>
       </figcaption>
 
-      <div aria-hidden className={`relative mt-6 text-[10px] font-bold uppercase tracking-[0.2em] ${t.cardStyle === "dark" ? "text-white/20" : "opacity-20"}`}>
+      <div aria-hidden className={`relative mt-6 text-[10px] font-bold uppercase tracking-[0.2em] ${isDark ? "text-white/20" : "opacity-20"}`}>
         #{String(index).padStart(2, "0")}
       </div>
     </motion.figure>

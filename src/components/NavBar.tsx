@@ -147,14 +147,14 @@ const NAV: NavEntry[] = [
     href: "/about",
     dropdown: {
       items: [
-        { icon: User,   title: "Our Story",         desc: "How Successbrew began in 2022",       href: "/about#story" },
+        { icon: User,   title: "Our Story",         desc: "How Successbrew began in 2018",       href: "/about#story" },
         { icon: Rocket, title: "Join the Mission",  desc: "Be part of something bigger",         href: "/about#join"  },
       ],
       featured: {
         bg: "bg-[#0037D2]",
         textColor: "white",
         eyebrow: "The Successbrew Story",
-        stat: "2022",
+        stat: "2018",
         statLabel: "Founded",
         sub: "Building India's startup future",
         ctaText: "Meet the Founder",

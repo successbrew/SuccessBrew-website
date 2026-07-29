@@ -466,7 +466,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mt-20">
               <ol className="relative grid grid-cols-5 gap-0">
                 <div aria-hidden className="absolute left-0 right-0 top-6 h-px bg-white/20" />
-                {[["2022", "Founded"], ["2023", "8K+"], ["2024", "54 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
+                {[["2018", "Founded"], ["2023", "8K+"], ["2024", "54 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
                   <li key={yr} className="relative text-center">
                     <div className={`relative z-10 mx-auto grid h-12 w-12 place-items-center rounded-full border text-sm font-bold ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#0037D2] text-white"}`}>{yr}</div>
                     <div className={`mt-3 text-xs font-bold ${i === 4 ? "text-[#C1FF3B]" : "text-white/60"}`}>{lbl}</div>
@@ -616,7 +616,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 <motion.a key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
                   href={ep.listenUrl ?? "#"}
                   className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
-                  <div className="relative aspect-square w-full overflow-hidden">
+                  <div className="relative aspect-video w-full overflow-hidden">
                     <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                     {ep.isFeatured && (
