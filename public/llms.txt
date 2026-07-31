@@ -1,0 +1,19 @@
+# Successbrew
+
+> Successbrew is a content, community, and visibility ecosystem for ambitious brands, creators, and founders in India — helping them scale together through services, events, and a founder community.
+
+### Essential Sections
+
+- Home (https://successbrew.in/): Overview of Successbrew's ecosystem, services, and what the brand stands for.
+- About (https://successbrew.in/about): The story behind Successbrew, its mission, founding journey (2018–present), and the people building India's startup ecosystem.
+- Services & Case Studies (https://successbrew.in/case-studies): Real brands and real results — how Successbrew has helped founders build lasting visibility.
+- Founder (https://successbrew.in/founder): Introduction to the founder behind Successbrew and their background.
+- Courses (https://successbrew.in/courses): Learning programs and resources offered by Successbrew.
+- Community (https://successbrew.in/community): Hub for the Successbrew founder community — events, wins, and members.
+
+### Optional/Deep Dive
+
+- Testimonials (https://successbrew.in/testimonials): Unedited, unprompted words from founders who've worked with Successbrew.
+- Community Events (https://successbrew.in/community/events): Upcoming and past community meetups and gatherings.
+- Community Podcast (https://successbrew.in/community/podcast): Episodes of the Successbrew Podcast — unfiltered conversations with founders, investors, and creators.
+- Community Testimonials (https://successbrew.in/community/testimonials): Stories and feedback from members of the Successbrew community.
