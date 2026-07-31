@@ -10,6 +10,7 @@ const ALLOWED_TYPES = new Set([
   "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml",
   "application/pdf",
 ]);
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export async function POST(request: Request) {
   const { data: session } = await auth.getSession();
@@ -21,17 +22,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { fileName, fileType } = await request.json();
+  const { fileName, fileType, fileSize } = await request.json();
   if (typeof fileName !== "string" || typeof fileType !== "string" || !ALLOWED_TYPES.has(fileType)) {
     return NextResponse.json({ error: "Invalid file name or type" }, { status: 400 });
+  }
+  if (typeof fileSize !== "number" || !Number.isInteger(fileSize) || fileSize <= 0 || fileSize > MAX_FILE_SIZE_BYTES) {
+    return NextResponse.json({ error: "File must be between 1 byte and 10 MB" }, { status: 400 });
   }
 
   const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
   const key = `uploads/${crypto.randomUUID()}-${safeName}`;
 
+  // Signing ContentLength pins the presigned URL to this exact byte count —
+  // S3 rejects the PUT if the actual request body doesn't match, so this is
+  // an enforced limit, not just a client-side check.
   const uploadUrl = await getSignedUrl(
     s3,
-    new PutObjectCommand({ Bucket: S3_BUCKET, Key: key, ContentType: fileType }),
+    new PutObjectCommand({ Bucket: S3_BUCKET, Key: key, ContentType: fileType, ContentLength: fileSize }),
     { expiresIn: 60 }
   );
 

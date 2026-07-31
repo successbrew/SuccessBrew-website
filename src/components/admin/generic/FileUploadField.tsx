@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB, must match src/app/api/admin/upload/route.ts
+
 export function FileUploadField({
   id,
   value,
@@ -18,12 +20,16 @@ export function FileUploadField({
 
   async function handleFile(file: File) {
     setError(null);
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setError("File is too large (max 10 MB)");
+      return;
+    }
     setIsUploading(true);
     try {
       const presignRes = await fetch("/api/admin/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+        body: JSON.stringify({ fileName: file.name, fileType: file.type, fileSize: file.size }),
       });
       if (!presignRes.ok) {
         const body = await presignRes.json().catch(() => ({}));
