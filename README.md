@@ -8,11 +8,11 @@ Marketing site and admin CMS for **Successbrew** — a content, community, and v
 
 - **Framework:** [Next.js 16](https://nextjs.org) (App Router)
 - **Database:** [Neon Postgres](https://neon.tech), accessed via [Prisma](https://www.prisma.io) over the `@neondatabase/serverless` driver
-- **Auth:** [Neon Auth](https://neon.tech/docs/guides/auth) (`@neondatabase/auth`), with a custom `SUPER_ADMIN` / `EDITOR` role tier layered on top
+- **Auth:** [Neon Auth](https://neon.tech/docs/guides/auth) (`@neondatabase/auth`), with a custom `SUPER_ADMIN` / `EDITOR` role tier layered on top. Public sign-up is disabled — admin accounts are provisioned only via invite (`/sbh-1111/users`)
 - **UI:** [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) (Radix UI primitives, style "new-york")
 - **Animation:** [Framer Motion](https://www.framer.com/motion/), [Lenis](https://lenis.darkroom.engineering/) for smooth scroll
 - **Rich text:** [Tiptap](https://tiptap.dev) (used in the blog admin editor)
-- **Storage:** AWS S3 (via `@aws-sdk/client-s3`) for media uploads
+- **Storage:** AWS S3 (via `@aws-sdk/client-s3`) for media uploads. The public `/apply` flow (`src/app/api/apply/upload/route.ts`) uploads server-side rather than handing the browser a presigned URL, so an unauthenticated client never gets direct write access to the bucket
 - **Validation:** [Zod](https://zod.dev) + [React Hook Form](https://react-hook-form.com)
 
 ## Getting Started
@@ -47,7 +47,7 @@ Marketing site and admin CMS for **Successbrew** — a content, community, and v
    | `NEON_AUTH_COOKIE_SECRET` | Secret (32+ chars) used to sign Neon Auth session cookies |
    | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | AWS credentials for S3 uploads |
    | `AWS_REGION` | AWS region for the S3 bucket |
-   | `S3_BUCKET_NAME` | Target S3 bucket for uploaded media |
+   | `AWS_S3_BUCKET_NAME` | Target S3 bucket for uploaded media |
 
 3. Apply the Prisma schema to your database:
 
@@ -61,7 +61,7 @@ Marketing site and admin CMS for **Successbrew** — a content, community, and v
    npm run dev
    ```
 
-   Visit [http://localhost:3000](http://localhost:3000). The admin panel is at `/sbh-1111`.
+   Visit [http://localhost:3000](http://localhost:3000). The admin panel lives at `/sbh-1111` in the route tree, but is only served on the `sbh-1111.` subdomain (e.g. `sbh-1111.successbrew.in` in production, `sbh-1111.localhost:3000` locally) — see [Admin panel](#admin-panel) below.
 
 ## Scripts
 
@@ -95,6 +95,10 @@ All content lives in Postgres and is managed through `/sbh-1111`, with no extern
 ### Admin panel
 
 Each content type has its own route group under `src/app/sbh-1111/<type>/` (list, create, edit views + server actions). Actions call `verifyAdminSession()` and delegate to generic CRUD helpers in `src/lib/admin/crud.ts`, driven by per-type Zod schemas in `src/lib/admin/schemas/`. The blog section is the one exception, working with structured Tiptap JSON instead of the generic form path.
+
+The dashboard is isolated to its own subdomain rather than being reachable via the main site: `src/proxy.ts` (Next 16's rewrite of `middleware.ts` — note it must live under `src/`, alongside `app/`, or Next silently never loads it) inspects the request's `Host` header. On any host starting with `sbh-1111.`, it rewrites requests through to the `/sbh-1111/*` route tree and applies an edge-level session check ahead of the authoritative `verifyAdminSession()` gate in `src/app/sbh-1111/layout.tsx`. On every other host, `/sbh-1111*` 404s outright — it isn't just hidden, it's unreachable. `/auth/*` and `/api/*` (sign-in, password reset) are intentionally left reachable on both the main domain and the subdomain, so login isn't broken either way; the session cookie's `domain` (`src/lib/auth/server.ts`) is scoped to `successbrew.in` in production so a session started on one host works on the other.
+
+Setting this up on a new environment/domain needs two things outside this repo: a DNS `CNAME` for the `sbh-1111` subdomain pointed at the same target as the apex domain (plus adding it as a Domain in the Vercel project), and adding that subdomain's origin to Neon Auth's trusted-origins list in the Neon console (Project → Auth) — without the latter, sign-in fails with an "Invalid origin" error.
 
 ### Path alias
 
