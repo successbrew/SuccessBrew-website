@@ -27,15 +27,15 @@ export default async function AdminUsersPage() {
   const profiles = await prisma.adminProfile.findMany({
     where: { id: { in: adminAccounts.map((u) => u.id) } },
   });
-  const tierById = new Map(profiles.map((p) => [p.id, p.tier]));
+  const rolesById = new Map(profiles.map((p) => [p.id, p.roles]));
 
   const admins = adminAccounts
-    .filter((u) => tierById.has(u.id))
+    .filter((u) => rolesById.has(u.id))
     .map((u) => ({
       id: u.id,
       email: u.email,
       name: u.name,
-      tier: tierById.get(u.id)!,
+      roles: rolesById.get(u.id)!,
     }));
 
   return (

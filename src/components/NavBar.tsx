@@ -2,36 +2,24 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Clapperboard, Settings, Sparkles, MessageCircle,
   Globe, Gift, Calendar, Mic, Trophy, BookOpen,
   FolderOpen, GraduationCap, Handshake, BookText, Star,
   User, Rocket, type LucideIcon,
 } from "lucide-react";
+import Link from "next/link";
 
-// Magnetic button — nudges toward the cursor on hover
+// Hover button — scales up slightly so the cursor's position over it reads clearly, no cursor-chasing wobble
 function MagneticLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 300, damping: 28 });
-  const sy = useSpring(y, { stiffness: 300, damping: 28 });
-  const ref = useRef<HTMLAnchorElement>(null);
-  const onMove = (e: React.MouseEvent) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    x.set((e.clientX - r.left - r.width / 2) * 0.28);
-    y.set((e.clientY - r.top - r.height / 2) * 0.28);
-  };
-  const onLeave = () => { x.set(0); y.set(0); };
   return (
-    <motion.a ref={ref} href={href} style={{ x: sx, y: sy }}
-      onMouseMove={onMove} onMouseLeave={onLeave} className={className}>
+    <motion.a href={href} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+      transition={{ duration: 0.2, ease: "easeOut" }} className={className}>
       {children}
     </motion.a>
   );
 }
-import Link from "next/link";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface DropdownItem {
@@ -139,7 +127,7 @@ const NAV: NavEntry[] = [
         ctaHref: "/courses",
       },
       footerLeft: "Learn more",         footerLeftHref: "/courses",
-      footerRight: "Join Community",  footerRightHref: "/community#cta",
+      footerRight: "Join Community",  footerRightHref: "/apply",
     },
   },
   {
@@ -198,7 +186,7 @@ interface NavBarProps {
 export default function NavBar({
   variant = "light",
   ctaText = "Join Community",
-  ctaHref = "/community#cta",
+  ctaHref = "/apply",
   activePage,
 }: NavBarProps) {
   const [open, setOpen]               = useState<string | null>(null);

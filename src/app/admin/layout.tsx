@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { LayoutDashboard, Users, LogOut } from "lucide-react";
 import { verifyAdminSession } from "@/lib/auth/dal";
-import { AdminTier } from "@prisma/client";
+import { ROLE_LABELS } from "@/lib/auth/permissions";
 import { CONTENT_TYPE_NAV_GROUPS } from "@/lib/admin/content-types";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/admin/NotificationBell";
+import { prisma } from "@/lib/prisma";
 import { signOut } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +18,13 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const admin = await verifyAdminSession();
-  const isSuperAdmin = admin.tier === AdminTier.SUPER_ADMIN;
+  const isSuperAdmin = admin.roles.includes("SUPER_ADMIN");
+
+  const notifications = await prisma.notification.findMany({
+    where: { audience: "ADMIN" },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
 
   return (
     <div className="flex min-h-screen bg-sand">
@@ -24,9 +32,13 @@ export default async function AdminLayout({
         <div className="mb-6 px-2">
           <p className="font-display text-lg font-semibold">Successbrew Admin</p>
           <p className="truncate text-xs text-muted-foreground">{admin.email}</p>
-          <Badge variant="secondary" className="mt-2">
-            {isSuperAdmin ? "Super Admin" : "Editor"}
-          </Badge>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {admin.roles.map((role) => (
+              <Badge key={role} variant="secondary">
+                {ROLE_LABELS[role]}
+              </Badge>
+            ))}
+          </div>
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
@@ -81,7 +93,12 @@ export default async function AdminLayout({
         </form>
       </aside>
 
-      <main className="flex-1 overflow-y-auto p-8">{children}</main>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <header className="flex h-14 shrink-0 items-center justify-end border-b border-border bg-background px-6">
+          <NotificationBell notifications={notifications} />
+        </header>
+        <main className="flex-1 overflow-y-auto p-8">{children}</main>
+      </div>
     </div>
   );
 }

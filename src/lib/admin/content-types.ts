@@ -1,5 +1,15 @@
 export const CONTENT_TYPE_NAV_GROUPS = [
   {
+    label: "Speaker Platform",
+    items: [
+      { label: "Applications", href: "/admin/applications" },
+      { label: "Speakers", href: "/admin/speakers" },
+      { label: "Analytics", href: "/admin/analytics" },
+      { label: "Categories", href: "/admin/categories" },
+      { label: "Emails", href: "/admin/emails" },
+    ],
+  },
+  {
     label: "Services Page",
     items: [
       { label: "Services", href: "/admin/services" },
@@ -27,6 +37,9 @@ export const CONTENT_TYPE_NAV_GROUPS = [
   },
   {
     label: "Settings",
-    items: [{ label: "Social Links", href: "/admin/settings" }],
+    items: [
+      { label: "Social Links", href: "/admin/settings" },
+      { label: "Audit Logs", href: "/admin/audit-logs" },
+    ],
   },
 ] as const;

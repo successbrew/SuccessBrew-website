@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useAnimationFrame, useScroll, useMotionValueEvent } from "framer-motion";
+import { motion, AnimatePresence, useInView, useMotionValue, useAnimationFrame, useScroll, useMotionValueEvent } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { Carousel, type CarouselHandle } from "@/components/ui/carousel";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
@@ -158,24 +158,11 @@ function AnimatedNumber({ value, inView }: { value: string; inView: boolean }) {
 }
 
 // â"€â"€ Magnetic button â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// Hover button — scales up slightly so the cursor's position over it reads clearly, no cursor-chasing wobble
 function MagneticButton({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 300, damping: 28 });
-  const sy = useSpring(y, { stiffness: 300, damping: 28 });
-  const ref = useRef<HTMLAnchorElement>(null);
-
-  const onMove = (e: React.MouseEvent) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    x.set((e.clientX - r.left - r.width / 2) * 0.3);
-    y.set((e.clientY - r.top - r.height / 2) * 0.3);
-  };
-  const onLeave = () => { x.set(0); y.set(0); };
-
   return (
-    <motion.a ref={ref} href={href} style={{ x: sx, y: sy }}
-      onMouseMove={onMove} onMouseLeave={onLeave} className={className}>
+    <motion.a href={href} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+      transition={{ duration: 0.2, ease: "easeOut" }} className={className}>
       {children}
     </motion.a>
   );
@@ -388,7 +375,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
 
   return (
     <>
-      <NavBar activePage="Services" ctaText="Book a Call" ctaHref="#cta" />
+      <NavBar activePage="Services" ctaText="Book a Call" ctaHref="https://ntis.in/7oApLV" />
       <main className="bg-background font-sans text-ink">
 
         {/* â•â• HERO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
@@ -412,9 +399,9 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                   Content, community, and visibility for ambitious brands.
                 </p>
                 <div className="flex flex-wrap items-center gap-3 lg:justify-end">
-                  <MagneticButton href="#cta"
+                  <MagneticButton href="https://ntis.in/7oApLV"
                     className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-primary-foreground shadow-[0_10px_40px_-10px_oklch(0.45_0.22_264_/_0.6)]">
-                    Book Strategy Call
+                    Book Discovery Call
                   </MagneticButton>
                   <MagneticButton href="#work"
                     className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-background px-7 py-4 text-base font-semibold text-ink hover:bg-sand">
@@ -679,7 +666,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               A 30-minute call with our strategy team. No pitch deck. Just clarity on what your next 90 days could look like.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <MagneticButton href="mailto:team@successbrew.in?subject=Strategy%20Call%20Request"
+              <MagneticButton href="https://ntis.in/7oApLV"
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink">
                 Book A Strategy Call
               </MagneticButton>

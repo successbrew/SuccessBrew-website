@@ -11,15 +11,26 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AdminTier } from "@prisma/client";
-import { updateAdminTier, removeAdmin } from "./actions";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { AdminRole } from "@prisma/client";
+import { ROLE_LABELS } from "@/lib/auth/permissions";
+import { updateAdminRoles, removeAdmin } from "./actions";
 
 type AdminUser = {
   id: string;
   email: string;
   name?: string | null;
-  tier: AdminTier;
+  roles: AdminRole[];
 };
+
+const ALL_ROLES = Object.values(AdminRole);
 
 export function UsersTable({
   admins,
@@ -30,14 +41,17 @@ export function UsersTable({
 }) {
   const [isPending, startTransition] = useTransition();
 
-  function toggleTier(userId: string, currentTier: AdminTier) {
-    const nextTier: AdminTier =
-      currentTier === AdminTier.SUPER_ADMIN ? AdminTier.EDITOR : AdminTier.SUPER_ADMIN;
+  function toggleRole(userId: string, currentRoles: AdminRole[], role: AdminRole, checked: boolean) {
+    const next = checked
+      ? [...currentRoles, role]
+      : currentRoles.filter((r) => r !== role);
+    if (next.length === 0) return; // an admin must always keep at least one role
+
     const formData = new FormData();
     formData.set("userId", userId);
-    formData.set("tier", nextTier);
+    next.forEach((r) => formData.append("roles", r));
     startTransition(() => {
-      void updateAdminTier(formData);
+      void updateAdminRoles(formData);
     });
   }
 
@@ -56,7 +70,7 @@ export function UsersTable({
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead>Role</TableHead>
+          <TableHead>Roles</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -66,19 +80,36 @@ export function UsersTable({
             <TableCell>{u.name || "—"}</TableCell>
             <TableCell>{u.email}</TableCell>
             <TableCell>
-              <Badge variant={u.tier === AdminTier.SUPER_ADMIN ? "default" : "secondary"}>
-                {u.tier === AdminTier.SUPER_ADMIN ? "Super Admin" : "Editor"}
-              </Badge>
+              <div className="flex flex-wrap gap-1">
+                {u.roles.map((role) => (
+                  <Badge key={role} variant={role === "SUPER_ADMIN" ? "default" : "secondary"}>
+                    {ROLE_LABELS[role]}
+                  </Badge>
+                ))}
+              </div>
             </TableCell>
             <TableCell className="flex justify-end gap-2 text-right">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={isPending || u.id === currentAdminId}
-                onClick={() => toggleTier(u.id, u.tier)}
-              >
-                {u.tier === AdminTier.SUPER_ADMIN ? "Make Editor" : "Make Super Admin"}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" disabled={isPending || u.id === currentAdminId}>
+                    Edit Roles
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Roles</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {ALL_ROLES.map((role) => (
+                    <DropdownMenuCheckboxItem
+                      key={role}
+                      checked={u.roles.includes(role)}
+                      onCheckedChange={(checked) => toggleRole(u.id, u.roles, role, checked === true)}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {ROLE_LABELS[role]}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button
                 variant="destructive"
                 size="sm"

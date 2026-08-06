@@ -23,7 +23,7 @@ interface Props { testimonials: Testimonial[]; siteSettings: SiteSettings }
 export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
   return (
     <>
-      <NavBar activePage="Services" ctaText="Book a Call" ctaHref="/#cta" />
+      <NavBar activePage="Services" ctaText="Book a Call" ctaHref="https://ntis.in/7oApLV" />
       <main className="bg-background font-sans text-ink">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -81,7 +81,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
               Book a 30-minute strategy call — no pitch, just clarity on what your next 90 days could look like.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/#cta" className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-white shadow-[0_10px_40px_-10px_oklch(0.45_0.22_264_/_0.55)] transition hover:translate-y-[-2px]">
+              <Link href="https://ntis.in/7oApLV" className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-white shadow-[0_10px_40px_-10px_oklch(0.45_0.22_264_/_0.55)] transition hover:translate-y-[-2px]">
                 Book a Strategy Call
               </Link>
               <Link href="/#work" className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-background px-8 py-4 text-base font-semibold text-ink transition hover:bg-sand">

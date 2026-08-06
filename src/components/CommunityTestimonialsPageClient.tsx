@@ -22,7 +22,7 @@ interface Props {
 export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: Props) {
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/community#cta" />
+      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -38,7 +38,7 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
                 ← Back to Community
               </motion.a>
               <motion.div variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
+                className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
                 {testimonials.length} member{testimonials.length !== 1 ? "s" : ""} & counting
               </motion.div>
@@ -78,7 +78,7 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
             <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Ready to join them?</motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Your story could be next.</motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a href="/community#cta" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+              <a href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">

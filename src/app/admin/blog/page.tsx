@@ -3,9 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { verifyAdminSession } from "@/lib/auth/dal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DataTable } from "@/components/admin/generic/DataTable";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+import { DeleteRowButton } from "@/components/admin/generic/DeleteRowButton";
 import { deleteBlog } from "./actions";
-import type { Blog } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -21,25 +28,44 @@ export default async function BlogListPage() {
           <Link href="/admin/blog/new">New Post</Link>
         </Button>
       </div>
-      <DataTable
-        rows={posts}
-        columns={[
-          { key: "title", label: "Title" },
-          { key: "slug", label: "Slug" },
-          {
-            key: "status",
-            label: "Status",
-            render: (row: Blog) => (
-              <Badge variant={row.status === "PUBLISHED" ? "default" : "secondary"}>
-                {row.status === "PUBLISHED" ? "Published" : "Draft"}
-              </Badge>
-            ),
-          },
-          { key: "authorName", label: "Author" },
-        ]}
-        editHrefBase="/admin/blog"
-        deleteAction={deleteBlog}
-      />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Title</TableHead>
+            <TableHead>Slug</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Author</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {posts.map((post) => (
+            <TableRow key={post.id}>
+              <TableCell>{post.title}</TableCell>
+              <TableCell>{post.slug}</TableCell>
+              <TableCell>
+                <Badge variant={post.status === "PUBLISHED" ? "default" : "secondary"}>
+                  {post.status === "PUBLISHED" ? "Published" : "Draft"}
+                </Badge>
+              </TableCell>
+              <TableCell>{post.authorName ?? "—"}</TableCell>
+              <TableCell className="flex justify-end gap-2 text-right">
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/admin/blog/${post.id}/edit`}>Edit</Link>
+                </Button>
+                <DeleteRowButton id={post.id} action={deleteBlog} />
+              </TableCell>
+            </TableRow>
+          ))}
+          {posts.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center text-muted-foreground">
+                No posts yet.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 }

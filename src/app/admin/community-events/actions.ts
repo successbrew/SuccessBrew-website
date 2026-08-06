@@ -5,8 +5,14 @@ import { verifyAdminSession } from "@/lib/auth/dal";
 import { runCreate, runUpdate, runDelete } from "@/lib/admin/crud";
 import { communityEventSchema } from "@/lib/admin/schemas/community-event";
 import { formDataToObject } from "@/lib/admin/form-data";
+import { EVENT_PILLARS } from "@/lib/event-pillars";
 
-const REVALIDATE = ["/admin/community-events", "/community", "/community/events"];
+const REVALIDATE = [
+  "/admin/community-events",
+  "/community",
+  "/community/events",
+  ...EVENT_PILLARS.map((p) => `/community/events/${p.slug}`),
+];
 
 export async function createCommunityEvent(formData: FormData) {
   await verifyAdminSession();

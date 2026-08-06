@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
 import {
   Table,
   TableHeader,
@@ -11,6 +10,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { DeleteRowButton } from "@/components/admin/generic/DeleteRowButton";
 import type { ColumnConfig } from "@/lib/admin/field-types";
 import type { ActionResult } from "@/lib/admin/crud";
 
@@ -25,17 +25,6 @@ export function DataTable<T extends { id: string }>({
   editHrefBase: string;
   deleteAction: (formData: FormData) => Promise<ActionResult>;
 }) {
-  const [isPending, startTransition] = useTransition();
-
-  function handleDelete(id: string) {
-    if (!confirm("Delete this item? This can't be undone.")) return;
-    const formData = new FormData();
-    formData.set("id", id);
-    startTransition(() => {
-      void deleteAction(formData);
-    });
-  }
-
   return (
     <Table>
       <TableHeader>
@@ -50,22 +39,13 @@ export function DataTable<T extends { id: string }>({
         {rows.map((row) => (
           <TableRow key={row.id}>
             {columns.map((c) => (
-              <TableCell key={c.key}>
-                {c.render ? c.render(row) : String((row as Record<string, unknown>)[c.key] ?? "")}
-              </TableCell>
+              <TableCell key={c.key}>{String(row[c.key] ?? "")}</TableCell>
             ))}
             <TableCell className="flex justify-end gap-2 text-right">
               <Button variant="outline" size="sm" asChild>
                 <Link href={`${editHrefBase}/${row.id}/edit`}>Edit</Link>
               </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                disabled={isPending}
-                onClick={() => handleDelete(row.id)}
-              >
-                Delete
-              </Button>
+              <DeleteRowButton id={row.id} action={deleteAction} />
             </TableCell>
           </TableRow>
         ))}

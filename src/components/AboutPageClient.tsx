@@ -124,7 +124,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 className="mt-10 flex flex-wrap gap-3">
                 <a href="#story"
                   className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#111111] transition hover:bg-white/90 hover:-translate-y-0.5">
-                  Read The Story <ArrowRight className="h-4 w-4" />
+                  Meet The Founder <ArrowRight className="h-4 w-4" />
                 </a>
                 <Link href="/community"
                   className="inline-flex items-center gap-2 rounded-full border border-white/22 px-7 py-3.5 text-sm font-bold text-white transition hover:border-white/45 hover:bg-white/6">
@@ -158,7 +158,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 {/* glow ring */}
                 <div className="absolute -inset-4 rounded-[2.5rem] bg-[#0037D2]/20 blur-2xl" />
                 <div className="relative aspect-[3/4] overflow-hidden rounded-[2.5rem] border border-white/10 shadow-2xl">
-                  <Image src="/grid-images/Sourabh-sir.jpg" alt="Sourabh — Founder of Successbrew"
+                  <Image src="/grid-images/sourabh-323.jpg" alt="Sourabh — Founder of Successbrew"
                     fill priority sizes="(max-width:1024px) 80vw, 40vw" className="object-cover object-top" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/50 via-transparent to-transparent" />
                 </div>
@@ -578,7 +578,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } } }}
               className="mt-12 flex flex-wrap items-center justify-center gap-4">
               <Button asChild className="rounded-full bg-[#C1FF3B] px-9 py-7 text-base font-bold text-[#111111] shadow-none hover:bg-[#b0e633]">
-                <Link href="/community">Join Community <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <Link href="/apply">Join Community <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button asChild variant="outline" className="rounded-full border-white/22 bg-transparent px-9 py-7 text-base font-bold text-white shadow-none hover:bg-white/8 hover:text-white">
                 <Link href="/community">Attend an Event</Link>

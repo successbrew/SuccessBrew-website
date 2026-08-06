@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_ROLES } from "@/lib/auth/roles";
 import { s3, S3_BUCKET, publicUrlForKey } from "@/lib/s3";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const ALLOWED_TYPES = new Set([
   "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml",
@@ -20,6 +21,12 @@ export async function POST(request: Request) {
   const profile = await prisma.adminProfile.findUnique({ where: { id: session.user.id } });
   if (!profile) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Defense in depth: caps how fast a compromised/malicious admin session can
+  // mint presigned S3 upload URLs, independent of the auth check above.
+  if (!checkRateLimit(`admin-upload:${session.user.id}`, 60, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many uploads. Try again in a few minutes." }, { status: 429 });
   }
 
   const { fileName, fileType, fileSize } = await request.json();

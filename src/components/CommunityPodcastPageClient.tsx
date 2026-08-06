@@ -22,7 +22,7 @@ interface Props {
 export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/community#cta" />
+      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -38,7 +38,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                 ← Back to Community
               </motion.a>
               <motion.div variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
+                className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
                 {episodes.length} episode{episodes.length !== 1 ? "s" : ""} and counting
               </motion.div>
@@ -67,10 +67,9 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.07)}
                 className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {episodes.map((ep) => (
-                  <motion.a key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
-                    href={ep.listenUrl ?? "#"}
+                  <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
                     className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
-                    <div className="relative aspect-video w-full overflow-hidden">
+                    <a href={ep.listenUrl ?? "#"} className="relative block aspect-video w-full overflow-hidden">
                       <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                       {ep.isFeatured && (
@@ -84,17 +83,19 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                       <div className="absolute bottom-3 left-3 right-3">
                         <p className="text-xs font-bold text-white/80">{ep.episodeNumber} · {ep.duration}</p>
                       </div>
-                    </div>
+                    </a>
                     <div className="flex flex-1 flex-col justify-between p-5">
                       <div>
-                        <h3 className="text-lg font-black leading-snug text-[#111111]">{ep.title}</h3>
+                        <a href={ep.listenUrl ?? "#"}>
+                          <h3 className="text-lg font-black leading-snug text-[#111111] group-hover:text-[#0037D2]">{ep.title}</h3>
+                        </a>
                         <p className="mt-1.5 text-xs text-[#111111]/50">{ep.guest}</p>
                       </div>
-                      <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
+                      <a href={ep.listenUrl ?? "#"} className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
                         Listen now →
-                      </span>
+                      </a>
                     </div>
-                  </motion.a>
+                  </motion.div>
                 ))}
               </motion.div>
             ) : (
@@ -114,7 +115,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
             <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Never miss an episode</motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Join the community.</motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a href="/community#cta" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+              <a href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">

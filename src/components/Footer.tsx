@@ -28,12 +28,20 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Join the Mission", href: "/about#join" },
     ],
   },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Terms of Service", href: "/terms-of-service" },
+      { label: "Cookie Policy", href: "/cookie-policy" },
+    ],
+  },
 ];
 
 export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
   return (
     <footer className="bg-ink text-background">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-10">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr] lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] lg:px-10">
         <div>
           <Link href="/" className="mb-5 inline-block">
             <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />

@@ -28,6 +28,7 @@ export default async function CommunityEventsPage() {
     seatsNote: e.seatsNote ?? undefined,
     isFeatured: e.isFeatured,
     imageUrl: e.imageUrl ?? "",
+    agenda: e.agenda ?? undefined,
   }));
 
   // Server Component: runs once per request (revalidate = 0), not a client re-render,

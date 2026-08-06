@@ -9,14 +9,19 @@ export function generateStaticParams() {
 
 export default async function AuthPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ path: string }>;
+  searchParams: Promise<{ redirectTo?: string }>;
 }) {
   const { path } = await params;
+  const { redirectTo } = await searchParams;
+  // Only ever redirect to a relative in-app path — never let a query param send someone off-site.
+  const safeRedirectTo = redirectTo?.startsWith("/") && !redirectTo.startsWith("//") ? redirectTo : undefined;
 
   return (
     <main className="container mx-auto flex grow flex-col items-center justify-center p-4">
-      <AuthView path={path} />
+      <AuthView path={path} redirectTo={safeRedirectTo} />
     </main>
   );
 }

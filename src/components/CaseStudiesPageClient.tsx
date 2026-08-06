@@ -39,7 +39,7 @@ export function CaseStudiesPageClient({
 
   return (
     <>
-      <NavBar activePage="Services" ctaText="Book a Call" ctaHref="#cta" />
+      <NavBar activePage="Services" ctaText="Book a Call" ctaHref="https://ntis.in/7oApLV" />
       <main className="bg-background font-sans text-ink">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -169,7 +169,7 @@ export function CaseStudiesPageClient({
                 Ready to be the next case study?
               </motion.h2>
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                <Link href="/#cta"
+                <Link href="https://ntis.in/7oApLV"
                   className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(193,255,59,0.5)] transition hover:translate-y-[-2px]">
                   Book a Strategy Call
                 </Link>

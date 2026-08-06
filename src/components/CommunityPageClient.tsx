@@ -14,6 +14,8 @@ import { AmbientBackground } from "@/components/AmbientBackground";
 import { SectionWave } from "@/components/SectionWave";
 import { ExpandableQuote } from "@/components/ExpandableQuote";
 import type { Testimonial } from "@/components/ServicesPageClient";
+import { EVENT_PILLARS } from "@/lib/event-pillars";
+import { EventPosterCard } from "@/components/EventPosterCard";
 // NetworkCanvas visualization temporarily removed from this page — component
 // file kept intact at @/components/CommunityNetworkCanvas for re-adding later.
 
@@ -23,6 +25,7 @@ export interface CommunityEvent {
   tag: string;
   title: string;
   date: string;
+  category: string;
   location: string;
   speaker?: string;
   seatsNote?: string;
@@ -40,6 +43,7 @@ export interface PodcastEpisode {
   listenUrl?: string;
   isFeatured: boolean;
   thumbnailUrl?: string;
+  speakerId: string | null;
 }
 
 export interface CommunityWin {
@@ -182,16 +186,17 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
       return n;
     });
 
-  const featuredEvent   = events.find((e) => e.isFeatured) ?? events[0];
-  const listEvents      = events.filter((e) => !e.isFeatured).slice(0, 3);
-  const previewEvents   = (featuredEvent ? [featuredEvent, ...listEvents] : listEvents).slice(0, 3);
+  const eventPillars = EVENT_PILLARS.map((p) => ({
+    ...p,
+    count: events.filter((e) => e.category === p.category).length,
+  }));
   const featuredEpisode = episodes.find((e) => e.isFeatured) ?? episodes[0];
   const listEpisodes    = episodes.filter((e) => !e.isFeatured).slice(0, 3);
   const previewEpisodes = (featuredEpisode ? [featuredEpisode, ...listEpisodes] : listEpisodes).slice(0, 3);
 
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="#cta" />
+      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -239,7 +244,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   8000+ Founders, Freelancers, Agencies, Angels, Creators, and VCs — growing through shared opportunities, real visibility, and meaningful connections across India.
                 </p>
                 <div className="flex flex-wrap items-center gap-3 lg:justify-end">
-                  <a href="#cta" className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,55,210,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
+                  <a href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,55,210,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
                   <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#F0EBD8]">Explore Ecosystem</a>
                 </div>
               </motion.div>
@@ -451,8 +456,8 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 </motion.p>
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.9, ease: E }} className="relative">
-                <div className="overflow-hidden rounded-[2rem] border border-white/10">
-                  <img src="/grid-images/Sourabh-sir.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-top" style={{ minHeight: 420 }} />
+                <div className="aspect-[3/4] overflow-hidden rounded-[2rem] border border-white/10">
+                  <img src="/grid-images/edits-55.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-top" />
                 </div>
                 <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
                   className="absolute -bottom-5 left-6 rounded-2xl bg-[#C1FF3B] px-6 py-4 text-[#111111] shadow-lg">
@@ -549,7 +554,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Upcoming Events</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Four Rooms, One Ecosystem</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Be in the room where it happens." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/community/events" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -558,33 +563,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             </motion.div>
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {previewEvents.map((ev) => (
-                <motion.a key={ev._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
-                  href={ev.registerUrl ?? "#"}
-                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#111111]/5">
-                    {ev.imageUrl ? (
-                      <img src={ev.imageUrl} alt={ev.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                    ) : (
-                      <div className="h-full w-full bg-[#111111]/10" />
-                    )}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <span className="absolute left-3 top-3 rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#111111]">{ev.tag}</span>
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <p className="text-xs font-bold text-white/80">📅 {ev.date}</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-1 flex-col justify-between p-5">
-                    <div>
-                      <h3 className="text-lg font-black leading-snug text-[#111111]">{ev.title}</h3>
-                      <p className="mt-2 text-xs text-[#111111]/50">📍 {ev.location}{ev.speaker ? ` · 👤 ${ev.speaker}` : ""}</p>
-                    </div>
-                    <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
-                      Register now →
-                    </span>
-                  </div>
-                </motion.a>
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {eventPillars.map((p) => (
+                <EventPosterCard key={p.slug} pillar={p} count={p.count} />
               ))}
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
@@ -613,10 +594,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {previewEpisodes.map((ep) => (
-                <motion.a key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
-                  href={ep.listenUrl ?? "#"}
+                <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
                   className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
-                  <div className="relative aspect-video w-full overflow-hidden">
+                  <a href={ep.listenUrl ?? "#"} className="relative block aspect-video w-full overflow-hidden">
                     <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                     {ep.isFeatured && (
@@ -630,17 +610,19 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                     <div className="absolute bottom-3 left-3 right-3">
                       <p className="text-xs font-bold text-white/80">{ep.episodeNumber} · {ep.duration}</p>
                     </div>
-                  </div>
+                  </a>
                   <div className="flex flex-1 flex-col justify-between p-5">
                     <div>
-                      <h3 className="text-lg font-black leading-snug text-[#111111]">{ep.title}</h3>
+                      <a href={ep.listenUrl ?? "#"}>
+                        <h3 className="text-lg font-black leading-snug text-[#111111] group-hover:text-[#0037D2]">{ep.title}</h3>
+                      </a>
                       <p className="mt-1.5 text-xs text-[#111111]/50">{ep.guest}</p>
                     </div>
-                    <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
+                    <a href={ep.listenUrl ?? "#"} className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
                       Listen now →
-                    </span>
+                    </a>
                   </div>
-                </motion.a>
+                </motion.div>
               ))}
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
@@ -708,7 +690,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               Join a community of founders, creators and students building India's next decade — together.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <a href="mailto:team@successbrew.in?subject=Join%20the%20Successbrew%20Community" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
+              <a href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
               <a href="/about" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">Our Story</a>
             </motion.div>
           </motion.div>

@@ -152,3 +152,17 @@ export async function getSiteSettings() {
     youtubeUrl: settings?.youtubeUrl ?? null,
   };
 }
+
+/** Category -> sub-category tree for the application wizard's step-2 dependent dropdown. */
+export async function getApplicationCategories() {
+  const categories = await prisma.category.findMany({
+    orderBy: { order: "asc" },
+    include: { subCategories: { orderBy: { order: "asc" } } },
+  });
+  return categories.map((c) => ({
+    id: c.id,
+    key: c.key,
+    label: c.label,
+    subCategories: c.subCategories.map((s) => ({ id: s.id, label: s.label })),
+  }));
+}

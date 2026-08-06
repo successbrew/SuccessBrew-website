@@ -37,19 +37,25 @@ enum BlogStatus {
   PUBLISHED
 }
 
-enum AdminTier {
+enum AdminRole {
   SUPER_ADMIN
-  EDITOR
+  ADMIN
+  REVIEWER
+  COMMUNITY_MANAGER
+  PODCAST_MANAGER
+  CONTENT_MANAGER
 }
 
-/// Our own Super Admin/Editor distinction, layered on top of Neon Auth's
-/// built-in binary "admin" role (Neon Auth's hosted role field only supports
-/// "user" | "admin", not arbitrary custom roles). Keyed by the Neon Auth user id.
+/// Our own granular role set, layered on top of Neon Auth's built-in binary
+/// "admin" role (Neon Auth's hosted role field only supports "user" | "admin",
+/// not arbitrary custom roles). Keyed by the Neon Auth user id. An admin can
+/// hold multiple roles at once (e.g. REVIEWER + PODCAST_MANAGER); permission
+/// checks live in src/lib/auth/permissions.ts, not scattered role comparisons.
 model AdminProfile {
-  id        String    @id
-  tier      AdminTier @default(EDITOR)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        String      @id
+  roles     AdminRole[] @default([CONTENT_MANAGER])
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 model Service {
@@ -145,6 +151,60 @@ model CommunityEvent {
   seatsNote   String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
+  /// Detail-page fields for the dedicated event landing page (Hero -> Benefits ->
+  /// Become a Partner). All optional — older/simple events can leave them blank
+  /// and only show up in the room's list, without a landing page detail section.
+  subtitle     String?
+  /// Free-text display range shown in the info bar, e.g. "6:30 - 10:00 PM".
+  timeRange    String?
+  /// e.g. "Free for members - Rs999 guests" — shown as a hero badge and in the
+  /// registration panel.
+  priceNote    String?
+  /// "Who's in the room" paragraph.
+  audienceNote String?
+  /// One optional secondary stat next to Total Seats, e.g. value "6" / label
+  /// "Matched intros each" — kept as a free label so it fits any event type.
+  highlightStatValue String?
+  highlightStatLabel String?
+  totalSeats         Int?
+  agenda           String?
+  hostName         String?
+  hostRole         String?
+  hostBio          String?
+  hostPhotoUrl     String?
+  venueAddress     String?
+  venuePhotoUrl    String?
+  /// One entry per line, format "Title | Description" (rendered as the
+  /// numbered "What you'll leave with" cards); a bare line with no "|" still
+  /// renders as a title-only card.
+  benefits         String[] @default([])
+  becomePartnerUrl String?
+
+  speakers EventSpeaker[]
+  /// Per-event partner selection, picked from the same BrandPartner pool as
+  /// the site-wide Community Partners grid — not every partner shows on
+  /// every event.
+  partners BrandPartner[] @relation("EventPartners")
+}
+
+/// One row per guest speaker on a CommunityEvent's landing page. Separate from
+/// the legacy `CommunityEvent.speaker` string (still used for the short card
+/// preview) because a landing page can feature more than one speaker, each
+/// with their own photo.
+model EventSpeaker {
+  id        String         @id @default(cuid())
+  eventId   String
+  event     CommunityEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  order     Int            @default(0)
+  name      String
+  /// e.g. "Founder - Wildbrew Coffee".
+  role      String?
+  bio       String?
+  photoUrl  String?
+  createdAt DateTime       @default(now())
+
+  @@index([eventId])
 }
 
 model PodcastEpisode {
@@ -153,12 +213,19 @@ model PodcastEpisode {
   isFeatured    Boolean  @default(false)
   episodeNumber String
   duration      String
+  /// Free-text display name — kept even when speakerId is set so past
+  /// episodes (recorded before the speaker pipeline existed) still render.
   guest         String
   title         String
   thumbnailUrl  String?
   listenUrl     String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  speakerId String?
+  speaker   Speaker? @relation(fields: [speakerId], references: [id])
+
+  @@index([speakerId])
 }
 
 model CommunityWin {
@@ -227,6 +294,8 @@ model BrandPartner {
   group      BrandPartnerGroup @default(SERVICES_HOMEPAGE)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
+
+  events CommunityEvent[] @relation("EventPartners")
 }
 
 /** Singleton row (id is always "singleton") holding site-wide settings like social links. */
@@ -237,4 +306,251 @@ model SiteSettings {
   linkedinUrl   String?
   youtubeUrl    String?
   updatedAt     DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Speaker Management Platform — foundational schema (Module 1)
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum MajorCategory {
+  ENABLER
+  D2C_CONSUMER
+  TECH_FOUNDER
+  INVESTOR
+}
+
+/// Fixed top-level application categories, seeded once in the Module 1 migration.
+model Category {
+  id            String        @id @default(cuid())
+  key           MajorCategory @unique
+  label         String
+  order         Int           @default(0)
+  subCategories SubCategory[]
+  applications  Application[]
+}
+
+/// Category-dependent dropdown options (e.g. Tech Founder -> AI, SaaS, FinTech...).
+/// Admin-editable per-row so new sub-categories can be added without a migration.
+model SubCategory {
+  id           String        @id @default(cuid())
+  categoryId   String
+  category     Category      @relation(fields: [categoryId], references: [id])
+  label        String
+  order        Int           @default(0)
+  applications Application[]
+
+  @@unique([categoryId, label])
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  NEED_MORE_INFO
+  INTERVIEW_SCHEDULED
+  INTERVIEW_COMPLETED
+  APPROVED
+  REJECTED
+  SPEAKER_CREATED
+  PODCAST_SCHEDULED
+  RECORDING_COMPLETED
+  EDITING
+  PUBLISHED
+  ARCHIVED
+}
+
+/// One row per speaker application. Never deleted — status only ever moves
+/// forward through StatusHistory-tracked transitions (see status-transitions.ts).
+model Application {
+  id              String             @id @default(cuid())
+  applicationCode String             @unique
+  /// Neon Auth user id of the applicant, when they happen to be signed in —
+  /// login is never required to submit, so this is null for anonymous
+  /// applicants. Not a Prisma relation — Neon Auth's user table lives outside
+  /// our schema (same pattern as Blog.authorId).
+  userId          String?
+  status          ApplicationStatus  @default(DRAFT)
+
+  categoryId    String?
+  category      Category?    @relation(fields: [categoryId], references: [id])
+  subCategoryId String?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+
+  /// Wizard step 1 (PersonalInfo), validated by src/lib/validators/application.ts,
+  /// typed by src/lib/types/application.ts — not normalized into columns because
+  /// the field set is expected to keep growing with the wizard.
+  personal Json?
+  /// Wizard steps 3-4 (ProfessionalInfo + social presence).
+  professional Json?
+  /// Wizard step 5 (SuccessBrew questions).
+  answers Json?
+
+  submittedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  documents     Document[]
+  statusHistory StatusHistory[]
+  reviews       Review[]
+  activityLogs  ActivityLog[]
+  speaker       Speaker?
+
+  @@index([status, submittedAt])
+  @@index([userId])
+}
+
+/// Wizard step 6 uploads (resume, media kit, deck, logo, headshot). `kind` is a
+/// free string validated at the Zod layer rather than an enum, so new upload
+/// slots can be added without a migration.
+model Document {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id])
+  kind          String
+  url           String
+  createdAt     DateTime    @default(now())
+
+  @@index([applicationId])
+}
+
+/// Append-only audit trail of every status change on an application — this
+/// table IS the "never delete, only update status, maintain complete history"
+/// requirement, not a side effect of it.
+model StatusHistory {
+  id            String             @id @default(cuid())
+  applicationId String
+  application   Application        @relation(fields: [applicationId], references: [id])
+  fromStatus    ApplicationStatus?
+  toStatus      ApplicationStatus
+  changedBy     String
+  note          String?
+  createdAt     DateTime           @default(now())
+
+  @@index([applicationId])
+}
+
+/// Internal reviewer notes + score, admin-only, never shown to the applicant.
+model Review {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id])
+  reviewerId    String
+  score         Int?
+  notes         String?
+  createdAt     DateTime    @default(now())
+
+  @@index([applicationId])
+}
+
+/// Created only via the approval workflow (Module 4) — never created directly
+/// from a raw form submission.
+model Speaker {
+  id            String      @id @default(cuid())
+  speakerCode   String      @unique
+  applicationId String      @unique
+  application   Application @relation(fields: [applicationId], references: [id])
+  /// Copied from Application.userId — null when the applicant never logged in.
+  userId        String?
+  displayName   String
+  bio           String?
+  /// Overrides the application's headshot when set — lets the profile be
+  /// refreshed independently of the original application photo.
+  photoUrl      String?
+  topics        String[]    @default([])
+  achievements  String?
+  isPublic      Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  notes    SpeakerNote[]
+  episodes PodcastEpisode[]
+}
+
+/// Internal-only CRM notes on the ongoing speaker relationship (podcast
+/// scheduling follow-ups, etc.) — never shown on the public profile. Distinct
+/// from Review, which is scoped to the application-review stage.
+model SpeakerNote {
+  id         String   @id @default(cuid())
+  speakerId  String
+  speaker    Speaker  @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+  authorId   String
+  note       String
+  createdAt  DateTime @default(now())
+
+  @@index([speakerId])
+}
+
+/// User-facing "what happened to my/this application" timeline. Distinct from
+/// AuditLog, which is the system-wide security/compliance trail.
+model ActivityLog {
+  id            String       @id @default(cuid())
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id])
+  actorId       String
+  action        String
+  metadata      Json?
+  createdAt     DateTime     @default(now())
+
+  @@index([applicationId])
+}
+
+/// System-wide security/compliance trail (auth events, permission changes,
+/// deletes) — distinct from ActivityLog, which is scoped to one application.
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  action     String
+  targetType String
+  targetId   String?
+  metadata   Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([targetType, targetId])
+}
+
+enum EmailStatus {
+  SENT
+  FAILED
+}
+
+/// Every transactional email the platform sends — applicant confirmations,
+/// team notifications, speaker welcomes — logged here regardless of outcome,
+/// so a failed send is visible in /admin/emails instead of only in server logs.
+model EmailLog {
+  id            String      @id @default(cuid())
+  to            String
+  subject       String
+  template      String
+  status        EmailStatus
+  error         String?
+  applicationId String?
+  createdAt     DateTime    @default(now())
+
+  @@index([applicationId])
+  @@index([createdAt])
+}
+
+enum NotificationAudience {
+  ADMIN
+  APPLICANT
+}
+
+/// In-app notification center. ADMIN notifications broadcast to every admin
+/// with review access (recipientId is null); APPLICANT notifications target
+/// one Neon Auth user id. Applicant-facing delivery today is email (see
+/// EmailLog) — these rows exist so the same events are also queryable/
+/// markable-read from the admin panel without re-deriving them from EmailLog.
+model Notification {
+  id          String               @id @default(cuid())
+  audience    NotificationAudience
+  recipientId String?
+  type        String
+  title       String
+  message     String
+  link        String?
+  readAt      DateTime?
+  createdAt   DateTime             @default(now())
+
+  @@index([audience, recipientId, readAt])
 }

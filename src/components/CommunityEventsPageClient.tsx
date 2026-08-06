@@ -9,6 +9,7 @@ import type { SiteSettings } from "@/components/SocialLinks";
 import { WordReveal } from "@/components/WordReveal";
 import { SectionWave } from "@/components/SectionWave";
 import { EVENT_CATEGORIES, eventCategoryLabel } from "@/lib/event-categories";
+import { getEventPillarByCategory, type EventPillar } from "@/lib/event-pillars";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = { hidden: { opacity: 0, y: 26 }, visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: E } } };
@@ -28,37 +29,55 @@ export interface EventItem {
   seatsNote?: string;
   isFeatured: boolean;
   imageUrl: string;
+  agenda?: string;
 }
 
 interface Props {
   events: EventItem[];
   siteSettings: SiteSettings;
   now: number;
+  /** When set, this page is scoped to a single event pillar (e.g. /community/events/d2c-round-table):
+   * events are already pre-filtered server-side, the category filter bar is hidden, and the hero
+   * uses the pillar's own copy instead of the generic "all events" copy. */
+  pillar?: EventPillar;
 }
 
 function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past" }) {
+  const pillar = getEventPillarByCategory(event.category);
+  const href = pillar ? `/community/events/${pillar.slug}/${event._id}` : (event.registerUrl ?? "#");
+  const d = new Date(event.eventDate);
+  const day = d.toLocaleDateString("en-IN", { day: "2-digit" });
+  const month = d.toLocaleDateString("en-IN", { month: "short" }).toUpperCase();
+
   return (
     <motion.a
       variants={cardUp}
       whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
-      href={event.registerUrl ?? "#"}
+      href={href}
       className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#111111]/5">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2]/10">
         {event.imageUrl ? (
           <img src={event.imageUrl} alt={event.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
         ) : (
-          <div className="grid h-full w-full place-items-center text-[#111111]/20">
+          <div className="grid h-full w-full place-items-center text-[#0037D2]/25">
             <span className="text-4xl">📅</span>
           </div>
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-        <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide ${when === "past" ? "bg-[#111111]/70 text-white" : "bg-[#C1FF3B] text-[#111111]"}`}>
-          {when === "past" ? "Past" : "Upcoming"}
-        </span>
-        <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold text-[#0037D2]">
+        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0037D2]">
           {eventCategoryLabel(event.category)}
         </span>
+        {when === "upcoming" ? (
+          <span className="absolute right-3 top-3 flex flex-col items-center rounded-lg bg-white px-2 py-1 leading-none shadow-sm">
+            <span className="text-sm font-black text-[#111111]">{day}</span>
+            <span className="text-[9px] font-bold uppercase text-[#0037D2]">{month}</span>
+          </span>
+        ) : (
+          <span className="absolute right-3 top-3 rounded-full bg-[#111111]/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-white">
+            Past
+          </span>
+        )}
         <div className="absolute bottom-3 left-3 right-3">
           <p className="text-xs font-bold text-white/80">{event.date}</p>
         </div>
@@ -69,20 +88,103 @@ function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past
           <h3 className="mt-1 text-lg font-black leading-snug text-[#111111]">{event.title}</h3>
           <p className="mt-2 text-xs text-[#111111]/50">📍 {event.location}{event.speaker ? ` · 👤 ${event.speaker}` : ""}</p>
         </div>
-        {when === "upcoming" && (
-          <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
-            Register now →
+        <div className="mt-4 flex items-center justify-between gap-2">
+          {when === "upcoming" && event.seatsNote ? (
+            <span className="text-xs font-bold text-[#0037D2]">{event.seatsNote}</span>
+          ) : <span />}
+          <span className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition ${when === "upcoming" ? "bg-[#111111] text-white group-hover:bg-[#0037D2]" : "border border-[#111111]/15 text-[#111111]/70"}`}>
+            {when === "past" ? "View recap" : pillar ? "View details" : "Register"}
           </span>
-        )}
+        </div>
       </div>
     </motion.a>
   );
 }
 
-export function CommunityEventsPageClient({ events, siteSettings, now }: Props) {
+function NextUpCard({ event }: { event: EventItem }) {
+  const pillar = getEventPillarByCategory(event.category);
+  const href = pillar ? `/community/events/${pillar.slug}/${event._id}` : (event.registerUrl ?? "#");
+  const bullets = (event.agenda ?? "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+
+  return (
+    <motion.div
+      initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
+      className="overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-white shadow-[0_24px_60px_-32px_rgba(0,0,0,0.3)]"
+    >
+      <div className="grid lg:grid-cols-2">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2] lg:aspect-auto">
+          {event.imageUrl ? (
+            <img src={event.imageUrl} alt={event.title} className="h-full w-full object-cover" />
+          ) : (
+            <div className="grid h-full min-h-[220px] w-full place-items-center text-white/20">
+              <span className="text-5xl">📅</span>
+            </div>
+          )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0037D2]/60 via-transparent to-transparent" />
+          <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+            <span className="rounded-full bg-[#C1FF3B] px-3 py-1 text-[10px] font-black uppercase tracking-wide text-[#111111]">Next Up</span>
+            {event.isFeatured && (
+              <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-white backdrop-blur">Featured</span>
+            )}
+          </div>
+          <div className="absolute bottom-4 left-4 right-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-white/70">{event.location}</p>
+            <h3 className="mt-1 text-2xl font-black leading-tight text-white">{event.title}</h3>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-center p-6 lg:p-10">
+          <div className="grid grid-cols-3 gap-4 border-b border-[#111111]/10 pb-6">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Date</p>
+              <p className="mt-1 text-sm font-bold text-[#111111]">{event.date}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Location</p>
+              <p className="mt-1 truncate text-sm font-bold text-[#111111]">{event.location}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Seats</p>
+              <p className="mt-1 truncate text-sm font-bold text-[#0037D2]">{event.seatsNote ?? "Open"}</p>
+            </div>
+          </div>
+
+          {bullets.length > 0 && (
+            <ul className="mt-6 space-y-2">
+              {bullets.map((b, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-[#111111]/70">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0037D2]" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a href={href} className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-6 py-3 text-sm font-bold text-white transition hover:translate-y-[-2px]">
+              Save my seat →
+            </a>
+            {pillar && (
+              <a href={href} className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 px-6 py-3 text-sm font-semibold text-[#111111]/70 transition hover:border-[#111111]/30">
+                Full agenda
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function CommunityEventsPageClient({ events, siteSettings, now, pillar }: Props) {
   const [category, setCategory] = useState<string>("ALL");
 
-  const filtered = category === "ALL" ? events : events.filter((e) => e.category === category);
+  // Pillar-scoped pages already receive category-filtered events from the server.
+  const filtered = pillar || category === "ALL" ? events : events.filter((e) => e.category === category);
 
   const { upcoming, past } = useMemo(() => {
     const up = filtered.filter((e) => new Date(e.eventDate).getTime() >= now)
@@ -97,66 +199,105 @@ export function CommunityEventsPageClient({ events, siteSettings, now }: Props) 
     count: events.filter((e) => e.category === c.value).length,
   })).filter((c) => c.count > 0);
 
+  const stats = useMemo(() => {
+    const cities = new Set(events.map((e) => e.location.split(/[·,]/)[0].trim().toLowerCase()).filter(Boolean)).size;
+    return [
+      { value: `${events.length}+`, label: "Events hosted" },
+      { value: "8,000+", label: "Founders in the room" },
+      { value: `${cities || 1}`, label: "Cities on the map" },
+      { value: "Free", label: "For community members" },
+    ];
+  }, [events]);
+
+  const [nextUp, ...restUpcoming] = upcoming;
+
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/community#cta" />
+      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-16 lg:pt-44 lg:pb-24">
+        <section className="relative overflow-hidden bg-[#0037D2] pt-32 pb-16 text-white lg:pt-44 lg:pb-24">
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#0037D2]/15 blur-3xl" />
-            <div className="absolute right-[-100px] bottom-0 h-[380px] w-[380px] rounded-full bg-[#C1FF3B]/30 blur-3xl" />
+            <div className="absolute -right-32 -top-32 h-[480px] w-[480px] rounded-full border border-white/10" />
+            <div className="absolute right-[-140px] top-[-40px] h-[380px] w-[380px] rounded-full border border-white/10" />
+            <div className="absolute left-[-100px] bottom-[-120px] h-[340px] w-[340px] rounded-full bg-[#C1FF3B]/10 blur-3xl" />
           </div>
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
-              <motion.a variants={fadeUp} href="/community"
-                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#0037D2]">
-                ← Back to Community
+              <motion.a variants={fadeUp} href={pillar ? "/community/events" : "/community"}
+                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/60 hover:text-white">
+                ← Back to {pillar ? "All Events" : "Community"}
               </motion.a>
-              <motion.div variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
-                {events.length} event{events.length !== 1 ? "s" : ""} and counting
-              </motion.div>
-
-              <h1 className="text-balance text-[clamp(2.75rem,7vw,6rem)] font-black leading-[0.95] tracking-tight text-[#111111]">
-                <WordReveal text="Every room" mode="nested" staggerDelay={0.06} />
-                {" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10 text-[#0037D2]"><WordReveal text="we've filled." mode="nested" staggerDelay={0.06} /></span>
-                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
-                </span>
-              </h1>
-
-              <motion.p variants={fadeUp} className="mt-7 max-w-xl text-lg text-[#111111]/60 md:text-xl">
-                Summits, workshops, demo days and retreats — what&rsquo;s coming up, and everything we&rsquo;ve already brewed.
+              <motion.p variants={fadeUp} className="mb-6 text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">
+                {pillar ? `${pillar.icon} ${pillar.tagline}` : "Successbrew Events · 2026 Season"}
               </motion.p>
+
+              {pillar ? (
+                <h1 className="text-balance text-[clamp(2.75rem,7vw,6rem)] font-black leading-[0.95] tracking-tight text-white">
+                  <WordReveal text={pillar.title} mode="nested" staggerDelay={0.06} />
+                </h1>
+              ) : (
+                <h1 className="text-balance text-[clamp(2.75rem,7vw,6rem)] font-black leading-[0.95] tracking-tight text-white">
+                  <WordReveal text="Rooms where founders" mode="nested" staggerDelay={0.06} />
+                  {" "}
+                  <span className="relative inline-block">
+                    <span className="relative z-10 text-[#C1FF3B]"><WordReveal text="get found." mode="nested" staggerDelay={0.06} /></span>
+                  </span>
+                </h1>
+              )}
+
+              <motion.p variants={fadeUp} className="mt-7 max-w-xl text-lg text-white/70 md:text-xl">
+                {pillar ? pillar.description : "Summits, workshops, demo days and retreats — what’s coming up, and everything we’ve already brewed."}
+              </motion.p>
+
+              <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-4">
+                <a href="#upcoming" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+                  See what&rsquo;s next →
+                </a>
+                <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">
+                  Explore Community
+                </a>
+              </motion.div>
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F2ECDD" to="#F0EBD8" />
 
-        {/* ══ CATEGORY FILTER ═══════════════════════════════════════════ */}
-        <section className="bg-[#F0EBD8] pt-12">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <div className="flex flex-wrap gap-2">
-              <button onClick={() => setCategory("ALL")}
-                className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === "ALL" ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
-                All Events
-              </button>
-              {categoriesWithCounts.map((c) => (
-                <button key={c.value} onClick={() => setCategory(c.value)}
-                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === c.value ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
-                  {c.label} <span className="opacity-50">({c.count})</span>
-                </button>
-              ))}
-            </div>
+        {/* ══ STATS BAR ═════════════════════════════════════════════════ */}
+        <section className="bg-[#00269c]">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-y-6 px-6 py-8 lg:grid-cols-4 lg:px-10">
+            {stats.map((s) => (
+              <div key={s.label}>
+                <p className="text-2xl font-black text-[#C1FF3B] md:text-3xl">{s.value}</p>
+                <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white/60">{s.label}</p>
+              </div>
+            ))}
           </div>
         </section>
+        <SectionWave from="#00269c" to="#F0EBD8" />
+
+        {/* ══ CATEGORY FILTER (hidden on pillar-scoped pages — already single-category) ══ */}
+        {!pillar && (
+          <section className="bg-[#F0EBD8] pt-12">
+            <div className="mx-auto max-w-7xl px-6 lg:px-10">
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => setCategory("ALL")}
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === "ALL" ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
+                  All Events
+                </button>
+                {categoriesWithCounts.map((c) => (
+                  <button key={c.value} onClick={() => setCategory(c.value)}
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === c.value ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
+                    {c.label} <span className="opacity-50">({c.count})</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ══ UPCOMING ══════════════════════════════════════════════════ */}
-        <section className="bg-[#F0EBD8] py-16 lg:py-20">
+        <section id="upcoming" className="scroll-mt-24 bg-[#F0EBD8] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
               className="mb-10">
@@ -166,10 +307,15 @@ export function CommunityEventsPageClient({ events, siteSettings, now }: Props) 
 
             <AnimatePresence mode="wait">
               {upcoming.length > 0 ? (
-                <motion.div key={`up-${category}`} initial="hidden" animate="visible" variants={stagger(0.08)}
-                  className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {upcoming.map((ev) => <EventTile key={ev._id} event={ev} when="upcoming" />)}
-                </motion.div>
+                <div key={`up-${category}`} className="space-y-8">
+                  {nextUp && <NextUpCard event={nextUp} />}
+                  {restUpcoming.length > 0 && (
+                    <motion.div initial="hidden" animate="visible" variants={stagger(0.08)}
+                      className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                      {restUpcoming.map((ev) => <EventTile key={ev._id} event={ev} when="upcoming" />)}
+                    </motion.div>
+                  )}
+                </div>
               ) : (
                 <p className="text-sm text-[#111111]/50">No upcoming events in this category yet — check back soon.</p>
               )}
@@ -211,7 +357,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now }: Props) 
             <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Don&rsquo;t miss the next one</motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Be in the room next time.</motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a href="/community#cta" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+              <a href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">

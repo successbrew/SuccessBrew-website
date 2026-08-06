@@ -12,23 +12,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { AdminTier } from "@prisma/client";
+import { Switch } from "@/components/ui/switch";
+import { AdminRole } from "@prisma/client";
+import { ROLE_LABELS } from "@/lib/auth/permissions";
 import { inviteAdmin } from "./actions";
+
+const ALL_ROLES = Object.values(AdminRole);
 
 export function InviteAdminDialog() {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [roles, setRoles] = useState<Set<AdminRole>>(new Set(["CONTENT_MANAGER"]));
   const [isPending, startTransition] = useTransition();
+
+  function toggleRole(role: AdminRole, checked: boolean) {
+    setRoles((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(role); else next.delete(role);
+      return next;
+    });
+  }
 
   function handleSubmit(formData: FormData) {
     setError(null);
+    roles.forEach((r) => formData.append("roles", r));
     startTransition(async () => {
       const result = await inviteAdmin(formData);
       if (result?.error) {
@@ -36,6 +43,7 @@ export function InviteAdminDialog() {
         return;
       }
       setOpen(false);
+      setRoles(new Set(["CONTENT_MANAGER"]));
     });
   }
 
@@ -58,16 +66,21 @@ export function InviteAdminDialog() {
             <Input id="email" name="email" type="email" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select name="role" defaultValue={AdminTier.EDITOR}>
-              <SelectTrigger id="role">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={AdminTier.EDITOR}>Editor</SelectItem>
-                <SelectItem value={AdminTier.SUPER_ADMIN}>Super Admin</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label>Roles</Label>
+            <div className="space-y-2 rounded-md border p-3">
+              {ALL_ROLES.map((role) => (
+                <div key={role} className="flex items-center justify-between">
+                  <Label htmlFor={`role-${role}`} className="font-normal">
+                    {ROLE_LABELS[role]}
+                  </Label>
+                  <Switch
+                    id={`role-${role}`}
+                    checked={roles.has(role)}
+                    onCheckedChange={(checked) => toggleRole(role, checked)}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>

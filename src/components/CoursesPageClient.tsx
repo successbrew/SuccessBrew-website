@@ -66,7 +66,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
 
   return (
     <>
-      <NavBar activePage="Courses" ctaText="Join Community" ctaHref="/community#cta" />
+      <NavBar activePage="Courses" ctaText="Join Community" ctaHref="/apply" />
       <main className="min-h-screen bg-cream font-sans text-ink">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}

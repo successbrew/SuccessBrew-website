@@ -1,6 +1,6 @@
 /**
  * One-time bootstrap: promote a Neon Auth user (already created via the Neon
- * console) to `role: "admin"` and set their AdminProfile tier to SUPER_ADMIN.
+ * console) to `role: "admin"` and grant their AdminProfile the SUPER_ADMIN role.
  *
  * Neon Auth's admin API requires an already-authenticated admin session, so
  * the very first admin has to be bootstrapped via direct SQL against the
@@ -9,7 +9,7 @@
  * Usage: npx tsx --env-file=.env.local scripts/bootstrap-admin.ts <email>
  */
 import { prisma } from "../src/lib/prisma";
-import { AdminTier } from "@prisma/client";
+import { AdminRole } from "@prisma/client";
 
 async function main() {
   const email = process.argv[2];
@@ -34,8 +34,8 @@ async function main() {
 
   await prisma.adminProfile.upsert({
     where: { id: user.id },
-    create: { id: user.id, tier: AdminTier.SUPER_ADMIN },
-    update: { tier: AdminTier.SUPER_ADMIN },
+    create: { id: user.id, roles: [AdminRole.SUPER_ADMIN] },
+    update: { roles: [AdminRole.SUPER_ADMIN] },
   });
 
   console.log(`${email} (${user.id}) is now a Super Admin.`);

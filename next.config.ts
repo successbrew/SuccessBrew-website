@@ -7,9 +7,15 @@ import type { NextConfig } from "next";
 // rules out per-request nonces (nonces require every page to render
 // dynamically). The other directives (object-src, frame-ancestors, base-uri,
 // form-action) still meaningfully cut down the attack surface.
+//
+// 'unsafe-eval' is added to script-src in development only — Turbopack/React's
+// dev-mode tooling uses eval() to reconstruct cross-boundary stack traces
+// (React explicitly never uses eval() in production), so without it dev
+// logs a spurious "eval() is not supported" console error on every page.
+const isDev = process.env.NODE_ENV === "development";
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline';
+  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
   img-src 'self' https: data: blob:;
   font-src 'self' data:;
@@ -36,9 +42,20 @@ const securityHeaders = [
     key: "Strict-Transport-Security",
     value: "max-age=63072000; includeSubDomains; preload",
   },
+  // Isolates this origin's browsing context from cross-origin windows/popups
+  // (mitigates Spectre-style side-channel and reverse-tabnabbing attacks).
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  // Prevents other origins from embedding our responses (images, JSON, etc.)
+  // as sub-resources without an explicit CORS grant.
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+  // Blocks legacy Adobe Flash/PDF cross-domain policy file lookups.
+  { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
 ];
 
 const nextConfig: NextConfig = {
+  // Stop advertising "X-Powered-By: Next.js" — no functional benefit, only
+  // helps attackers fingerprint the stack.
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
