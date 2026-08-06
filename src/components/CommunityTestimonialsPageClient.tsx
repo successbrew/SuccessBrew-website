@@ -64,7 +64,7 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
         <TestimonialEcosystem
           testimonials={testimonials}
           theme="community"
-          emptyMessage="No community stories yet — add them in /admin/testimonials."
+          emptyMessage="No community stories yet — add them in /sbh-1111/testimonials."
         />
         <SectionWave from="#F0EBD8" to="#0037D2" />
 

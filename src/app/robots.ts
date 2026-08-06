@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/api", "/auth", "/account"],
+      disallow: ["/sbh-1111", "/api", "/auth", "/account"],
     },
     host: "https://successbrew.in",
   };

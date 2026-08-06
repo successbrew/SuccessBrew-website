@@ -99,7 +99,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                 ))}
               </motion.div>
             ) : (
-              <p className="text-sm text-[#111111]/50">No episodes published yet — add them in /admin/podcast-episodes.</p>
+              <p className="text-sm text-[#111111]/50">No episodes published yet — add them in /sbh-1111/podcast-episodes.</p>
             )}
           </div>
         </section>

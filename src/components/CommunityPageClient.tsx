@@ -542,7 +542,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 ))}
               </motion.div>
             ) : (
-              <p className="text-sm text-[#111111]/50">No community stories yet — add them in /admin/testimonials.</p>
+              <p className="text-sm text-[#111111]/50">No community stories yet — add them in /sbh-1111/testimonials.</p>
             )}
           </div>
         </section>

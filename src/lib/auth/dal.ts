@@ -21,7 +21,7 @@ export const verifyAdminSession = cache(async () => {
   }
 
   if (session.user.role !== ADMIN_ROLES.ADMIN) {
-    redirect("/admin/no-access");
+    redirect("/sbh-1111/no-access");
   }
 
   const profile = await prisma.adminProfile.findUnique({
@@ -29,7 +29,7 @@ export const verifyAdminSession = cache(async () => {
   });
 
   if (!profile) {
-    redirect("/admin/no-access");
+    redirect("/sbh-1111/no-access");
   }
 
   return {
@@ -43,7 +43,7 @@ export const verifyAdminSession = cache(async () => {
 export async function requireSuperAdmin() {
   const admin = await verifyAdminSession();
   if (!admin.roles.includes("SUPER_ADMIN")) {
-    redirect("/admin");
+    redirect("/sbh-1111");
   }
   return admin;
 }
@@ -51,7 +51,7 @@ export async function requireSuperAdmin() {
 export async function requirePermission(permission: Permission) {
   const admin = await verifyAdminSession();
   if (!hasPermission(admin.roles, permission)) {
-    redirect("/admin/no-access");
+    redirect("/sbh-1111/no-access");
   }
   return admin;
 }

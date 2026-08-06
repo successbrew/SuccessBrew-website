@@ -61,7 +61,7 @@ Marketing site and admin CMS for **Successbrew** — a content, community, and v
    npm run dev
    ```
 
-   Visit [http://localhost:3000](http://localhost:3000). The admin panel is at `/admin`.
+   Visit [http://localhost:3000](http://localhost:3000). The admin panel is at `/sbh-1111`.
 
 ## Scripts
 
@@ -90,11 +90,11 @@ Content is fetched through thin query helpers in `src/lib/queries/content.ts` an
 
 ### Content model
 
-All content lives in Postgres and is managed through `/admin`, with no external CMS. Models include `Service`, `ProcessStep`, `CaseStudy`, `Stat`, `Testimonial`, `CommunityEvent`, `PodcastEpisode`, `CommunityWin`, `CommunityPost`, `Blog`, `BrandPartner`, and a singleton `SiteSettings` row.
+All content lives in Postgres and is managed through `/sbh-1111`, with no external CMS. Models include `Service`, `ProcessStep`, `CaseStudy`, `Stat`, `Testimonial`, `CommunityEvent`, `PodcastEpisode`, `CommunityWin`, `CommunityPost`, `Blog`, `BrandPartner`, and a singleton `SiteSettings` row.
 
 ### Admin panel
 
-Each content type has its own route group under `src/app/admin/<type>/` (list, create, edit views + server actions). Actions call `verifyAdminSession()` and delegate to generic CRUD helpers in `src/lib/admin/crud.ts`, driven by per-type Zod schemas in `src/lib/admin/schemas/`. The blog section is the one exception, working with structured Tiptap JSON instead of the generic form path.
+Each content type has its own route group under `src/app/sbh-1111/<type>/` (list, create, edit views + server actions). Actions call `verifyAdminSession()` and delegate to generic CRUD helpers in `src/lib/admin/crud.ts`, driven by per-type Zod schemas in `src/lib/admin/schemas/`. The blog section is the one exception, working with structured Tiptap JSON instead of the generic form path.
 
 ### Path alias
 

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { markNotificationRead, markAllNotificationsRead } from "@/app/admin/notifications-actions";
+import { markNotificationRead, markAllNotificationsRead } from "@/app/sbh-1111/notifications-actions";
 
 export interface AdminNotification {
   id: string;

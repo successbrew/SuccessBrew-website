@@ -65,7 +65,7 @@ export async function submitApplicationAction(raw: unknown): Promise<SubmitAppli
         type: "new_application",
         title: "New speaker application",
         message: `${parsed.data.personal.firstName} ${parsed.data.personal.lastName} applied (${categoryLabel} / ${subCategoryLabel}).`,
-        link: `/admin/applications/${application.id}`,
+        link: `/sbh-1111/applications/${application.id}`,
       }).catch(() => {}),
     ]);
 

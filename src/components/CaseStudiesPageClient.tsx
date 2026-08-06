@@ -81,7 +81,7 @@ export function CaseStudiesPageClient({
             {caseStudies.length === 0 ? (
               <div className="py-32 text-center text-ink/30">
                 <p className="text-lg font-semibold">No case studies yet.</p>
-                <p className="mt-1 text-sm">Add them in the admin at /admin/case-studies</p>
+                <p className="mt-1 text-sm">Add them in the admin at /sbh-1111/case-studies</p>
               </div>
             ) : (
               <div className="grid gap-6 lg:h-[78vh] lg:grid-cols-[360px_1fr]">

@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-// Content is admin-authored via /admin and can reference arbitrary external
+// Content is admin-authored via /sbh-1111 and can reference arbitrary external
 // image URLs (see field-types.ts), so img-src stays permissive to https:
 // rather than an allowlist. script-src/style-src use 'unsafe-inline' because
 // this app has a mix of statically and dynamically rendered pages, which

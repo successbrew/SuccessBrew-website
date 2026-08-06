@@ -22,7 +22,7 @@ Two linters are configured but only one is wired up: `eslint` runs via `npm run 
 
 ## Architecture
 
-This is a Next.js (App Router) marketing site for "Successbrew" backed by Neon Postgres via Prisma, with Neon Auth for authentication. There is no CMS — content is stored in Postgres and edited through a hand-built `/admin` panel.
+This is a Next.js (App Router) marketing site for "Successbrew" backed by Neon Postgres via Prisma, with Neon Auth for authentication. There is no CMS — content is stored in Postgres and edited through a hand-built `/sbh-1111` panel.
 
 **Read `node_modules/next/dist/docs/` before writing Next.js code** — see AGENTS.md above; the installed Next.js version (16.2.9) has breaking changes vs. training data.
 
@@ -41,8 +41,8 @@ Every public page is a pattern of two files:
 
 ### Admin panel
 
-- Every content type has its own route group under `src/app/admin/<type>/` (`page.tsx` list view, `new/page.tsx`, `[id]/edit/page.tsx`, `actions.ts` server actions).
-- `actions.ts` files call `verifyAdminSession()` (`src/lib/auth/dal.ts`) then delegate to the generic `runCreate`/`runUpdate`/`runDelete`/`runReorder` helpers in `src/lib/admin/crud.ts`, passing a Prisma delegate (`prisma.<model>`), a Zod schema, and form data. Per-type Zod schemas + field/column configs live in `src/lib/admin/schemas/<type>.ts`. The blog admin section (`src/app/admin/blog/actions.ts`) is the one exception — it works with typed JSON (Tiptap rich text) instead of the generic FormData path.
+- Every content type has its own route group under `src/app/sbh-1111/<type>/` (`page.tsx` list view, `new/page.tsx`, `[id]/edit/page.tsx`, `actions.ts` server actions).
+- `actions.ts` files call `verifyAdminSession()` (`src/lib/auth/dal.ts`) then delegate to the generic `runCreate`/`runUpdate`/`runDelete`/`runReorder` helpers in `src/lib/admin/crud.ts`, passing a Prisma delegate (`prisma.<model>`), a Zod schema, and form data. Per-type Zod schemas + field/column configs live in `src/lib/admin/schemas/<type>.ts`. The blog admin section (`src/app/sbh-1111/blog/actions.ts`) is the one exception — it works with typed JSON (Tiptap rich text) instead of the generic FormData path.
 - Auth is Neon Auth (`@neondatabase/auth`), configured in `src/lib/auth/server.ts` and mounted at `src/app/api/auth/[...path]/route.ts`. Neon Auth's built-in role is binary (`user`/`admin`); a finer-grained `SUPER_ADMIN`/`EDITOR` tier is layered on top via the Prisma `AdminProfile` model, keyed by the Neon Auth user id.
 
 ### UI layer

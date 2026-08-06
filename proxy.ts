@@ -5,5 +5,5 @@ export default auth.middleware({
 });
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/sbh-1111/:path*"],
 };

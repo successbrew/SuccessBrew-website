@@ -20,7 +20,7 @@ export function Providers({ children }: { children: ReactNode }) {
         onSessionChange={() => {
           router.refresh();
         }}
-        redirectTo="/admin"
+        redirectTo="/sbh-1111"
         Link={Link}
         defaultTheme="light"
       >

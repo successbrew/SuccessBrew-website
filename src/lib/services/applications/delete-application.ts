@@ -23,7 +23,7 @@ export async function deleteApplicationPermanently(applicationId: string, actorI
   }
   if (application.speaker) {
     throw new Error(
-      "This applicant has a public Speaker profile — remove or unpublish it at /admin/speakers before deleting the application."
+      "This applicant has a public Speaker profile — remove or unpublish it at /sbh-1111/speakers before deleting the application."
     );
   }
 

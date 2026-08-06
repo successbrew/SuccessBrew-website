@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-/** Broadcast notification visible to every admin with review access (see /admin bell icon). */
+/** Broadcast notification visible to every admin with review access (see /sbh-1111 bell icon). */
 export async function notifyAdmins(params: { type: string; title: string; message: string; link?: string }) {
   await prisma.notification.create({
     data: {

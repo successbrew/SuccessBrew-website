@@ -72,7 +72,7 @@ export function EventPartnersSelector({
           {isPending ? "Saving…" : "Save Partners"}
         </Button>
         {saved && <span className="text-sm text-muted-foreground">Saved.</span>}
-        <Link href="/admin/community-partners/new" className="text-sm text-primary underline underline-offset-2">
+        <Link href="/sbh-1111/community-partners/new" className="text-sm text-primary underline underline-offset-2">
           + Add New Partner
         </Link>
       </div>
