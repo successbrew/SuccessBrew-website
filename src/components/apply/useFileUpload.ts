@@ -10,25 +10,16 @@ export function useFileUpload() {
     setError(null);
     setIsUploading(true);
     try {
-      const presignRes = await fetch("/api/apply/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName: file.name, fileType: file.type, fileSize: file.size }),
-      });
-      if (!presignRes.ok) {
-        const body = await presignRes.json().catch(() => ({}));
-        throw new Error(body.error ?? "Failed to get upload URL");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/apply/upload", { method: "POST", body: formData });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? "Upload failed");
       }
-      const { uploadUrl, publicUrl } = await presignRes.json();
-
-      const putRes = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
-      if (!putRes.ok) throw new Error("Upload to storage failed");
-
-      return publicUrl as string;
+      const { url } = await res.json();
+      return url as string;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
       return null;

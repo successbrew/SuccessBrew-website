@@ -4,7 +4,10 @@ import { authViewPaths } from "@neondatabase/auth-ui/server";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return Object.values(authViewPaths).map((path) => ({ path }));
+  // Accounts are provisioned only via admin invite (see sbh-1111/users) — no public self-service sign-up.
+  return Object.values(authViewPaths)
+    .filter((path) => path !== authViewPaths.SIGN_UP)
+    .map((path) => ({ path }));
 }
 
 export default async function AuthPage({

@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { WizardShell } from "./WizardShell";
 import { useApplicationDraft } from "./useApplicationDraft";
+import { useFileUpload } from "./useFileUpload";
 import { StepPersonal } from "./steps/StepPersonal";
 import { StepCategory, type CategoryOption } from "./steps/StepCategory";
 import { StepProfessional } from "./steps/StepProfessional";
@@ -48,11 +49,23 @@ export function ApplyWizardClient({
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submittedCode, setSubmittedCode] = useState<string | null>(null);
+  const [pendingHeadshot, setPendingHeadshot] = useState<File | null>(null);
+  const { upload: uploadHeadshot, isUploading: uploadingHeadshot, error: headshotError } = useFileUpload();
 
   const stepIndex = draft.currentStep;
 
   function goTo(index: number) {
     update({ currentStep: Math.max(0, Math.min(index, TOTAL_STEPS - 1)) });
+  }
+
+  async function handlePersonalNext() {
+    if (pendingHeadshot) {
+      const url = await uploadHeadshot(pendingHeadshot);
+      if (!url) return; // stay on this step — error is shown via headshotError
+      update({ personal: { ...draft.personal, headshotUrl: url } });
+      setPendingHeadshot(null);
+    }
+    goTo(1);
   }
 
   async function handleSubmit() {
@@ -118,10 +131,17 @@ export function ApplyWizardClient({
             stepIndex={0}
             title="Tell us about you"
             subtitle="Basic personal details."
-            onNext={() => goTo(1)}
-            nextDisabled={!isStepComplete(0, draft)}
+            onNext={handlePersonalNext}
+            nextDisabled={!isStepComplete(0, draft) || uploadingHeadshot}
+            nextLabel={uploadingHeadshot ? "Uploading…" : "Continue"}
           >
-            <StepPersonal value={draft.personal} onChange={(patch) => update({ personal: { ...draft.personal, ...patch } })} />
+            <StepPersonal
+              value={draft.personal}
+              onChange={(patch) => update({ personal: { ...draft.personal, ...patch } })}
+              pendingHeadshot={pendingHeadshot}
+              onSelectHeadshot={setPendingHeadshot}
+              uploadError={headshotError}
+            />
           </WizardShell>
         )}
 

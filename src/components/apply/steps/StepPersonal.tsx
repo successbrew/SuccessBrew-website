@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useFileUpload } from "../useFileUpload";
 import type { PersonalInfo } from "@/lib/types/application";
 
 const GENDER_OPTIONS = ["Male", "Female", "Non-binary", "Prefer not to say", "Other"];
@@ -17,22 +16,22 @@ const GENDER_OPTIONS = ["Male", "Female", "Non-binary", "Prefer not to say", "Ot
 export function StepPersonal({
   value,
   onChange,
+  pendingHeadshot,
+  onSelectHeadshot,
+  uploadError,
 }: {
   value: Partial<PersonalInfo>;
   onChange: (patch: Partial<PersonalInfo>) => void;
+  /** Staged, not-yet-uploaded file — it's only sent to the server when "Continue" is pressed. */
+  pendingHeadshot: File | null;
+  onSelectHeadshot: (file: File | null) => void;
+  uploadError?: string | null;
 }) {
-  const { upload, isUploading, error } = useFileUpload();
-
   function field<K extends keyof PersonalInfo>(key: K) {
     return {
       value: value[key] ?? "",
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange({ [key]: e.target.value } as Partial<PersonalInfo>),
     };
-  }
-
-  async function handleHeadshot(file: File) {
-    const url = await upload(file);
-    if (url) onChange({ headshotUrl: url });
   }
 
   return (
@@ -92,16 +91,14 @@ export function StepPersonal({
           id="headshot"
           type="file"
           accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleHeadshot(file);
-          }}
+          onChange={(e) => onSelectHeadshot(e.target.files?.[0] ?? null)}
         />
-        {isUploading && <p className="text-sm text-[#111111]/50">Uploading…</p>}
-        {value.headshotUrl && !isUploading && (
-          <p className="text-sm text-[#0037D2]">Headshot uploaded ✓</p>
+        {pendingHeadshot ? (
+          <p className="text-sm text-[#111111]/50">{pendingHeadshot.name} selected — uploads when you continue.</p>
+        ) : (
+          value.headshotUrl && <p className="text-sm text-[#0037D2]">Headshot uploaded ✓</p>
         )}
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
       </div>
     </div>
   );
