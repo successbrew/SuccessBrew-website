@@ -28,6 +28,8 @@ export interface EventLandingData {
   highlightStatValue: string | null;
   highlightStatLabel: string | null;
   totalSeats: number | null;
+  remainingSeats: number | null;
+  showRemainingSeats: boolean;
   venueAddress: string | null;
   venuePhotoUrl: string | null;
   agenda: string | null;
@@ -80,6 +82,20 @@ function parseBenefits(list: string[]): BenefitItem[] {
     if (idx === -1) return { title: line };
     return { title: line.slice(0, idx).trim(), description: line.slice(idx + 1).trim() };
   });
+}
+
+/** Computed "N of Total seats left" line, falling back to the admin's free-text
+ * seatsNote override when set, and to a total-only/open-seating line otherwise.
+ * Remaining-seat count is only surfaced when the admin has toggled it on. */
+function seatsSummary(event: EventLandingData, { totalSuffix, fallback }: { totalSuffix: string; fallback: string }) {
+  if (event.seatsNote) return event.seatsNote;
+  if (event.totalSeats != null) {
+    if (event.showRemainingSeats && event.remainingSeats != null) {
+      return `${event.remainingSeats} of ${event.totalSeats} seats left`;
+    }
+    return `${event.totalSeats} ${totalSuffix}`;
+  }
+  return fallback;
 }
 
 function googleCalendarUrl(event: EventLandingData) {
@@ -211,7 +227,7 @@ export function EventLandingPageClient({
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Seats</p>
                 <p className="mt-1 truncate text-sm font-bold text-[#0037D2]">
-                  {event.seatsNote ?? (event.totalSeats ? `${event.totalSeats} seats` : "Open seating")}
+                  {seatsSummary(event, { totalSuffix: "seats", fallback: "Open seating" })}
                 </p>
               </div>
             </div>
@@ -339,6 +355,9 @@ export function EventLandingPageClient({
                       <div>
                         <p className="text-3xl font-black text-[#0037D2]">{event.totalSeats}</p>
                         <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#111111]/50">Seats</p>
+                        {event.showRemainingSeats && event.remainingSeats != null && (
+                          <p className="mt-1 text-[10px] font-semibold text-[#111111]/40">{event.remainingSeats} left</p>
+                        )}
                       </div>
                     )}
                     {event.highlightStatValue && (
@@ -358,7 +377,7 @@ export function EventLandingPageClient({
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Registration</p>
                 <h3 className="mt-2 text-xl font-black leading-tight">{event.priceNote ?? "Reserve your seat"}</h3>
                 <p className="mt-2 text-sm text-white/70">
-                  {event.seatsNote ?? (event.totalSeats ? `${event.totalSeats} seats total` : "Limited seating")}
+                  {seatsSummary(event, { totalSuffix: "seats total", fallback: "Limited seating" })}
                 </p>
                 <a href={registerHref} target={event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
                   className="mt-6 flex items-center justify-center gap-2 rounded-full bg-[#C1FF3B] px-6 py-3.5 text-sm font-bold text-[#111111] transition hover:translate-y-[-2px]">
@@ -374,13 +393,15 @@ export function EventLandingPageClient({
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/40">Getting There</p>
                   <p className="mt-3 text-sm font-black text-[#111111]">{event.location}</p>
                   {event.venueAddress && <p className="mt-1 text-sm text-[#111111]/60">{event.venueAddress}</p>}
-                  {event.venuePhotoUrl ? (
-                    <img src={event.venuePhotoUrl} alt={event.location} className="mt-4 aspect-[4/3] w-full rounded-xl object-cover" />
-                  ) : (
-                    <div className="mt-4 grid aspect-[4/3] w-full place-items-center rounded-xl bg-[#F0EBD8] text-3xl text-[#111111]/20">
-                      📍
-                    </div>
-                  )}
+                  <div className="mt-4 aspect-[4/3] w-full overflow-hidden rounded-xl bg-[#F0EBD8]">
+                    <iframe
+                      title={`Map to ${event.location}`}
+                      src={`https://www.google.com/maps?q=${encodeURIComponent(venue)}&output=embed`}
+                      className="h-full w-full border-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
                   <div className="mt-4 flex gap-3">
                     <a href={googleCalendarUrl(event)} target="_blank" rel="noreferrer noopener"
                       className="flex-1 rounded-full bg-[#111111] px-4 py-2.5 text-center text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#0037D2]">

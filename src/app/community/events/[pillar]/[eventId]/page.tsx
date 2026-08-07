@@ -64,6 +64,8 @@ export default async function EventLandingPage({
         highlightStatValue: event.highlightStatValue,
         highlightStatLabel: event.highlightStatLabel,
         totalSeats: event.totalSeats,
+        remainingSeats: event.remainingSeats,
+        showRemainingSeats: event.showRemainingSeats,
         venueAddress: event.venueAddress,
         venuePhotoUrl: event.venuePhotoUrl,
         agenda: event.agenda,

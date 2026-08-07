@@ -27,6 +27,12 @@ export const communityEventSchema = z.object({
     const n = typeof val === "string" ? Number(val) : val;
     return Number.isNaN(n) ? undefined : n;
   }, z.number().int().optional()),
+  remainingSeats: z.preprocess((val) => {
+    if (val === "" || val === null || val === undefined) return undefined;
+    const n = typeof val === "string" ? Number(val) : val;
+    return Number.isNaN(n) ? undefined : n;
+  }, z.number().int().optional()),
+  showRemainingSeats: z.preprocess((val) => val === "true" || val === true, z.boolean()).default(false),
   agenda: z.string().optional(),
   hostName: z.string().optional(),
   hostRole: z.string().optional(),
@@ -60,6 +66,8 @@ export const communityEventFields: FieldConfig[] = [
   { name: "timeRange", label: "Time Range (optional)", type: "text", placeholder: "6:30 – 10:00 PM" },
   { name: "priceNote", label: "Price / Eligibility Note (optional)", type: "text", placeholder: "Free for members · ₹999 guests" },
   { name: "totalSeats", label: "Total Seats (optional)", type: "number" },
+  { name: "remainingSeats", label: "Remaining Seats (optional, update as bookings come in)", type: "number" },
+  { name: "showRemainingSeats", label: "Show Remaining Seats Publicly", type: "boolean" },
   { name: "highlightStatValue", label: "Highlight Stat Value (optional)", type: "text", placeholder: "6" },
   { name: "highlightStatLabel", label: "Highlight Stat Label (optional)", type: "text", placeholder: "Matched intros each" },
   { name: "audienceNote", label: "Who's in the Room (optional)", type: "textarea" },

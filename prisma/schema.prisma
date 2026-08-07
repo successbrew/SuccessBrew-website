@@ -168,6 +168,12 @@ model CommunityEvent {
   highlightStatValue String?
   highlightStatLabel String?
   totalSeats         Int?
+  /// Manually updated by an admin when a seat is booked (there is no in-app
+  /// booking flow — registration still happens via the external registerUrl).
+  remainingSeats     Int?
+  /// Public site only shows remainingSeats when this is on, so an admin can
+  /// track it privately before deciding to surface it.
+  showRemainingSeats Boolean  @default(false)
   agenda           String?
   hostName         String?
   hostRole         String?
@@ -364,6 +370,12 @@ enum ApplicationStatus {
 model Application {
   id              String             @id @default(cuid())
   applicationCode String             @unique
+  /// Lowercased applicant email, mirrored out of `personal` so we can enforce
+  /// one application per email at the DB layer. Nullable (rather than
+  /// backfilled) so existing rows aren't touched — Postgres allows multiple
+  /// NULLs under a unique constraint, so old rows are unaffected and only
+  /// new submissions are deduped.
+  email           String?            @unique
   /// Neon Auth user id of the applicant, when they happen to be signed in —
   /// login is never required to submit, so this is null for anonymous
   /// applicants. Not a Prisma relation — Neon Auth's user table lives outside
