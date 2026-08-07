@@ -45,7 +45,7 @@ export function ApplyWizardClient({
   userEmail: string | null;
   siteSettings: SiteSettings;
 }) {
-  const { draft, update, clear, hydrated } = useApplicationDraft();
+  const { draft, update, clear, hydrated, discardedInvalidDraft } = useApplicationDraft();
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submittedCode, setSubmittedCode] = useState<string | null>(null);
@@ -135,6 +135,11 @@ export function ApplyWizardClient({
             nextDisabled={!isStepComplete(0, draft) || uploadingHeadshot}
             nextLabel={uploadingHeadshot ? "Uploading…" : "Continue"}
           >
+            {discardedInvalidDraft && (
+              <p className="mb-4 text-xs text-[#111111]/50">
+                We couldn&rsquo;t restore your previous progress, so we started a fresh application.
+              </p>
+            )}
             <StepPersonal
               value={draft.personal}
               onChange={(patch) => update({ personal: { ...draft.personal, ...patch } })}
@@ -142,6 +147,15 @@ export function ApplyWizardClient({
               onSelectHeadshot={setPendingHeadshot}
               uploadError={headshotError}
             />
+            <button
+              type="button"
+              onClick={() => {
+                if (window.confirm("Clear your saved progress and start over?")) clear();
+              }}
+              className="mt-4 text-xs text-[#111111]/40 underline underline-offset-2 hover:text-[#111111]/70"
+            >
+              Start over
+            </button>
           </WizardShell>
         )}
 

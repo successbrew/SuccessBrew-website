@@ -30,6 +30,14 @@ function ScrambleText({ text, trigger }: { text: string; trigger: boolean }) {
     let iteration = 0;
     const total = text.length * 4;
     const id = setInterval(() => {
+      iteration++;
+      if (iteration >= total) {
+        // Land exactly on the real text — the character-locking math below is
+        // one tick short of covering the final character on the last frame.
+        setDisplay(text);
+        clearInterval(id);
+        return;
+      }
       setDisplay(
         text.split("").map((char, i) => {
           if (char === " " || char === "\n") return char;
@@ -37,8 +45,6 @@ function ScrambleText({ text, trigger }: { text: string; trigger: boolean }) {
           return CHARS[Math.floor(Math.random() * CHARS.length)];
         }).join("")
       );
-      iteration++;
-      if (iteration >= total) clearInterval(id);
     }, 28);
     return () => clearInterval(id);
   }, [trigger, text]);
