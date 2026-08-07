@@ -31,6 +31,19 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Server Actions (form submissions in the admin panel) are POSTs to the
+  // current page, tagged with this header by Next.js. Don't run the full
+  // session-redirect gate on them: a plain HTTP redirect here isn't
+  // recognized by the client's Server Action protocol (which only honors
+  // redirects that carry `x-action-redirect`, set by `redirect()` calls
+  // inside the action) and breaks with "An unexpected response was received
+  // from the server" instead of navigating to sign-in. `verifyAdminSession()`
+  // inside every action (see dal.ts) is the authoritative check and already
+  // redirects correctly when the session is invalid.
+  if (request.headers.has("next-action")) {
+    return NextResponse.next();
+  }
+
   const gateResult = await requireAdminSession(request);
   if (gateResult.headers.get("location")) {
     return gateResult;
