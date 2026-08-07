@@ -48,5 +48,9 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Next's own file-based metadata routes (icon.jpg, apple-icon, etc.) need to
+  // stay excluded here too — otherwise the admin-host rewrite below turns
+  // /icon.jpg into /sbh-1111/icon.jpg, a route that doesn't exist, and every
+  // browser tab on the admin subdomain gets a 404'd favicon.
+  matcher: ["/((?!_next/static|_next/image|favicon\\.ico|icon\\.|apple-icon|opengraph-image|twitter-image|manifest\\.webmanifest|sitemap\\.xml|robots\\.txt).*)"],
 };

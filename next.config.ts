@@ -56,6 +56,17 @@ const nextConfig: NextConfig = {
   // Stop advertising "X-Powered-By: Next.js" — no functional benefit, only
   // helps attackers fingerprint the stack.
   poweredByHeader: false,
+  experimental: {
+    serverActions: {
+      // The admin panel now lives on sbh-1111.successbrew.in while the rest of
+      // the app is on successbrew.in — Next.js only trusts Server Action
+      // requests whose Origin matches the request's own Host by default, so
+      // without this every admin create/update/delete (all Server Actions)
+      // is rejected as a cross-origin request the moment it's submitted from
+      // the subdomain. See src/proxy.ts for the matching host-based routing.
+      allowedOrigins: ["successbrew.in", "sbh-1111.successbrew.in"],
+    },
+  },
   images: {
     remotePatterns: [
       {
