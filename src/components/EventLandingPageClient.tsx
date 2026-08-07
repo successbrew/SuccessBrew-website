@@ -285,7 +285,7 @@ export function EventLandingPageClient({
                       <motion.div key={s.id} variants={fadeUp} className="overflow-hidden rounded-2xl bg-white">
                         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2]/10">
                           {s.photoUrl ? (
-                            <img src={s.photoUrl} alt={s.name} className="h-full w-full object-cover" />
+                            <img src={s.photoUrl} alt={s.name} className="h-full w-full object-cover object-top" />
                           ) : (
                             <div className="grid h-full w-full place-items-center text-2xl font-black text-[#0037D2]/25">
                               {s.name.charAt(0)}
@@ -306,7 +306,7 @@ export function EventLandingPageClient({
                       <motion.div variants={fadeUp} className="overflow-hidden rounded-2xl bg-white">
                         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2]/10">
                           {event.hostPhotoUrl ? (
-                            <img src={event.hostPhotoUrl} alt={event.hostName} className="h-full w-full object-cover" />
+                            <img src={event.hostPhotoUrl} alt={event.hostName} className="h-full w-full object-cover object-top" />
                           ) : (
                             <div className="grid h-full w-full place-items-center text-2xl font-black text-[#0037D2]/25">
                               {event.hostName.charAt(0)}
