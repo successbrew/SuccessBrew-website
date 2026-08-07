@@ -1,4 +1,4 @@
-import { resend, EMAIL_FROM } from "./resend-client";
+import { resend, EMAIL_FROM, REPLY_TO_EMAIL } from "./resend-client";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -16,7 +16,13 @@ export async function sendEmail(params: {
   applicationId?: string;
 }) {
   try {
-    await resend.emails.send({ from: EMAIL_FROM, to: params.to, subject: params.subject, html: params.html });
+    await resend.emails.send({
+      from: EMAIL_FROM,
+      to: params.to,
+      subject: params.subject,
+      html: params.html,
+      replyTo: REPLY_TO_EMAIL,
+    });
     await prisma.emailLog
       .create({
         data: {

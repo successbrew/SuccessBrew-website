@@ -48,6 +48,10 @@ Marketing site and admin CMS for **Successbrew** — a content, community, and v
    | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | AWS credentials for S3 uploads |
    | `AWS_REGION` | AWS region for the S3 bucket |
    | `AWS_S3_BUCKET_NAME` | Target S3 bucket for uploaded media |
+   | `RESEND_API_KEY` | Resend API key for transactional emails |
+   | `RESEND_FROM_EMAIL` | Verified sender address for Resend, e.g. `Successbrew <no-reply@successbrew.in>` |
+   | `RESEND_REPLY_TO_EMAIL` | Optional reply-to address; defaults to the same value as `RESEND_FROM_EMAIL` |
+   | `ADMIN_NOTIFICATION_EMAIL` | Optional team notification recipient; defaults to `team@successbrew.in` |
 
 3. Apply the Prisma schema to your database:
 
