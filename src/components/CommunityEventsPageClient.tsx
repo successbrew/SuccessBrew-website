@@ -131,13 +131,14 @@ function NextUpCard({ event }: { event: EventItem }) {
               <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-white backdrop-blur">Featured</span>
             )}
           </div>
-          <div className="absolute bottom-4 left-4 right-4 text-right">
-            <p className="text-xs font-bold uppercase tracking-wide text-white/70">{event.location}</p>
-            <h3 className="mt-1 text-2xl font-black leading-tight text-white">{event.title}</h3>
-          </div>
         </div>
 
         <div className="flex flex-col justify-center p-6 lg:p-10">
+          <div className="mb-6 text-center">
+            <h3 className="text-2xl font-black leading-tight text-[#111111]">{event.title}</h3>
+            <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#111111]/40">{event.location}</p>
+          </div>
+
           <div className="grid grid-cols-3 gap-4 border-b border-[#111111]/10 pb-6">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Date</p>
