@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Hash, LogOut } from "lucide-react";
 import { verifyAdminSession } from "@/lib/auth/dal";
 import { ROLE_LABELS } from "@/lib/auth/permissions";
 import { CONTENT_TYPE_NAV_GROUPS } from "@/lib/admin/content-types";
@@ -80,6 +80,13 @@ export default async function AdminLayout({
               >
                 <Users className="h-4 w-4" />
                 Manage Admins
+              </Link>
+              <Link
+                href="/sbh-1111/settings/application-codes"
+                className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+              >
+                <Hash className="h-4 w-4" />
+                Application Codes
               </Link>
             </>
           )}

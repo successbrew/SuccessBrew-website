@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FieldLabel } from "@/components/apply/FieldLabel";
 import {
   Select,
   SelectContent,
@@ -38,41 +38,41 @@ export function StepPersonal({
     <div className="space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="firstName">First Name</Label>
+          <FieldLabel htmlFor="firstName" required>First Name</FieldLabel>
           <Input id="firstName" required {...field("firstName")} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastName">Last Name</Label>
+          <FieldLabel htmlFor="lastName" required>Last Name</FieldLabel>
           <Input id="lastName" required {...field("lastName")} />
         </div>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <FieldLabel htmlFor="email" required>Email</FieldLabel>
           <Input id="email" type="email" required {...field("email")} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
+          <FieldLabel htmlFor="phone" required>Phone</FieldLabel>
           <Input id="phone" type="tel" required {...field("phone")} />
         </div>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="country">Country</Label>
+          <FieldLabel htmlFor="country" required>Country</FieldLabel>
           <Input id="country" required {...field("country")} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="city">City</Label>
+          <FieldLabel htmlFor="city" required>City</FieldLabel>
           <Input id="city" required {...field("city")} />
         </div>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="birthday">Birthday</Label>
+          <FieldLabel htmlFor="birthday" required>Birthday</FieldLabel>
           <Input id="birthday" type="date" required {...field("birthday")} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="gender">Gender</Label>
+          <FieldLabel htmlFor="gender" required>Gender</FieldLabel>
           <Select value={value.gender ?? ""} onValueChange={(next) => onChange({ gender: next })}>
             <SelectTrigger id="gender">
               <SelectValue placeholder="Select an option" />
@@ -86,7 +86,7 @@ export function StepPersonal({
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="headshot">Headshot</Label>
+        <FieldLabel htmlFor="headshot" required={false}>Headshot</FieldLabel>
         <input
           id="headshot"
           type="file"

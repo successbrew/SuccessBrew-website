@@ -1,6 +1,6 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
+import { FieldLabel } from "@/components/apply/FieldLabel";
 import {
   Select,
   SelectContent,
@@ -31,7 +31,7 @@ export function StepCategory({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Label>Major Category</Label>
+        <FieldLabel required>Major Category</FieldLabel>
         <Select
           value={categoryId}
           onValueChange={(next) => onChange({ categoryId: next, subCategoryId: undefined })}
@@ -48,7 +48,7 @@ export function StepCategory({
       </div>
 
       <div className="space-y-2">
-        <Label>Sub Category</Label>
+        <FieldLabel required>Sub Category</FieldLabel>
         <Select
           value={subCategoryId}
           onValueChange={(next) => onChange({ subCategoryId: next })}

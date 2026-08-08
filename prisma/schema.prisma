@@ -314,6 +314,21 @@ model SiteSettings {
   updatedAt     DateTime @updatedAt
 }
 
+/// Backs the sequential "SB-<year>-<NNN>" application code (see
+/// src/lib/services/applications/code-generator.ts). Singleton row (id is
+/// always "singleton"). lastNumber keeps counting up across year boundaries —
+/// the year in the code is just whatever year it is when a code is issued,
+/// it does NOT reset lastNumber back to 0. Only the explicit two-step admin
+/// reset at /sbh-1111/settings/application-codes does that. lastYear is
+/// display-only, so the admin panel can show "last code issued" correctly
+/// even when viewed after a year boundary has passed.
+model ApplicationCodeSequence {
+  id         String   @id @default("singleton")
+  lastNumber Int      @default(0)
+  lastYear   Int?
+  updatedAt  DateTime @updatedAt
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // Speaker Management Platform — foundational schema (Module 1)
 // ═══════════════════════════════════════════════════════════════════════════
