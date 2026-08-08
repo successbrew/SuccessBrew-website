@@ -21,6 +21,7 @@ export interface EventLandingData {
   date: string;
   eventDate: string;
   location: string;
+  imageUrl: string | null;
   subtitle: string | null;
   timeRange: string | null;
   priceNote: string | null;
@@ -165,10 +166,28 @@ export function EventLandingPageClient({
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#0037D2] pt-32 pb-20 text-white lg:pt-44 lg:pb-28">
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full border border-white/10" />
-            <div className="absolute left-[-100px] bottom-[-120px] h-[300px] w-[300px] rounded-full bg-[#C1FF3B]/10 blur-3xl" />
-          </div>
+          {event.imageUrl ? (
+            <>
+              {/* Cover images here are typically pre-designed banners with their own
+                  title/date text baked in, not plain photography — heavy blur turns
+                  them into a color/mood wash so they never compete with the real,
+                  crisp title rendered on top. */}
+              <div
+                aria-hidden
+                className="absolute inset-0 scale-110 bg-cover bg-center blur-xl"
+                style={{ backgroundImage: `url(${event.imageUrl})` }}
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0037D2]/78 via-[#0037D2]/42 to-[#0037D2]/88"
+              />
+            </>
+          ) : (
+            <div aria-hidden className="pointer-events-none absolute inset-0">
+              <div className="absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full border border-white/10" />
+              <div className="absolute left-[-100px] bottom-[-120px] h-[300px] w-[300px] rounded-full bg-[#C1FF3B]/10 blur-3xl" />
+            </div>
+          )}
           <div className="relative mx-auto max-w-5xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.a variants={fadeUp} href={`/community/events/${pillar.slug}`}

@@ -57,6 +57,7 @@ export default async function EventLandingPage({
         date: event.date,
         eventDate: event.eventDate.toISOString(),
         location: event.location,
+        imageUrl: event.imageUrl,
         subtitle: event.subtitle,
         timeRange: event.timeRange,
         priceNote: event.priceNote,
