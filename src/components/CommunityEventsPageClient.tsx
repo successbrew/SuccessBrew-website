@@ -58,7 +58,7 @@ function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2]/10">
         {event.imageUrl ? (
-          <img src={event.imageUrl} alt={event.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <img src={event.imageUrl} alt={event.title} className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105" />
         ) : (
           <div className="grid h-full w-full place-items-center text-[#0037D2]/25">
             <span className="text-4xl">📅</span>
@@ -118,7 +118,7 @@ function NextUpCard({ event }: { event: EventItem }) {
       <div className="grid lg:grid-cols-2">
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2] lg:aspect-auto">
           {event.imageUrl ? (
-            <img src={event.imageUrl} alt={event.title} className="h-full w-full object-cover" />
+            <img src={event.imageUrl} alt={event.title} className="h-full w-full object-contain" />
           ) : (
             <div className="grid h-full min-h-[220px] w-full place-items-center text-white/20">
               <span className="text-5xl">📅</span>
