@@ -24,7 +24,7 @@ export function LegalPageClient({
 }) {
   return (
     <>
-      <NavBar activePage="" ctaText="Join Community" ctaHref="/apply" />
+      <NavBar activePage="" ctaText="Join Community" ctaHref="/apply?source=community" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
         <section className="bg-[#F2ECDD] pt-32 pb-16 lg:pt-44 lg:pb-20">
           <div className="mx-auto max-w-3xl px-6 lg:px-10">

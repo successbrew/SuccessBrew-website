@@ -42,7 +42,11 @@ export async function submitApplicationAction(raw: unknown): Promise<SubmitAppli
       personal: parsed.data.personal,
       professional: parsed.data.professional,
       documents: parsed.data.documents,
+      source: parsed.data.source,
     });
+
+    const isCommunity = parsed.data.source === "COMMUNITY";
+    const applicantName = `${parsed.data.personal.firstName} ${parsed.data.personal.lastName}`;
 
     await Promise.all([
       notifyTeamOfSubmission({
@@ -51,6 +55,7 @@ export async function submitApplicationAction(raw: unknown): Promise<SubmitAppli
         personal: parsed.data.personal,
         category: categoryLabel,
         subCategory: subCategoryLabel,
+        source: parsed.data.source,
       }),
       sendApplicationConfirmationEmail({
         to: parsed.data.personal.email,
@@ -60,11 +65,14 @@ export async function submitApplicationAction(raw: unknown): Promise<SubmitAppli
         subCategoryLabel,
         personal: parsed.data.personal,
         professional: parsed.data.professional,
+        source: parsed.data.source,
       }),
       notifyAdmins({
-        type: "new_application",
-        title: "New speaker application",
-        message: `${parsed.data.personal.firstName} ${parsed.data.personal.lastName} applied (${categoryLabel} / ${subCategoryLabel}).`,
+        type: isCommunity ? "new_community_member" : "new_application",
+        title: isCommunity ? "New community member joined! 🎉" : "New speaker application",
+        message: isCommunity
+          ? `${applicantName} just joined the community (${categoryLabel} / ${subCategoryLabel}).`
+          : `${applicantName} applied (${categoryLabel} / ${subCategoryLabel}).`,
         link: `/sbh-1111/applications/${application.id}`,
       }).catch(() => {}),
     ]);

@@ -36,7 +36,14 @@ export async function getProcessSteps() {
 
 export async function getCaseStudies() {
   const rows = await prisma.caseStudy.findMany({ orderBy: { order: "asc" } });
-  return rows.map((r) => ({ ...r, _id: r.id }));
+  return rows.map((r) => ({
+    ...r,
+    _id: r.id,
+    heroMetrics: r.heroMetrics ?? [],
+    resultMetrics: r.resultMetrics ?? [],
+    strategySteps: r.strategySteps ?? [],
+    timelineSteps: r.timelineSteps ?? [],
+  }));
 }
 
 export async function getHomepageCaseStudies() {
@@ -44,7 +51,14 @@ export async function getHomepageCaseStudies() {
     where: { showOnHomepage: true },
     orderBy: { order: "asc" },
   });
-  return rows.map((r) => ({ ...r, _id: r.id }));
+  return rows.map((r) => ({
+    ...r,
+    _id: r.id,
+    heroMetrics: r.heroMetrics ?? [],
+    resultMetrics: r.resultMetrics ?? [],
+    strategySteps: r.strategySteps ?? [],
+    timelineSteps: r.timelineSteps ?? [],
+  }));
 }
 
 /** Client/service testimonials — powers the full /testimonials page. */

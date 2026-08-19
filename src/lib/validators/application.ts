@@ -76,9 +76,13 @@ export const applicationDraftSchema = z.object({
 });
 
 // ── Final submit — every step must be complete ────────────────────────────────
+/** Which on-site CTA the applicant came through — drives notification/email copy only. */
+export const applicationSourceSchema = z.enum(["SPEAKER", "COMMUNITY"]).default("SPEAKER");
+
 export const applicationSubmitSchema = z.object({
   categoryId: categorySelectionSchema.shape.categoryId,
   subCategoryId: categorySelectionSchema.shape.subCategoryId,
   personal: personalInfoSchema,
   professional: professionalInfoSchema,
+  source: applicationSourceSchema,
 });

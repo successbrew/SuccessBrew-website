@@ -127,7 +127,7 @@ const NAV: NavEntry[] = [
         ctaHref: "/courses",
       },
       footerLeft: "Learn more",         footerLeftHref: "/courses",
-      footerRight: "Join Community",  footerRightHref: "/apply",
+      footerRight: "Join Community",  footerRightHref: "/apply?source=community",
     },
   },
   {
@@ -186,7 +186,7 @@ interface NavBarProps {
 export default function NavBar({
   variant = "light",
   ctaText = "Join Community",
-  ctaHref = "/apply",
+  ctaHref = "/apply?source=community",
   activePage,
 }: NavBarProps) {
   const [open, setOpen]               = useState<string | null>(null);

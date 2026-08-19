@@ -8,13 +8,8 @@ export const metadata = {
   description: "Real brands, real results. See how Successbrew has helped founders build lasting visibility.",
 };
 
-export default async function CaseStudiesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ cs?: string }>;
-}) {
-  const [{ cs }, caseStudies, siteSettings] = await Promise.all([
-    searchParams,
+export default async function CaseStudiesPage() {
+  const [caseStudies, siteSettings] = await Promise.all([
     getCaseStudies().catch(() => []),
     getSiteSettings().catch(() => ({
       instagramUrl: null,
@@ -24,5 +19,5 @@ export default async function CaseStudiesPage({
     })),
   ]);
 
-  return <CaseStudiesPageClient caseStudies={caseStudies} siteSettings={siteSettings} initialSelectedId={cs} />;
+  return <CaseStudiesPageClient caseStudies={caseStudies} siteSettings={siteSettings} />;
 }

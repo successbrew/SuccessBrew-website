@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { ApplicationStatus, Prisma } from "@prisma/client";
+import { ApplicationSource, ApplicationStatus, Prisma } from "@prisma/client";
 import { generateApplicationCode } from "./code-generator";
 import { assertCategoryPairValid } from "@/lib/validators/application";
 import type { PersonalInfo, ProfessionalInfo, DocumentKind } from "@/lib/types/application";
@@ -13,6 +13,7 @@ interface SubmitApplicationInput {
   personal: PersonalInfo;
   professional: ProfessionalInfo;
   documents: { kind: DocumentKind; url: string }[];
+  source: ApplicationSource;
 }
 
 /**
@@ -45,6 +46,7 @@ export async function submitApplication(input: SubmitApplicationInput) {
           email,
           userId: input.userId,
           status: ApplicationStatus.SUBMITTED,
+          source: input.source,
           categoryId: input.categoryId,
           subCategoryId: input.subCategoryId,
           personal: input.personal as unknown as Prisma.InputJsonValue,

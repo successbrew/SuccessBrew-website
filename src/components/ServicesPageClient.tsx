@@ -33,9 +33,12 @@ export interface CaseStudy {
   tag: string;
   title: string;
   imageUrl: string | null;
+  clientName?: string | null;
+  description?: string | null;
   problem: string;
   strategy: string;
   results: string;
+  solutionContent?: string | null;
   reverseLayout: boolean;
   showOnHomepage?: boolean;
   pdfUrl?: string | null;
@@ -237,7 +240,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
   return (
-    <motion.a href={`/case-studies?cs=${cs._id}`}
+    <motion.a href={`/case-studies/${cs._id}`}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, delay: (i % 3) * 0.08, ease: E } }}
       viewport={{ once: true, margin: "-60px" }}

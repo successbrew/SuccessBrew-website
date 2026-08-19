@@ -85,12 +85,31 @@ model CaseStudy {
   tag            String
   title          String
   imageUrl       String
+  clientName     String?
+  description    String?
   problem        String
   strategy       String
   results        String
+  solutionContent String?
   reverseLayout  Boolean  @default(false)
   showOnHomepage Boolean  @default(false)
   pdfUrl         String?
+
+  /// JSON array: [{metric: string, value: string, label: string}]
+  heroMetrics    Json     @default("[]")
+
+  /// JSON object: {before: string, after: string}
+  beforeAfter    Json?
+
+  /// JSON array: [{title: string, description: string}]
+  strategySteps  Json     @default("[]")
+
+  /// JSON array: [{metric: string, value: string, label: string}]
+  resultMetrics  Json     @default("[]")
+
+  /// JSON array: [{title: string, description: string, order: int}]
+  timelineSteps  Json     @default("[]")
+
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
@@ -380,6 +399,15 @@ enum ApplicationStatus {
   ARCHIVED
 }
 
+/// Which on-site entry point an Application came through — every current CTA
+/// is labeled "Join Community" and links to /apply?source=community, but the
+/// pipeline is still speaker-review-shaped, so this drives notification/email
+/// copy without changing anything else about how the row is processed.
+enum ApplicationSource {
+  SPEAKER
+  COMMUNITY
+}
+
 /// One row per speaker application. Never deleted — status only ever moves
 /// forward through StatusHistory-tracked transitions (see status-transitions.ts).
 model Application {
@@ -397,6 +425,7 @@ model Application {
   /// our schema (same pattern as Blog.authorId).
   userId          String?
   status          ApplicationStatus  @default(DRAFT)
+  source          ApplicationSource  @default(SPEAKER)
 
   categoryId    String?
   category      Category?    @relation(fields: [categoryId], references: [id])

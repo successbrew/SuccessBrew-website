@@ -2,6 +2,7 @@ import { ADMIN_NOTIFICATION_EMAIL } from "./resend-client";
 import { sendEmail } from "./send";
 import { escapeHtml, sanitizeForHeader } from "./templates/shell";
 import type { PersonalInfo } from "@/lib/types/application";
+import type { ApplicationSource } from "@prisma/client";
 
 export async function notifyTeamOfSubmission(params: {
   applicationId: string;
@@ -9,17 +10,21 @@ export async function notifyTeamOfSubmission(params: {
   personal: PersonalInfo;
   category: string;
   subCategory: string;
+  source: ApplicationSource;
 }) {
   const firstName = sanitizeForHeader(params.personal.firstName);
   const lastName = sanitizeForHeader(params.personal.lastName);
+  const isCommunity = params.source === "COMMUNITY";
 
   await sendEmail({
     to: ADMIN_NOTIFICATION_EMAIL,
-    subject: `New speaker application: ${firstName} ${lastName} (${params.applicationCode})`,
-    template: "team_new_application",
+    subject: isCommunity
+      ? `New community member joined: ${firstName} ${lastName} (${params.applicationCode})`
+      : `New speaker application: ${firstName} ${lastName} (${params.applicationCode})`,
+    template: isCommunity ? "team_new_community_member" : "team_new_application",
     applicationId: params.applicationId,
     html: `
-      <h2>New speaker application submitted</h2>
+      <h2>${isCommunity ? "New community member joined! 🎉" : "New speaker application submitted"}</h2>
       <p><strong>Application ID:</strong> ${escapeHtml(params.applicationCode)}</p>
       <p><strong>Name:</strong> ${escapeHtml(firstName)} ${escapeHtml(lastName)}</p>
       <p><strong>Email:</strong> ${escapeHtml(params.personal.email)}</p>

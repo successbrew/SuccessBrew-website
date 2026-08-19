@@ -161,7 +161,7 @@ export function EventLandingPageClient({
 
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply" />
+      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply?source=community" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}

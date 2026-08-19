@@ -1,7 +1,7 @@
 import { sendEmail } from "./send";
 import { buildApplicationReceivedEmail } from "./templates/application-received";
 import { buildStatusUpdateEmail } from "./templates/status-update";
-import type { ApplicationStatus } from "@prisma/client";
+import type { ApplicationSource, ApplicationStatus } from "@prisma/client";
 import type { PersonalInfo, ProfessionalInfo } from "@/lib/types/application";
 
 export async function sendApplicationConfirmationEmail(params: {
@@ -12,6 +12,7 @@ export async function sendApplicationConfirmationEmail(params: {
   subCategoryLabel: string;
   personal: PersonalInfo;
   professional: ProfessionalInfo;
+  source: ApplicationSource;
 }) {
   const { subject, html } = buildApplicationReceivedEmail(params);
   await sendEmail({

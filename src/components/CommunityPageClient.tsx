@@ -196,7 +196,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
 
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply" />
+      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply?source=community" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -244,7 +244,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   8000+ Founders, Freelancers, Agencies, Angels, Creators, and VCs — growing through shared opportunities, real visibility, and meaningful connections across India.
                 </p>
                 <div className="flex flex-wrap items-center gap-3 lg:justify-end">
-                  <a href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,55,210,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
+                  <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,55,210,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
                   <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#F0EBD8]">Explore Ecosystem</a>
                 </div>
               </motion.div>
@@ -690,7 +690,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               Join a community of founders, creators and students building India's next decade — together.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <a href="/apply" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
+              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
               <a href="/about" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">Our Story</a>
             </motion.div>
           </motion.div>
