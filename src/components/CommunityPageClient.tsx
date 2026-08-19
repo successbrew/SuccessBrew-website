@@ -16,6 +16,7 @@ import { ExpandableQuote } from "@/components/ExpandableQuote";
 import type { Testimonial } from "@/components/ServicesPageClient";
 import { EVENT_PILLARS } from "@/lib/event-pillars";
 import { EventPosterCard } from "@/components/EventPosterCard";
+import { ScrollAutoplayYouTube } from "@/components/ScrollAutoplayYouTube";
 // NetworkCanvas visualization temporarily removed from this page — component
 // file kept intact at @/components/CommunityNetworkCanvas for re-adding later.
 
@@ -252,24 +253,12 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
 
             {/* Community video */}
             <motion.div initial={{ opacity: 0, scale: 0.97, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
-              className="group relative mt-16 aspect-video w-full overflow-hidden rounded-[1.75rem] border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
-              {/* TODO: swap for the real community video — set `src` on the <video> tag below */}
-              <video className="h-full w-full object-cover" poster="/grid-images/IMG_9736.JPG" muted loop playsInline controls>
-                Your browser does not support embedded video.
-              </video>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              <div className="pointer-events-none absolute inset-0 grid place-items-center">
-                <span className="grid h-20 w-20 place-items-center rounded-full bg-[#C1FF3B] text-[#111111] shadow-[0_10px_30px_rgba(193,255,59,0.4)] transition-transform group-hover:scale-110">
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                </span>
-              </div>
-              <span className="absolute left-5 top-5 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-black text-[#111111]">Live Community</span>
-              <div className="absolute bottom-5 left-5 right-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/15 bg-black/30 p-4 backdrop-blur-md">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-white/80">8,000+ Members</p>
-                  <p className="mt-0.5 text-sm font-semibold text-white">See the Successbrew community in action</p>
-                </div>
-              </div>
+              className="relative mt-16 aspect-video w-full overflow-hidden rounded-[1.75rem] border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
+              <ScrollAutoplayYouTube
+                videoId="rFocbWfZe5E"
+                title="See the Successbrew community in action"
+                className="h-full w-full"
+              />
             </motion.div>
 
             {/* Stat boxes */}

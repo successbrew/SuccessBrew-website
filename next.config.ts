@@ -24,8 +24,8 @@ const cspHeader = `
   base-uri 'self';
   form-action 'self';
   frame-ancestors 'none';
-  child-src 'self' https://www.google.com https://www.google.co.in https://maps.google.com https://*.google.com;
-  frame-src 'self' https://www.google.com https://www.google.co.in https://maps.google.com https://*.google.com;
+  child-src 'self' https://www.google.com https://www.google.co.in https://maps.google.com https://*.google.com https://www.youtube.com https://www.youtube-nocookie.com https://*.amazonaws.com;
+  frame-src 'self' https://www.google.com https://www.google.co.in https://maps.google.com https://*.google.com https://www.youtube.com https://www.youtube-nocookie.com https://*.amazonaws.com;
   upgrade-insecure-requests;
 `
   .replace(/\s{2,}/g, " ")

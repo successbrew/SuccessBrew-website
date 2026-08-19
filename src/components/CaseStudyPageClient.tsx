@@ -499,33 +499,49 @@ export function CaseStudyPageClient({
         {caseStudy.pdfUrl && (
           <>
             <section className="bg-background py-20 lg:py-32">
-              <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
-                <motion.div
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={stagger(0.12)}
-                >
-                  <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-primary">
-                    Deep Dive
-                  </motion.p>
-                  <motion.h2 variants={fadeUp} className="mt-4 text-4xl md:text-5xl font-black tracking-tight">
-                    Want the complete breakdown?
-                  </motion.h2>
-                  <motion.p variants={fadeUp} className="mt-6 text-lg text-ink/70">
-                    Explore the full strategy, execution, and results in our detailed case study PDF.
-                  </motion.p>
-                  <motion.div variants={fadeUp} className="mt-10">
-                    <a
-                      href={caseStudy.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(193,255,59,0.5)] transition hover:translate-y-[-2px]"
-                    >
-                      📄 View Full Case Study
-                    </a>
+              <div className="mx-auto max-w-6xl px-6 lg:px-10">
+                <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={stagger(0.12)}
+                  >
+                    <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-primary">
+                      Deep Dive
+                    </motion.p>
+                    <motion.h2 variants={fadeUp} className="mt-4 text-4xl md:text-5xl font-black tracking-tight">
+                      Want the complete breakdown?
+                    </motion.h2>
+                    <motion.p variants={fadeUp} className="mt-6 text-lg text-ink/70">
+                      Explore the full strategy, execution, and results in our detailed case study PDF.
+                    </motion.p>
+                    <motion.div variants={fadeUp} className="mt-10">
+                      <a
+                        href={caseStudy.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(193,255,59,0.5)] transition hover:translate-y-[-2px]"
+                      >
+                        📄 View Full Case Study
+                      </a>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.97, y: 24 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: E }}
+                    className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl border border-ink/10 bg-cream shadow-[0_30px_70px_-30px_rgba(0,0,0,0.25)]"
+                  >
+                    <iframe
+                      src={caseStudy.pdfUrl}
+                      title={`${caseStudy.title} — full case study PDF`}
+                      className="h-full w-full"
+                    />
+                  </motion.div>
+                </div>
               </div>
             </section>
             <SectionWave from="var(--background)" to="var(--sand)" />

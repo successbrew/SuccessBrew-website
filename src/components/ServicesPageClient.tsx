@@ -12,6 +12,7 @@ import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { SectionWave } from "@/components/SectionWave";
+import { ScrollAutoplayYouTube } from "@/components/ScrollAutoplayYouTube";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 // â"€â"€ Types â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
@@ -417,17 +418,12 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.9, ease: E }}
-              className="group relative mt-16 overflow-hidden rounded-[2rem] border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
-              {/* TODO: swap for the real studio video — set `src` on the <video> tag below */}
-              <video className="h-[280px] w-full object-cover md:h-[520px]" poster="/grid-images/service-page.jpg" muted loop playsInline controls>
-                Your browser does not support embedded video.
-              </video>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-              <div className="pointer-events-none absolute inset-0 grid place-items-center">
-                <span className="grid h-16 w-16 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_10px_30px_-6px_oklch(0.45_0.22_264_/_0.5)] transition-transform group-hover:scale-110">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                </span>
-              </div>
+              className="relative mt-16 aspect-video w-full overflow-hidden rounded-[2rem] border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
+              <ScrollAutoplayYouTube
+                videoId="LPjwAuFAil0"
+                title="Successbrew studio in action"
+                className="h-full w-full"
+              />
             </motion.div>
           </div>
         </section>
