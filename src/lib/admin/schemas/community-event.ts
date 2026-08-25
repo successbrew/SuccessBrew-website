@@ -40,6 +40,7 @@ export const communityEventSchema = z.object({
   hostPhotoUrl: z.string().optional(),
   venueAddress: z.string().optional(),
   venuePhotoUrl: z.string().optional(),
+  videoUrl: z.string().optional(),
   benefits: z.preprocess(
     (val) => (typeof val === "string" ? val.split("\n").map((s) => s.trim()).filter(Boolean) : val),
     z.array(z.string())
@@ -78,6 +79,7 @@ export const communityEventFields: FieldConfig[] = [
   { name: "hostPhotoUrl", label: "Host Photo (optional)", type: "image" },
   { name: "venueAddress", label: "Venue / Address (optional)", type: "textarea" },
   { name: "venuePhotoUrl", label: "Venue Photo (optional)", type: "image" },
+  { name: "videoUrl", label: "Recap Video URL (optional, YouTube)", type: "url", placeholder: "https://www.youtube.com/watch?v=..." },
   { name: "benefits", label: "What You'll Leave With (optional, one per line: Title | Description)", type: "textarea", placeholder: "Six warm intros | Matched on what you're building and what you need." },
   { name: "becomePartnerUrl", label: "Become a Partner Link (optional)", type: "url" },
 ];

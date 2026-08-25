@@ -200,6 +200,8 @@ model CommunityEvent {
   hostPhotoUrl     String?
   venueAddress     String?
   venuePhotoUrl    String?
+  /// YouTube URL for a recap/highlight video, shown on the event's landing page.
+  videoUrl         String?
   /// One entry per line, format "Title | Description" (rendered as the
   /// numbered "What you'll leave with" cards); a bare line with no "|" still
   /// renders as a title-only card.

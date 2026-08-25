@@ -7,6 +7,7 @@ import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { SectionWave } from "@/components/SectionWave";
 import { WordReveal } from "@/components/WordReveal";
+import { ScrollAutoplayYouTube } from "@/components/ScrollAutoplayYouTube";
 import type { SiteSettings } from "@/components/SocialLinks";
 import type { EventPillar } from "@/lib/event-pillars";
 
@@ -33,6 +34,7 @@ export interface EventLandingData {
   showRemainingSeats: boolean;
   venueAddress: string | null;
   venuePhotoUrl: string | null;
+  videoUrl: string | null;
   agenda: string | null;
   hostName: string | null;
   hostRole: string | null;
@@ -57,6 +59,12 @@ export interface RelatedEvent {
 
 function firstToken(s: string) {
   return s.split(/[·,]/)[0]?.trim() ?? s;
+}
+
+function youtubeVideoId(url: string | null): string | null {
+  if (!url) return null;
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  return match?.[1] ?? null;
 }
 
 interface AgendaItem { time?: string; title: string; description?: string }
@@ -158,6 +166,7 @@ export function EventLandingPageClient({
   const registerHref = event.registerUrl ?? "#registration";
   const hasTimedAgenda = agendaItems.some((a) => a.time);
   const heroDate = new Date(event.eventDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }).toUpperCase();
+  const videoId = youtubeVideoId(event.videoUrl);
 
   return (
     <>
@@ -263,6 +272,19 @@ export function EventLandingPageClient({
 
             {/* ── LEFT COLUMN ── */}
             <div className="space-y-16 lg:col-span-2">
+
+              {videoId && (
+                <div>
+                  <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-8">
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">The Recap</p>
+                    <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">Watch how it went down.</h2>
+                  </motion.div>
+                  <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
+                    className="relative aspect-video w-full overflow-hidden rounded-2xl bg-[#111111] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.35)]">
+                    <ScrollAutoplayYouTube videoId={videoId} title={`${event.title} recap`} className="h-full w-full" />
+                  </motion.div>
+                </div>
+              )}
 
               {benefitItems.length > 0 && (
                 <div>

@@ -69,6 +69,7 @@ export default async function EventLandingPage({
         showRemainingSeats: event.showRemainingSeats,
         venueAddress: event.venueAddress,
         venuePhotoUrl: event.venuePhotoUrl,
+        videoUrl: event.videoUrl,
         agenda: event.agenda,
         hostName: event.hostName,
         hostRole: event.hostRole,

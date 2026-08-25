@@ -152,7 +152,7 @@ const membershipTiers = [
   },
   {
     name: "Founder",
-    price: "₹25,000",
+    price: "₹100,000",
     period: "/ year",
     desc: "Our top tier — deep access, real relationships, and hands-on support.",
     features: [
