@@ -11,10 +11,12 @@ import { deleteApplicationPermanently } from "@/lib/services/applications/delete
 import { sendSpeakerWelcomeEmail } from "@/lib/services/email/notify-speaker";
 import { notifyTeamOfSpeakerCreated } from "@/lib/services/email/notify-team";
 import { sendApplicationStatusUpdateEmail } from "@/lib/services/email/notify-applicant";
+import { sendCommunityApprovedEmail } from "@/lib/services/email/notify-community-approved";
 import { notifyAdmins, notifyApplicant } from "@/lib/services/notifications/create";
 import { logAudit } from "@/lib/services/audit/log";
 import { STATUS_LABELS } from "@/lib/services/applications/status-transitions";
-import { ApplicationStatus } from "@prisma/client";
+import { COMMUNITY_CHECKOUT_ENABLED } from "@/lib/commerce/community-tiers";
+import { ApplicationStatus, ApplicationSource } from "@prisma/client";
 import type { PersonalInfo } from "@/lib/types/application";
 
 type ActionResult = { success: true } | { error: string };
@@ -47,6 +49,16 @@ export async function changeApplicationStatus(
         applicationCode: updated.applicationCode,
         note: note.trim() || undefined,
       }),
+      // COMMUNITY-source approvals additionally get a dedicated email pointing
+      // them at the paid Growth/Founder tiers — SPEAKER approvals never do.
+      // Suppressed entirely while paid checkout is paused (COMMUNITY_CHECKOUT_ENABLED).
+      toStatus === ApplicationStatus.APPROVED && updated.source === ApplicationSource.COMMUNITY && COMMUNITY_CHECKOUT_ENABLED
+        ? sendCommunityApprovedEmail({
+            to: personal.email,
+            applicationId,
+            firstName: personal.firstName,
+          }).catch(() => {})
+        : Promise.resolve(),
       // In-app notifications only apply to applicants who happen to have an
       // account — anonymous applicants (the common case) rely on email alone.
       updated.userId

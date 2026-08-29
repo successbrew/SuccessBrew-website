@@ -20,7 +20,7 @@ export async function submitApplicationAction(raw: unknown): Promise<SubmitAppli
   // write path in the app — rate-limit per IP so it can't be used to spam
   // fake applications (and the emails/notifications each one triggers).
   const ip = await clientIpFromHeaders();
-  if (!checkRateLimit(`apply-submit:${ip}`, 5, 15 * 60 * 1000)) {
+  if (!(await checkRateLimit(`apply-submit:${ip}`, 5, 15 * 60 * 1000))) {
     return { error: "Too many applications submitted from this network. Please try again in a while." };
   }
 

@@ -1,0 +1,842 @@
+SuccessBrew — Complete System Workflow & Architecture
+Page 1
+ SuccessBrew
+ 
+Complete Lead Generation, Marketing,
+Payment, Community & Production
+ Architecture
+ A detailed reconstruction and consolidation of the workflows, diagrams, architecture, data flows,
+automation, and production considerations discussed in this chat.
+Important note: This document consolidates the material reconstructed in this conversation. It is not a
+verbatim recovery of the original August 14 chat, because the exact historical chat transcript is not available
+here.
+Primary goal
+Convert website visitors into leads, nurture them through Brevo, convert qualified users into ₹2,999 customers, and automatically grant community/resource access.
+Core systems
+Website/frontend, backend/API, database, Brevo, payment gateway, authentication, community/resources, admin dashboard, deployment infrastructure.
+Core principle
+The application database is the source of truth; Brevo handles marketing/contact automation; payment webhooks confirm purchases; authorization controls paid access.
+Document sections
+• 1. Business objective and funnel
+• 2. End-to-end user journey
+• 3. Main system architecture
+• 4. Swimlane and sequence diagrams
+• 5. Lead magnet and Brevo automation
+• 6. User-state model
+• 7. Payment, webhook, failure and refund flows
+• 8. Data Flow Diagrams (DFD)
+• 9. Database / ER design
+• 10. Authentication and authorization
+• 11. Community and resource access
+• 12. Admin workflow
+• 13. Deployment architecture
+• 14. Security, reliability and production considerations
+• 15. Master end-to-end workflow
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 2
+1. Business Objective and Funnel
+The system is designed around a simple business funnel: attract visitors, offer something valuable in
+exchange for contact information, nurture the relationship, present a paid offer, process payment reliably,
+and provision the purchased experience automatically.
+VISITOR
+   ↓
+WEBSITE / LANDING PAGE
+   ↓
+LEAD MAGNET
+   ↓
+LEAD FORM
+   ↓
+BACKEND VALIDATION
+   ↓
+DATABASE + BREVO
+   ↓
+WELCOME EMAIL + NURTURE / NEWSLETTER
+   ↓
+PAID OFFER PAGE
+   ↓
+■2,999 PURCHASE
+   ↓
+PAYMENT WEBHOOK
+   ↓
+VERIFY PAYMENT
+   ↓
+DATABASE = PAID
+   ↓
+BREVO = CUSTOMER
+   ↓
+COMMUNITY / RESOURCE ACCESS
+Offer positioning
+The discussion referenced a ₹2,999 paid resource/community offer with an MRP of ₹4,999. The exact
+commercial copy, payment provider and resource contents should be finalized separately; the
+architecture only assumes that a successful payment creates a customer entitlement.
+Architecture principles
+• Database as source of truth: user identity, lead/customer status, orders, entitlements and access state
+should live in the application database.
+• Brevo as marketing layer: contacts, segments, campaigns and automated email sequences should be
+synchronized from the application.
+• Payment provider as payment authority: the application should not trust a browser redirect as proof of
+payment; it should verify the provider webhook/event.
+• Access is entitlement-based: a user gets protected content because the backend sees a valid paid
+entitlement, not simply because they know a URL.
+2. Complete User Journey
+Visitor
+  ■
+  ▼
+Landing Page
+  ■
+  ■■■ Browse content
+  ■
+  ■■■ Get Lead Magnet
+          ■
+          ▼
+       Signup
+          ■
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 3
+          ▼
+  Lead Magnet Delivered
+          ■
+          ▼
+  Welcome + Newsletter
+          ■
+          ▼
+    Nurture Sequence
+          ■
+      ■■■■■■■■■■
+      ■        ■
+   Doesn't   Interested
+     buy        ■
+      ■         ▼
+      ■     Offer Page
+      ■         ■
+      ■         ▼
+      ■      ■2,999
+      ■         ■
+      ■         ▼
+      ■      Payment
+      ■         ■
+      ■■■■■■■■■■■
+                ▼
+           Paid User
+                ■
+                ▼
+      Community + Resources
+The user journey should be treated as a state transition rather than merely a sequence of pages. The
+same person may enter the funnel as a visitor, become a lead, become engaged, start checkout, become
+paid, or unsubscribe/abandon the process.
+3. Main System Architecture
+                    ■■■■■■■■■■■■■■■■■■■■■■■
+                    ■        USERS        ■
+                    ■■■■■■■■■■■■■■■■■■■■■■■
+                               ■
+                               ▼
+                    ■■■■■■■■■■■■■■■■■■■■■■■
+                    ■ SUCCESSBREW WEBSITE ■
+                    ■ Home / Lead Magnet  ■
+                    ■ Offer / Community   ■
+                    ■■■■■■■■■■■■■■■■■■■■■■■
+                               ■ HTTPS
+                               ▼
+                    ■■■■■■■■■■■■■■■■■■■■■■■
+                    ■     BACKEND/API     ■
+                    ■ Validation / Auth   ■
+                    ■ Business Logic      ■
+                    ■■■■■■■■■■■■■■■■■■■■■■■
+                           ■         ■
+              ■■■■■■■■■■■■■■         ■■■■■■■■■■■■■■■■
+              ▼                                     ▼
+      ■■■■■■■■■■■■■■■■■■                    ■■■■■■■■■■■■■■■■■■
+      ■   DATABASE     ■                    ■     BREVO      ■
+      ■ Users / Leads  ■                    ■ Contacts       ■
+      ■ Orders / Access■                    ■ Lists / Auto   ■
+      ■■■■■■■■■■■■■■■■■■                    ■ Emails         ■
+                                            ■■■■■■■■■■■■■■■■■■
+                           ▲
+                           ■
+                    ■■■■■■■■■■■■■■■
+                    ■   PAYMENT   ■
+                    ■   GATEWAY   ■
+                    ■■■■■■■■■■■■■■■
+                           ■ webhook
+                           ▼
+                         BACKEND
+Backend also controls:
+AUTHENTICATION → COMMUNITY / RESOURCES
+ADMIN → USERS / ORDERS / RESOURCES / MARKETING
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 4
+4. Main Swimlane Diagram
+This diagram emphasizes responsibility: the user initiates actions; the website presents the experience;
+the backend validates and orchestrates; the database stores authoritative state; Brevo runs marketing
+automation; and the payment gateway reports payment events.
+USER             WEBSITE              BACKEND/API           DATABASE           BREVO          PAYMENT
+ ■                  ■                     ■                   ■                 ■               ■
+ ■ Visit            ■                     ■                   ■                 ■               ■
+ ■■■■■■■■■■■■■■■■■■>■                     ■                   ■                 ■               ■
+ ■                  ■                     ■                   ■                 ■               ■
+ ■ Submit form      ■                     ■                   ■                 ■               ■
+ ■■■■■■■■■■■■■■■■■■>■                     ■                   ■                 ■               ■
+ ■                  ■■■■■■■■■■■■■■■■■■■■■>■ Validate          ■                 ■               ■
+ ■                  ■                     ■■■■■■■■■■■■■■■■■■■>■ Create lead     ■               ■
+ ■                  ■                     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>■ Contact        ■
+ ■                  ■                     ■                   ■                 ■               ■
+ ■<■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Welcome       ■
+ ■<■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Nurture       ■
+ ■                  ■                     ■                   ■                 ■               ■
+ ■ Click offer      ■                     ■                   ■                 ■               ■
+ ■■■■■■■■■■■■■■■■■■>■ Offer page         ■                   ■                 ■               ■
+ ■                  ■                     ■                   ■                 ■               ■
+ ■ Pay              ■                     ■                   ■                 ■               ■
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>■
+ ■                  ■                     ■                   ■                 ■   Payment     ■
+ ■                  ■                     ■<■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+ ■                  ■                     ■ Verify event      ■                 ■               ■
+ ■                  ■                     ■■■■■■■■■■■■■■■■■■■>■ Order + paid    ■               ■
+ ■                  ■                     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■>■ Customer      ■
+ ■                  ■<■■■■■■■■■■■■■■■■■■■■■ Grant entitlement■                 ■               ■
+ ■<■■■■■■■■■■■■■■■■■■ Access             ■                   ■                 ■               ■
+5. Sequence Diagram — Complete Flow
+User -> Website: Visit
+User -> Website: Submit lead form
+Website -> Backend: POST /lead
+Backend -> Database: Validate + create/update lead
+Backend -> Brevo: Create/update contact
+Brevo -> User: Welcome email
+Brevo -> User: Nurture/newsletter emails
+User -> Website: Click paid offer
+Website -> User: Show ■2,999 offer
+User -> Payment Gateway: Complete checkout
+Payment Gateway -> Backend: Webhook event
+Backend -> Payment Gateway: Verify/signature check
+Backend -> Database: Record order + mark entitlement paid
+Backend -> Brevo: Update customer status / segment
+Backend -> Access Layer: Grant entitlement
+Access Layer -> User: Community/resource access
+6. Lead Magnet → Brevo Automation
+USER
+  ■
+  ▼
+Lead Magnet Landing Page
+  ■
+  ▼
+Lead Form
+  ■
+  ▼
+Backend
+  ■
+  ■■■ Validate email
+  ■■■ Check duplicate
+  ■■■ Create/update lead
+  ■■■ Sync to Brevo
+          ■
+          ▼
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 5
+      Brevo Contact
+          ■
+          ▼
+      Lead Segment
+          ■
+          ▼
+     Automation Trigger
+          ■
+     ■■■■■■■■■■■■■■■■
+     ▼              ▼
+Welcome Email    Lead Magnet
+     ■            Delivery
+     ■■■■■■■■■■■■■■■■
+            ▼
+      Nurture Sequence
+            ■
+       ■■■■■■■■■■■■
+       ▼          ▼
+    Engaged     Not Engaged
+       ■          ■
+       ▼          ▼
+    Offer       Reminder /
+    Page        follow-up
+Recommended automation states
+A practical implementation can use states such as LEAD, ENGAGED, CHECKOUT_STARTED, PAID,
+REFUNDED and UNSUBSCRIBED. The exact Brevo list/segment names are an implementation choice.
+When a user becomes PAID, the lead/nurture automation should stop or branch into a customer
+onboarding sequence. This prevents a customer from continuing to receive acquisition emails that no
+longer match their state.
+7. User-State Diagram
+                    ■■■■■■■■■■■■
+                    ■ VISITOR  ■
+                    ■■■■■■■■■■■■
+                         ■ lead form
+                         ▼
+                    ■■■■■■■■■■■■
+                    ■   LEAD   ■
+                    ■■■■■■■■■■■■
+                         ■ email engagement
+                         ▼
+                  ■■■■■■■■■■■■■■■■
+                  ■   ENGAGED    ■
+                  ■■■■■■■■■■■■■■■■
+                         ■ checkout
+                         ▼
+                  ■■■■■■■■■■■■■■■■
+                  ■ CHECKOUT     ■
+                  ■   STARTED    ■
+                  ■■■■■■■■■■■■■■■■
+                         ■ successful payment
+                         ▼
+                    ■■■■■■■■■■■■
+                    ■   PAID   ■
+                    ■■■■■■■■■■■■
+                         ■
+                         ▼
+              ■■■■■■■■■■■■■■■■■■■■■■
+              ■ CUSTOMER / ACCESS  ■
+              ■■■■■■■■■■■■■■■■■■■■■■
+LEAD / ENGAGED ■■unsubscribe■■> UNSUBSCRIBED
+CHECKOUT ■■failed/abandoned■■> LEAD
+PAID ■■refund■■> REFUNDED
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 6
+8. Payment and Webhook Architecture
+              USER
+                ■
+                ▼
+         CHECKOUT PAGE
+                ■
+                ▼
+        PAYMENT GATEWAY
+                ■
+        ■■■■■■■■■■■■■■■■■■
+        ■                ■
+   browser return     webhook
+        ■                ■
+        ■                ▼
+        ■         Signature Verify
+        ■                ■
+        ■                ▼
+        ■         Event Validation
+        ■                ■
+        ■                ▼
+        ■          Idempotency Check
+        ■                ■
+        ■                ▼
+        ■          Update Database
+        ■                ■
+        ■         ■■■■■■■■■■■■■■■■
+        ■         ▼              ▼
+        ■      Brevo          Entitlement
+        ■     Customer           = PAID
+        ■         ■              ■
+        ■■■■■■■■■■■■■■■■■■■■■■■■■■
+                         ■
+                         ▼
+                 COMMUNITY / RESOURCES
+Payment states to support
+• initiated: checkout has started but payment is not confirmed.
+• pending: provider reports an unresolved state.
+• paid: verified successful payment.
+• failed: payment attempt failed.
+• refunded: money was returned; access policy must be applied.
+• cancelled: order was cancelled without a completed payment.
+Webhook safety
+• Verify the provider's webhook signature.
+• Use an idempotency key/event ID so duplicate webhook deliveries do not create duplicate orders or
+entitlements.
+• Store the raw provider event ID and relevant timestamps.
+• Treat the webhook as authoritative for payment confirmation, not a client-side success page.
+• Return a successful webhook response only after safely accepting/processing the event; use
+retries/dead-letter handling for transient failures.
+9. Failure and Edge-Case Flows
+A) PAYMENT FAILED
+Checkout → Payment Failed → Show retry option → Remain LEAD/Checkout state
+B) PAYMENT ABANDONED
+Checkout Started → No success event → Optional reminder → Return to offer
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 7
+C) DUPLICATE WEBHOOK
+Webhook → Verify → Event already processed? → Yes → Ignore safely
+D) PAYMENT SUCCESS / BROWSER CLOSED
+Payment Gateway → Webhook → Backend → DB → Entitlement
+The user still receives access later because the webhook is independent of the browser.
+E) REFUND
+Provider → Refund Webhook → Backend → DB = REFUNDED
+       → revoke/suspend entitlement according to business policy
+       → update Brevo customer segment
+F) BREVO FAILURE
+Backend transaction succeeds → Brevo sync fails
+       → keep DB as source of truth
+       → queue/retry Brevo synchronization
+10. Data Flow Diagram — Level 0 / Context
+                         ■■■■■■■■■■■■■■■■■
+                         ■     USER      ■
+                         ■■■■■■■■■■■■■■■■■
+                                 ■
+                                 ▼
+                       ■■■■■■■■■■■■■■■■■■■■
+                       ■    SUCCESSBREW   ■
+                       ■     PLATFORM     ■
+                       ■■■■■■■■■■■■■■■■■■■■
+                           ■      ■
+             ■■■■■■■■■■■■■■■      ■■■■■■■■■■■■■■■■■
+             ▼                                    ▼
+      ■■■■■■■■■■■■■■■■                     ■■■■■■■■■■■■■■■■
+      ■   DATABASE   ■                     ■    BREVO     ■
+      ■■■■■■■■■■■■■■■■                     ■■■■■■■■■■■■■■■■
+             ▲                                    ▲
+             ■                                    ■
+      ■■■■■■■■■■■■■■■                     Marketing emails
+      ■   PAYMENT   ■
+      ■   GATEWAY   ■
+      ■■■■■■■■■■■■■■■
+11. Data Flow Diagram — Level 1
+1.0 CAPTURE LEAD
+Website → Backend → Validate → Database
+                         ■■■→ Brevo
+2.0 NURTURE
+Brevo → Email → User
+User engagement → Brevo automation
+3.0 CONVERT
+User → Offer → Payment Gateway
+4.0 CONFIRM PAYMENT
+Payment Gateway → Webhook → Backend
+Backend → Verify → Database
+5.0 PROVISION
+Database entitlement → Access Control
+Backend → Brevo customer segment
+User → Community / Resources
+6.0 ADMINISTRATION
+Admin → Admin Dashboard → Backend
+Backend → Database / Resources / Orders / Users
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 8
+12. Database / ER Design
+The exact schema can evolve, but the following logical entities cover the workflow discussed.
+USERS
+-----
+id (PK)
+name
+email (unique)
+password_hash / auth_provider
+status
+created_at
+updated_at
+LEADS
+-----
+id (PK)
+user_id (FK → users.id)
+source
+lead_magnet
+brevo_contact_id
+lead_status
+created_at
+ORDERS
+------
+id (PK)
+user_id (FK → users.id)
+provider
+provider_order_id
+amount
+currency
+status
+paid_at
+created_at
+PAYMENTS
+--------
+id (PK)
+order_id (FK → orders.id)
+provider_payment_id
+event_id (unique)
+amount
+status
+verified_at
+ENTITLEMENTS
+------------
+id (PK)
+user_id (FK → users.id)
+product_id
+status
+starts_at
+expires_at
+granted_at
+RESOURCES
+---------
+id (PK)
+title
+description
+resource_type
+url/storage_key
+access_level
+created_at
+RESOURCE_ACCESS
+---------------
+id (PK)
+user_id (FK → users.id)
+resource_id (FK → resources.id)
+granted_at
+BREVO_SYNC
+----------
+id (PK)
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 9
+user_id (FK → users.id)
+brevo_contact_id
+last_synced_at
+sync_status
+last_error
+Relationship model
+USERS 1 ■■■■■ N LEADS
+USERS 1 ■■■■■ N ORDERS
+ORDERS 1 ■■■■ N PAYMENTS
+USERS 1 ■■■■■ N ENTITLEMENTS
+USERS N ■■■■■ N RESOURCES
+          via RESOURCE_ACCESS
+USERS 1 ■■■■■ 1/N BREVO_SYNC
+Important database rules
+• Email should have a uniqueness strategy.
+• Provider order IDs and payment event IDs should be indexed and protected from duplicates.
+• Do not derive paid access solely from a UI flag; calculate it from verified entitlement/order state.
+• Keep created/updated/paid/refunded timestamps for auditability.
+• Avoid storing payment card data; use the payment provider's hosted/secure mechanisms.
+13. Authentication and Authorization
+SIGN UP / LOGIN
+      ■
+      ▼
+Authentication Provider / Backend
+      ■
+      ▼
+Session / Token
+      ■
+      ▼
+Protected API
+      ■
+      ▼
+Check User Identity
+      ■
+      ▼
+Check Entitlement
+      ■
+   ■■■■■■■■
+   ■      ■
+  YES     NO
+   ■      ■
+   ▼      ▼
+ALLOW    DENY
+   ■
+   ▼
+Resources / Community
+Authentication answers who is the user? Authorization answers what is the user allowed to access? A paid
+customer should be granted access because the backend verifies a valid entitlement.
+14. Community and Resource Access
+USER LOGIN
+    ■
+    ▼
+Backend identifies user
+    ■
+    ▼
+Query entitlement
+    ■
+    ■■■ Valid paid entitlement ■■> ALLOW
+    ■                               ■
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 10
+    ■                               ▼
+    ■                        Community / Resources
+    ■
+    ■■■ No entitlement ■■■■■■■■> DENY / SHOW OFFER
+Avoid placing private resources behind obscure URLs alone. If the resource is paid, access should be
+enforced by the backend or storage layer. If downloadable files are used, signed/temporary URLs can be
+considered where appropriate.
+15. Admin Workflow
+ADMIN
+  ■
+  ▼
+ADMIN LOGIN
+  ■
+  ▼
+DASHBOARD
+  ■
+  ■■■ Users
+  ■     ■■■ View
+  ■     ■■■ Search
+  ■     ■■■ Status
+  ■
+  ■■■ Leads
+  ■     ■■■ Source
+  ■     ■■■ Lead magnet
+  ■     ■■■ Engagement
+  ■
+  ■■■ Orders
+  ■     ■■■ Paid
+  ■     ■■■ Pending
+  ■     ■■■ Failed
+  ■     ■■■ Refunded
+  ■
+  ■■■ Resources
+  ■     ■■■ Create
+  ■     ■■■ Edit
+  ■     ■■■ Access level
+  ■
+  ■■■ Community
+  ■     ■■■ Membership / access
+  ■
+  ■■■ Marketing
+        ■■■ Brevo status
+        ■■■ Segments
+        ■■■ Campaign metrics
+Admin actions that affect money, access or customer state should be authenticated, authorized, logged
+and auditable.
+16. Deployment Architecture
+                     INTERNET
+                        ■
+                        ▼
+                  DOMAIN / DNS
+                        ■
+             ■■■■■■■■■■■■■■■■■■■■■■■
+             ▼                     ▼
+        FRONTEND                 API
+     Website / App          Backend Services
+             ■                     ■
+             ■                     ■■■■■■■■■■■■
+             ■                     ■          ■
+             ▼                     ▼          ▼
+        CDN/Hosting            DATABASE    BREVO
+                                   ■
+                                   ■
+                              PAYMENT GATEWAY
+                                   ■
+                                Webhooks
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 11
+                                   ■
+                                   ▼
+                                  API
+                                   ■
+                          ■■■■■■■■■■■■■■■■■■■■
+                          ▼                  ▼
+                     Auth / Access      Community /
+                                        Resources
+Production concerns
+• Use HTTPS everywhere.
+• Keep secrets/API keys in environment variables or a secret manager, never in frontend code.
+• Restrict database access to the backend.
+• Configure database backups and a recovery procedure.
+• Use structured logs and error monitoring.
+• Rate-limit public lead/payment-related endpoints.
+• Validate all external webhook requests.
+• Separate development/staging/production credentials and environments.
+• Use least-privilege permissions for Brevo, payment and cloud services.
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 12
+17. End-to-End BPMN-Style Business Workflow
+START
+  ■
+  ▼
+Visitor lands on SuccessBrew
+  ■
+  ▼
+Sees valuable content / CTA
+  ■
+  ▼
+Chooses Lead Magnet
+  ■
+  ▼
+Submits form
+  ■
+  ▼
+Validate data
+  ■
+  ■■■ Invalid → Show error → END/RETRY
+  ■
+  ▼
+Create/update lead
+  ■
+  ▼
+Sync contact to Brevo
+  ■
+  ▼
+Deliver lead magnet
+  ■
+  ▼
+Welcome + nurture sequence
+  ■
+  ▼
+Engagement / offer
+  ■
+  ▼
+Checkout started
+  ■
+  ■■■ Abandoned → Optional reminder → Nurture
+  ■
+  ▼
+Payment
+  ■
+  ■■■ Failed → Retry / remain lead
+  ■
+  ▼
+Webhook received
+  ■
+  ▼
+Verify + idempotency
+  ■
+  ▼
+Record payment
+  ■
+  ▼
+Create paid entitlement
+  ■
+  ▼
+Update Brevo to customer
+  ■
+  ▼
+Grant community/resource access
+  ■
+  ▼
+Customer onboarding
+  ■
+  ▼
+END
+18. Master End-to-End Architecture
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+■                              SUCCESSBREW                                   ■
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 13
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+ USER
+  ■
+  ▼
+ WEBSITE ■■■■■■■■■■■■■■■■■
+  ■                      ■
+  ■■■ Lead Magnet         ■
+  ■■■ Newsletter CTA      ■
+  ■■■ Offer Page          ■
+  ■■■ Login               ■
+  ■■■ Community           ■
+                         ▼
+                    BACKEND / API
+                         ■
+          ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+          ■              ■                 ■
+          ▼              ▼                 ▼
+       DATABASE        BREVO          AUTHORIZATION
+          ■              ■                 ■
+          ■              ■■ Contacts       ■
+          ■              ■■ Lists          ■
+          ■              ■■ Automation     ■
+          ■              ■■ Emails         ■
+          ■                                ■
+          ■                                ▼
+          ■                         COMMUNITY /
+          ■                          RESOURCES
+          ■
+          ■
+          ▲
+          ■
+     PAYMENT WEBHOOK
+          ▲
+          ■
+     PAYMENT GATEWAY
+          ▲
+          ■
+        USER
+ADMIN ■■> ADMIN DASHBOARD ■■> BACKEND ■■> USERS / LEADS / ORDERS /
+                                      RESOURCES / ACCESS / MARKETING
+19. Recommended API Responsibilities
+A clean implementation could expose endpoints conceptually like the following. Exact routes depend on
+the framework and application conventions.
+POST   /api/leads
+POST   /api/auth/register
+POST   /api/auth/login
+GET    /api/me
+GET    /api/offers
+POST   /api/checkout
+POST   /api/webhooks/payment
+GET    /api/orders
+GET    /api/entitlements
+GET    /api/resources
+GET    /api/community/access
+ADMIN
+GET    /api/admin/users
+GET    /api/admin/leads
+GET    /api/admin/orders
+POST   /api/admin/resources
+PATCH  /api/admin/resources/:id
+GET    /api/admin/analytics
+20. Production Checklist
+☐ Define the final lead magnet and landing page.
+☐ Define the exact ₹2,999 product/package and customer entitlement.
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 14
+☐ Create the database schema and migrations.
+☐ Implement lead capture with validation and duplicate handling.
+☐ Integrate Brevo contact creation/update.
+☐ Create welcome email and lead nurture automation.
+☐ Create customer onboarding automation.
+☐ Integrate payment checkout.
+☐ Implement and verify payment webhooks.
+☐ Add idempotency for payment events.
+☐ Implement order and entitlement records.
+☐ Implement authentication.
+☐ Implement authorization for paid resources.
+☐ Build community/resource access page.
+☐ Build admin dashboard.
+☐ Add refund/revocation handling.
+☐ Add logging, monitoring and error handling.
+☐ Configure production secrets.
+☐ Configure backups.
+☐ Test failed payment, duplicate webhook, browser-close, refund and Brevo outage scenarios.
+☐ Test the complete funnel from anonymous visitor to paid customer.
+21. Final Architecture Summary
+The cleanest mental model for the system is:
+ACQUISITION
+Website → Lead Magnet → Lead
+MARKETING
+Lead → Brevo → Welcome → Nurture → Offer
+CONVERSION
+Offer → Checkout → Payment
+TRUST
+Payment → Verified Webhook → Database
+PROVISIONING
+Database → Entitlement → Community / Resources
+RETENTION
+Customer → Onboarding → Newsletter / Customer communication
+CONTROL
+Admin → Dashboard → Users / Leads / Orders / Resources / Access
+SOURCE OF TRUTH
+Database = identity + commercial state + entitlement
+Brevo     = marketing/contact state
+Payment   = payment event source
+Backend   = orchestration + authorization
+Most important rule: never make Brevo, a frontend flag, or a successful browser redirect the sole authority for
+paid access. The backend should verify the user's entitlement against authoritative application/payment state.
+
+
+SuccessBrew — Complete System Workflow & Architecture
+Page 15
+This document intentionally includes both the diagrams already reconstructed in this chat and the additional diagrams
+identified as missing: DFDs, ER/data model, payment edge cases, authentication/authorization, admin workflow,
+deployment architecture, and the master end-to-end view.

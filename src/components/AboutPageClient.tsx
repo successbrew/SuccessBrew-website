@@ -137,7 +137,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 className="mt-12 flex items-center gap-6 border-t border-white/10 pt-10">
                 {[
                   { v: "8,000+", l: "Members" },
-                  { v: "54+",    l: "Events" },
+                  { v: "200+",    l: "Events" },
                   { v: "1 Lakh", l: "Goal by 2030", lime: true },
                 ].map((s, i) => (
                   <React.Fragment key={s.l}>

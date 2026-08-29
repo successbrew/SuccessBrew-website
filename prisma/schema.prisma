@@ -612,3 +612,274 @@ model Notification {
 
   @@index([audience, recipientId, readAt])
 }
+
+// Funnel, commerce, and paid-access platform.
+// Neon Auth users live outside this Prisma schema, so customer identity is
+// anchored by normalized email and optionally linked to the Neon Auth user id.
+
+enum LeadStatus {
+  LEAD
+  ENGAGED
+  CHECKOUT_STARTED
+  PAID
+  REFUNDED
+  UNSUBSCRIBED
+}
+
+enum OrderStatus {
+  INITIATED
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  SUSPENDED
+  REVOKED
+  EXPIRED
+}
+
+enum ResourceAccessLevel {
+  PUBLIC
+  PAID
+}
+
+enum BrevoSyncStatus {
+  PENDING
+  SYNCED
+  FAILED
+}
+
+enum PaymentEventStatus {
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+model Lead {
+  id             String     @id @default(cuid())
+  email          String     @unique
+  name           String?
+  userId         String?
+  source         String     @default("website")
+  leadMagnet     String?
+  status         LeadStatus @default(LEAD)
+  consentAt      DateTime?
+  unsubscribedAt DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  orders    Order[]
+  brevoSync BrevoSync?
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  leadId            String?
+  lead              Lead?       @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  userId            String?
+  customerEmail     String
+  productKey        String
+  provider          String
+  providerOrderId   String?
+  providerCheckoutUrl String?
+  amount            Int
+  currency          String      @default("INR")
+  status            OrderStatus @default(INITIATED)
+  paidAt            DateTime?
+  refundedAt        DateTime?
+  cancelledAt       DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  payments Payment[]
+  events   PaymentEvent[]
+
+  @@unique([provider, providerOrderId])
+  @@index([customerEmail, status])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String
+  order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider          String
+  providerPaymentId String
+  amount            Int
+  currency          String        @default("INR")
+  status            PaymentStatus
+  verifiedAt        DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@unique([provider, providerPaymentId])
+  @@index([orderId, status])
+}
+
+model PaymentEvent {
+  id          String             @id @default(cuid())
+  orderId     String?
+  order       Order?             @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  provider    String
+  eventId     String             @unique
+  eventType   String
+  status      PaymentEventStatus @default(PROCESSING)
+  payload     Json
+  processedAt DateTime?
+  lastError   String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([orderId, createdAt])
+  @@index([status, createdAt])
+}
+
+model Entitlement {
+  id            String            @id @default(cuid())
+  userId        String?
+  customerEmail String
+  productKey    String
+  status        EntitlementStatus @default(ACTIVE)
+  startsAt      DateTime           @default(now())
+  expiresAt     DateTime?
+  grantedAt     DateTime           @default(now())
+  revokedAt     DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@unique([customerEmail, productKey])
+  @@index([userId, status])
+  @@index([status, expiresAt])
+}
+
+model Resource {
+  id          String              @id @default(cuid())
+  title       String
+  slug        String              @unique
+  description String?
+  resourceType String
+  url         String?
+  storageKey  String?
+  accessLevel ResourceAccessLevel @default(PAID)
+  isPublished Boolean             @default(false)
+  order       Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  accessGrants ResourceAccess[]
+
+  @@index([isPublished, accessLevel, order])
+}
+
+model ResourceAccess {
+  id            String    @id @default(cuid())
+  userId        String?
+  customerEmail String
+  resourceId    String
+  resource      Resource  @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  grantedAt     DateTime  @default(now())
+  revokedAt     DateTime?
+
+  @@unique([customerEmail, resourceId])
+  @@index([userId, revokedAt])
+}
+
+model BrevoSync {
+  id             String          @id @default(cuid())
+  leadId         String          @unique
+  lead           Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  brevoContactId String?
+  syncStatus     BrevoSyncStatus @default(PENDING)
+  lastSyncedAt   DateTime?
+  lastAttemptAt  DateTime?
+  retryCount     Int             @default(0)
+  lastError      String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([syncStatus, lastAttemptAt])
+}
+
+/// ═══════════════════════════════════════════════════════════════════════════
+/// AI-generated daily topic digest for paid community members (Growth/Founder
+/// Entitlement holders). Members pick topics from this admin-managed list;
+/// once a day one brief per active topic is generated (shared across every
+/// member who follows it — cost scales with topic count, not member count),
+/// assembled per-member into a PDF, and emailed as a link.
+/// ═══════════════════════════════════════════════════════════════════════════
+
+model DigestTopic {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  briefs     DigestTopicBrief[]
+  selections DigestTopicSelection[]
+}
+
+/// One AI-generated brief per topic per day, reused across every member who
+/// follows that topic — the mechanism that keeps AI/web-search cost bounded
+/// by topic count rather than member count.
+model DigestTopicBrief {
+  id      String      @id @default(cuid())
+  topicId String
+  topic   DigestTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  /// Date-only (UTC midnight) for the day this brief covers.
+  date      DateTime
+  content   String
+  createdAt DateTime @default(now())
+
+  @@unique([topicId, date])
+}
+
+model DigestTopicSelection {
+  id            String      @id @default(cuid())
+  customerEmail String
+  topicId       String
+  topic         DigestTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+
+  @@unique([customerEmail, topicId])
+  @@index([customerEmail])
+}
+
+enum DigestDeliveryStatus {
+  SENT
+  FAILED
+  SKIPPED_NO_TOPICS
+}
+
+/// One row per member per day — the idempotency key that makes re-running the
+/// cron (retries, manual re-trigger) safe: an already-delivered day is skipped.
+model DigestDelivery {
+  id            String               @id @default(cuid())
+  customerEmail String
+  date          DateTime
+  pdfUrl        String?
+  status        DigestDeliveryStatus
+  error         String?
+  createdAt     DateTime             @default(now())
+
+  @@unique([customerEmail, date])
+  @@index([date])
+}

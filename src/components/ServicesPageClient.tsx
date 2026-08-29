@@ -418,7 +418,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.9, ease: E }}
-              className="relative mt-16 aspect-video w-full overflow-hidden rounded-[2rem] border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
+              className="relative mx-auto mt-16 aspect-video w-full max-w-3xl overflow-hidden rounded-[2rem] border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
               <ScrollAutoplayYouTube
                 videoId="LPjwAuFAil0"
                 title="Successbrew studio in action"

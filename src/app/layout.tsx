@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { PageTransition } from "@/components/PageTransition";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { BookingClickTracker } from "@/components/BookingClickTracker";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -26,8 +28,10 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-background text-foreground">
         <Providers>
           <SmoothScroll />
+          <BookingClickTracker />
           <PageTransition>{children}</PageTransition>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

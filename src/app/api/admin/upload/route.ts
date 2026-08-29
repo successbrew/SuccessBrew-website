@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
   // Defense in depth: caps how fast a compromised/malicious admin session can
   // mint presigned S3 upload URLs, independent of the auth check above.
-  if (!checkRateLimit(`admin-upload:${session.user.id}`, 60, 10 * 60 * 1000)) {
+  if (!(await checkRateLimit(`admin-upload:${session.user.id}`, 60, 10 * 60 * 1000))) {
     return NextResponse.json({ error: "Too many uploads. Try again in a few minutes." }, { status: 429 });
   }
 

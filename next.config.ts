@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 // Content is admin-authored via /sbh-1111 and can reference arbitrary external
 // image URLs (see field-types.ts), so img-src stays permissive to https:
@@ -87,4 +88,13 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Wraps the config to enable source-map upload + error tracing — a no-op
+// build-time step (no upload, no runtime behavior change) until SENTRY_ORG/
+// SENTRY_PROJECT/SENTRY_AUTH_TOKEN are set, since there's no Sentry project yet.
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: true,
+  telemetry: false,
+});

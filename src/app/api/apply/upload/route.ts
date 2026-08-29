@@ -19,7 +19,7 @@ const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
  */
 export async function POST(request: Request) {
   const ip = clientIp(request);
-  if (!checkRateLimit(`apply-upload:${ip}`, 20, 10 * 60 * 1000)) {
+  if (!(await checkRateLimit(`apply-upload:${ip}`, 20, 10 * 60 * 1000))) {
     return NextResponse.json({ error: "Too many uploads. Try again in a few minutes." }, { status: 429 });
   }
 

@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/queries/content";
 import { CaseStudyPageClient } from "@/components/CaseStudyPageClient";
 
-export const revalidate = 0;
+// Cached for 60s, same rationale as the case studies list page.
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,

@@ -52,6 +52,15 @@ Marketing site and admin CMS for **Successbrew** — a content, community, and v
    | `RESEND_FROM_EMAIL` | Verified sender address for Resend, e.g. `Successbrew <no-reply@successbrew.in>` |
    | `RESEND_REPLY_TO_EMAIL` | Optional reply-to address; defaults to the same value as `RESEND_FROM_EMAIL` |
    | `ADMIN_NOTIFICATION_EMAIL` | Optional team notification recipient; defaults to `team@successbrew.in` |
+   | `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Razorpay API credentials for the paid Growth/Founder checkout |
+   | `RAZORPAY_WEBHOOK_SECRET` | Verifies incoming Razorpay webhook signatures |
+   | `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Same as `RAZORPAY_KEY_ID` — exposed client-side to open the checkout widget |
+   | `BREVO_API_KEY` | Optional — syncs paying customers'/leads' contact info to Brevo |
+   | `ANTHROPIC_API_KEY` | Claude API key (with web search + billing enabled) for the daily AI digest |
+   | `CRON_SECRET` | Random string authenticating Vercel Cron's call to `/api/cron/daily-digest` |
+   | `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` | Optional — error monitoring; the app runs fine with these unset |
+   | `SENTRY_ORG` / `SENTRY_PROJECT` / `SENTRY_AUTH_TOKEN` | Optional — only needed for Sentry source-map upload at build time |
+   | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Optional — shared rate limiting across serverless instances; falls back to an in-memory limiter when unset |
 
 3. Apply the Prisma schema to your database:
 
@@ -75,11 +84,12 @@ Marketing site and admin CMS for **Successbrew** — a content, community, and v
 | `npm run build` | Build for production |
 | `npm run start` | Run the production build |
 | `npm run lint` | Run ESLint |
+| `npm run test` | Run the Vitest suite (money-critical logic: payment webhook signature verification, application status-transition legality, product registry) |
 | `npm run db:migrate` | Create/apply a Prisma migration in development |
 | `npm run db:migrate:deploy` | Apply pending migrations in production |
 | `npm run db:studio` | Open Prisma Studio against `DATABASE_URL` |
 
-> There is no automated test suite configured in this repo — validate changes with `npm run lint` and `npm run build`.
+> Test coverage is intentionally narrow — the payment/status logic most likely to silently break something, not the whole app. Still validate broader changes with `npm run lint` and `npm run build`.
 
 ## Architecture
 

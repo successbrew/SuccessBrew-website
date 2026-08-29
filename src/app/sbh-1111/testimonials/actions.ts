@@ -6,7 +6,7 @@ import { runCreate, runUpdate, runDelete } from "@/lib/admin/crud";
 import { testimonialSchema } from "@/lib/admin/schemas/testimonial";
 import { formDataToObject } from "@/lib/admin/form-data";
 
-const REVALIDATE = ["/sbh-1111/testimonials", "/"];
+const REVALIDATE = ["/sbh-1111/testimonials", "/", "/testimonials"];
 
 export async function createTestimonial(formData: FormData) {
   await verifyAdminSession();

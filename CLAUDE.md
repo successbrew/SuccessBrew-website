@@ -11,12 +11,13 @@ npm run dev              # start the Next.js dev server (localhost:3000)
 npm run build            # next build
 npm run start             # run the production build
 npm run lint              # eslint via eslint.config.mjs
+npm run test              # vitest — narrow coverage: payment webhook signature verification, application status-transition legality, product registry
 npm run db:migrate        # create/apply a Prisma migration in dev (prisma migrate dev)
 npm run db:migrate:deploy # apply pending migrations in production (prisma migrate deploy)
 npm run db:studio         # open Prisma Studio against DATABASE_URL
 ```
 
-There is no test suite in this repo (no test runner is configured) and no `npx tsc` script — validate changes with `npm run lint` and `npm run build`.
+Test coverage only spans money/status-critical logic, not the whole app — there's still no `npx tsc` script, so validate broader changes with `npm run lint` and `npm run build`.
 
 Two linters are configured but only one is wired up: `eslint` runs via `npm run lint`; `.oxlintrc.json` (oxlint) exists but has no npm script — don't assume `npm run lint` covers oxlint rules too.
 

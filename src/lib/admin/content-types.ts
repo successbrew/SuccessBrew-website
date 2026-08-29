@@ -36,6 +36,15 @@ export const CONTENT_TYPE_NAV_GROUPS = [
     items: [{ label: "Blog Posts", href: "/sbh-1111/blog" }],
   },
   {
+    label: "Commerce",
+    items: [
+      { label: "Leads", href: "/sbh-1111/leads" },
+      { label: "Orders", href: "/sbh-1111/orders" },
+      { label: "Resources", href: "/sbh-1111/resources" },
+      { label: "Digest Topics", href: "/sbh-1111/digest-topics" },
+    ],
+  },
+  {
     label: "Settings",
     items: [
       { label: "Social Links", href: "/sbh-1111/settings" },

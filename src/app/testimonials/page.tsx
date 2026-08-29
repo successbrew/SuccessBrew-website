@@ -1,7 +1,10 @@
 import { getServiceTestimonials, getSiteSettings } from "@/lib/queries/content";
 import { TestimonialsPageClient } from "@/components/TestimonialsPageClient";
 
-export const revalidate = 0;
+// Cached for 60s (admin edits still show instantly via revalidatePath in
+// the admin action) — read-heavy, rarely-changing content, unlike the rest
+// of the site which stays fully dynamic.
+export const revalidate = 60;
 
 export const metadata = {
   title: "Founder Testimonials | Successbrew",

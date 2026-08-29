@@ -6,7 +6,7 @@ import { runCreate, runUpdate, runDelete } from "@/lib/admin/crud";
 import { caseStudySchema } from "@/lib/admin/schemas/case-study";
 import { formDataToObject } from "@/lib/admin/form-data";
 
-const REVALIDATE = ["/sbh-1111/case-studies", "/"];
+const REVALIDATE = ["/sbh-1111/case-studies", "/", "/case-studies"];
 
 export async function createCaseStudy(formData: FormData) {
   await verifyAdminSession();
@@ -15,11 +15,11 @@ export async function createCaseStudy(formData: FormData) {
 
 export async function updateCaseStudy(id: string, formData: FormData) {
   await verifyAdminSession();
-  return runUpdate(prisma.caseStudy, caseStudySchema, id, formDataToObject(formData), REVALIDATE);
+  return runUpdate(prisma.caseStudy, caseStudySchema, id, formDataToObject(formData), [...REVALIDATE, `/case-studies/${id}`]);
 }
 
 export async function deleteCaseStudy(formData: FormData) {
   await verifyAdminSession();
   const id = String(formData.get("id") ?? "");
-  return runDelete(prisma.caseStudy, id, REVALIDATE);
+  return runDelete(prisma.caseStudy, id, [...REVALIDATE, `/case-studies/${id}`]);
 }

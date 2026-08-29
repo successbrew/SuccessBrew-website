@@ -3,6 +3,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import NavBar from "@/components/NavBar";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
 import { CommunityPartnerGrid } from "@/components/CommunityPartnerGrid";
@@ -133,6 +134,8 @@ const membershipTiers = [
       "Community feed & announcements",
     ],
     cta: "Join Free",
+    href: "/apply?source=community",
+    comingSoon: false,
     highlight: false,
   },
   {
@@ -148,6 +151,11 @@ const membershipTiers = [
       "Learning Hub premium resources",
     ],
     cta: "Become a Growth Member",
+    href: "/community/join/growth",
+    // Real checkout link is live — it's what the "you're approved" email
+    // sends approved applicants to. The public card itself stays gated:
+    // a visitor clicking it here (not from that email) sees "Coming soon".
+    comingSoon: true,
     highlight: true,
   },
   {
@@ -162,7 +170,9 @@ const membershipTiers = [
       "Free content studio production day",
       "Direct line to the Successbrew team",
     ],
-    cta: "Apply for Founder Tier",
+    cta: "Become a Founder Member",
+    href: "/community/join/founder",
+    comingSoon: true,
     highlight: false,
   },
 ];
@@ -206,64 +216,67 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
           <AmbientBackground tone="light" noise={false} />
 
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
-              <motion.div variants={fadeUp}
-                className="mb-10 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
-                Successbrew · India's Most Loved Startup Ecosystem
-              </motion.div>
+            <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
 
-              <motion.h1
-                initial="hidden" animate="visible"
-                variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } }}
-                className="whitespace-nowrap text-[clamp(1.6rem,5.6vw,6.5rem)] font-black leading-[0.95] tracking-tight text-[#111111]">
-                {["Brew", "Your"].map((word, i) => (
-                  <span key={i}>
-                    <span className="inline-block overflow-hidden leading-[1.2]">
-                      <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
-                    </span>
-                    {i === 0 ? " " : ""}
-                  </span>
-                ))}
-                {" "}<span className="relative inline-block">
-                  <span className="relative z-10 text-[#0037D2]">
-                    {["Own", "Success."].map((word, i) => (
-                      <span key={i}>
-                        <span className="inline-block overflow-hidden leading-[1.2]">
-                          <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
-                        </span>
-                        {i === 0 ? " " : ""}
+              {/* LEFT: headline, copy, CTAs */}
+              <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
+                <motion.div variants={fadeUp}
+                  className="mb-10 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                  Successbrew · India's Most Loved Startup Ecosystem
+                </motion.div>
+
+                <motion.h1
+                  initial="hidden" animate="visible"
+                  variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } }}
+                  className="text-balance text-[clamp(2.25rem,4.4vw,4.5rem)] font-black leading-[0.98] tracking-tight text-[#111111]">
+                  {["Brew", "Your"].map((word, i) => (
+                    <span key={i}>
+                      <span className="inline-block overflow-hidden leading-[1.2]">
+                        <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
                       </span>
-                    ))}
+                      {i === 0 ? " " : ""}
+                    </span>
+                  ))}
+                  {" "}<span className="relative inline-block">
+                    <span className="relative z-10 text-[#0037D2]">
+                      {["Own", "Success."].map((word, i) => (
+                        <span key={i}>
+                          <span className="inline-block overflow-hidden leading-[1.2]">
+                            <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
+                          </span>
+                          {i === 0 ? " " : ""}
+                        </span>
+                      ))}
+                    </span>
+                    <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
                   </span>
-                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
-                </span>
-              </motion.h1>
+                </motion.h1>
 
-              <motion.div variants={fadeUp} className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-end">
-                <p className="max-w-xl text-balance text-lg text-[#111111]/70 md:text-xl">
+                <motion.p variants={fadeUp} className="mt-8 max-w-xl text-balance text-lg text-[#111111]/70 md:text-xl">
                   8000+ Founders, Freelancers, Agencies, Angels, Creators, and VCs — growing through shared opportunities, real visibility, and meaningful connections across India.
-                </p>
-                <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+                </motion.p>
+
+                <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
                   <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,55,210,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
                   <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#F0EBD8]">Explore Ecosystem</a>
-                </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
 
-            {/* Community video */}
-            <motion.div initial={{ opacity: 0, scale: 0.97, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
-              className="relative mt-16 aspect-video w-full overflow-hidden rounded-[1.75rem] border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
-              <ScrollAutoplayYouTube
-                videoId="rFocbWfZe5E"
-                title="See the Successbrew community in action"
-                className="h-full w-full"
-              />
-            </motion.div>
+              {/* RIGHT: community video */}
+              <motion.div initial={{ opacity: 0, scale: 0.97, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
+                className="relative aspect-video w-full overflow-hidden rounded-[1.75rem] border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
+                <ScrollAutoplayYouTube
+                  videoId="rFocbWfZe5E"
+                  title="See the Successbrew community in action"
+                  className="h-full w-full"
+                />
+              </motion.div>
+            </div>
 
-            {/* Stat boxes */}
+            {/* Stat boxes — centered, below the video */}
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}
-              className="mt-8 flex flex-wrap justify-center gap-4">
+              className="mt-12 flex flex-wrap justify-center gap-4">
               {([
                 { num: "8000+",  label: "Members",         sub: "Founders · Creators · Investors", bg: "bg-[#0037D2] text-white",     subColor: "text-white/70",     floatDelay: 0   },
                 { num: "200K+",  label: "Followers",       sub: "Across social platforms",          bg: "bg-[#F0EBD8] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 0.6 },
@@ -386,7 +399,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                       </li>
                     ))}
                   </ul>
-                  <a href="#cta" className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-7 py-3.5 text-sm font-bold text-[#111111] transition hover:bg-white">Join Free</a>
+                  <a href="/apply?source=community" className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-7 py-3.5 text-sm font-bold text-[#111111] transition hover:bg-white">Join Free</a>
                 </div>
                 <div className="relative hidden overflow-hidden lg:block">
                   <img src="/grid-images/IMG_9736.JPG" alt="Community members" className="h-full w-full object-cover" />
@@ -422,7 +435,15 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                       </li>
                     ))}
                   </ul>
-                  <a href="#cta" className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#0037D2]"}`}>{tier.cta}</a>
+                  {tier.comingSoon ? (
+                    <button type="button"
+                      onClick={() => toast("Coming soon — we'll email approved community members as soon as it's open.")}
+                      className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#0037D2]"}`}>
+                      {tier.cta}
+                    </button>
+                  ) : (
+                    <a href={tier.href} className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#0037D2]"}`}>{tier.cta}</a>
+                  )}
                 </motion.div>
               ))}
             </motion.div>
@@ -559,7 +580,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
               className="mt-6 rounded-2xl border border-dashed border-[#0037D2]/30 bg-[#0037D2]/5 p-6 text-center">
-              <p className="text-sm font-bold text-[#0037D2]">54+ events hosted across India</p>
+              <p className="text-sm font-bold text-[#0037D2]">200+ events hosted across India</p>
               <p className="mt-1 text-xs text-[#111111]/50">Mumbai · Delhi · Bengaluru · Hyderabad · Pune</p>
             </motion.div>
           </div>
