@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { getSiteSettings } from "@/lib/queries/content";
+import { getSiteSettings, getCommunityTestimonials } from "@/lib/queries/content";
 import { getEventPillarBySlug } from "@/lib/event-pillars";
 import { EventLandingPageClient } from "@/components/EventLandingPageClient";
 
@@ -29,12 +29,13 @@ export default async function EventLandingPage({
   const pillar = getEventPillarBySlug(pillarSlug);
   if (!pillar) notFound();
 
-  const [event, siteSettings] = await Promise.all([
+  const [event, siteSettings, testimonials] = await Promise.all([
     prisma.communityEvent.findUnique({
       where: { id: eventId },
       include: { speakers: { orderBy: { order: "asc" } }, partners: { orderBy: { order: "asc" } } },
     }),
     getSiteSettings().catch(() => ({ instagramUrl: null, instagramUrl2: null, linkedinUrl: null, youtubeUrl: null })),
+    getCommunityTestimonials().catch(() => []),
   ]);
 
   if (!event || event.category !== pillar.category) notFound();
@@ -79,6 +80,9 @@ export default async function EventLandingPage({
         seatsNote: event.seatsNote,
         benefits: event.benefits,
         becomePartnerUrl: event.becomePartnerUrl,
+        galleryUrls: event.galleryUrls,
+        audienceTags: event.audienceTags,
+        faq: event.faq,
         speakers: event.speakers.map((s) => ({ id: s.id, name: s.name, role: s.role, bio: s.bio, photoUrl: s.photoUrl })),
         partners: event.partners.map((p) => ({ id: p.id, name: p.name, logoUrl: p.logoUrl, websiteUrl: p.websiteUrl })),
       }}
@@ -91,6 +95,14 @@ export default async function EventLandingPage({
         location: e.location,
       }))}
       siteSettings={siteSettings}
+      testimonials={testimonials.map((t) => ({
+        id: t._id,
+        quote: t.quote,
+        name: t.name,
+        role: t.role,
+        initial: t.initial,
+        avatarUrl: t.avatarUrl,
+      }))}
     />
   );
 }

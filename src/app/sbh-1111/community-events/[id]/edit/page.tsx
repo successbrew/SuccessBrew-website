@@ -57,6 +57,9 @@ export default async function EditCommunityEventPage({
           venuePhotoUrl: communityEvent.venuePhotoUrl ?? undefined,
           benefits: communityEvent.benefits.join("\n"),
           becomePartnerUrl: communityEvent.becomePartnerUrl ?? undefined,
+          galleryUrls: communityEvent.galleryUrls.join("\n"),
+          audienceTags: communityEvent.audienceTags.join("\n"),
+          faq: communityEvent.faq ?? undefined,
         }}
         action={updateCommunityEvent.bind(null, communityEvent.id)}
         redirectTo="/sbh-1111/community-events"

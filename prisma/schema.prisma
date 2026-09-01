@@ -207,6 +207,14 @@ model CommunityEvent {
   /// renders as a title-only card.
   benefits         String[] @default([])
   becomePartnerUrl String?
+  /// Editorial gallery for the event's visual-storytelling section (distinct from
+  /// imageUrl/venuePhotoUrl/hostPhotoUrl) — one image URL per line, admin-managed.
+  galleryUrls  String[] @default([])
+  /// Short audience-segment chips for the "Who Should Attend" section, one per
+  /// line, e.g. "Founders". Free strings, not an enum, so any event type fits.
+  audienceTags String[] @default([])
+  /// FAQ accordion entries, one per line, format "Question | Answer".
+  faq          String?
 
   speakers EventSpeaker[]
   /// Per-event partner selection, picked from the same BrandPartner pool as

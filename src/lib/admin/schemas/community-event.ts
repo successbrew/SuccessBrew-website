@@ -46,6 +46,15 @@ export const communityEventSchema = z.object({
     z.array(z.string())
   ).optional(),
   becomePartnerUrl: z.string().optional(),
+  galleryUrls: z.preprocess(
+    (val) => (typeof val === "string" ? val.split("\n").map((s) => s.trim()).filter(Boolean) : val),
+    z.array(z.string())
+  ).optional(),
+  audienceTags: z.preprocess(
+    (val) => (typeof val === "string" ? val.split("\n").map((s) => s.trim()).filter(Boolean) : val),
+    z.array(z.string())
+  ).optional(),
+  faq: z.string().optional(),
 });
 
 export type CommunityEventInput = z.infer<typeof communityEventSchema>;
@@ -82,6 +91,9 @@ export const communityEventFields: FieldConfig[] = [
   { name: "videoUrl", label: "Recap Video URL (optional, YouTube)", type: "url", placeholder: "https://www.youtube.com/watch?v=..." },
   { name: "benefits", label: "What You'll Leave With (optional, one per line: Title | Description)", type: "textarea", placeholder: "Six warm intros | Matched on what you're building and what you need." },
   { name: "becomePartnerUrl", label: "Become a Partner Link (optional)", type: "url" },
+  { name: "galleryUrls", label: "Visual Gallery (optional, one image URL per line)", type: "textarea", placeholder: "https://.../photo-1.jpg" },
+  { name: "audienceTags", label: "Who Should Attend (optional, one per line)", type: "textarea", placeholder: "Founders" },
+  { name: "faq", label: "FAQ (optional, one per line: Question | Answer)", type: "textarea", placeholder: "Is this free? | Free for members, ₹999 for guests." },
 ];
 
 export const communityEventColumns: ColumnConfig<CommunityEvent>[] = [
