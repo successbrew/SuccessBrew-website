@@ -481,7 +481,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mt-20">
               <ol className="relative grid grid-cols-5 gap-0">
                 <div aria-hidden className="absolute left-0 right-0 top-6 h-px bg-white/20" />
-                {[["2018", "Founded"], ["2023", "8K+"], ["2024", "54 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
+                {[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
                   <li key={yr} className="relative text-center">
                     <div className={`relative z-10 mx-auto grid h-12 w-12 place-items-center rounded-full border text-sm font-bold ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#0037D2] text-white"}`}>{yr}</div>
                     <div className={`mt-3 text-xs font-bold ${i === 4 ? "text-[#C1FF3B]" : "text-white/60"}`}>{lbl}</div>
