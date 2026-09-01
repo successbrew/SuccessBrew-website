@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, MapPin, ArrowRight, ArrowDown } from "lucide-react";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { SectionWave } from "@/components/SectionWave";
@@ -242,29 +242,29 @@ function HeroSpeakerSlideshow({ people }: { people: HeroPerson[] }) {
   if (!person) return null;
 
   return (
-    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-white/10 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.55)] ring-1 ring-white/15">
+    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl">
       <AnimatePresence mode="wait">
         <motion.div key={index} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: E }} className="absolute inset-0">
           {person.photoUrl ? (
             <img src={person.photoUrl} alt={person.name} className="h-full w-full object-cover object-top" />
           ) : (
-            <div className="grid h-full w-full place-items-center bg-[#0037D2]/50 text-5xl font-black text-white/40">
+            <div className="grid h-full w-full place-items-center bg-[#0037D2]/50 text-6xl font-black text-white/40">
               {person.name.charAt(0)}
             </div>
           )}
-          <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-5">
-            <span className="inline-block rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[9px] font-black uppercase tracking-wide text-[#111111]">
+          <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-6">
+            <span className="inline-block rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#111111]">
               {person.isHost ? "Host" : "Speaker"}
             </span>
-            <p className="mt-2.5 text-lg font-black leading-tight text-white">{person.name}</p>
-            {person.role && <p className="mt-0.5 text-xs font-semibold text-[#C1FF3B]">{person.role}</p>}
+            <p className="mt-3 text-2xl font-black leading-tight text-white">{person.name}</p>
+            {person.role && <p className="mt-1 text-sm font-semibold text-[#C1FF3B]">{person.role}</p>}
           </div>
         </motion.div>
       </AnimatePresence>
       {people.length > 1 && (
-        <div className="absolute right-4 top-4 z-10 flex gap-1.5">
+        <div className="absolute right-5 top-5 z-10 flex gap-1.5">
           {people.map((_, i) => (
             <button key={i} type="button" onClick={() => setIndex(i)} aria-label={`Show ${people[i].name}`}
               className={`h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-5 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"}`} />
@@ -434,9 +434,28 @@ export function EventLandingPageClient({
               <div className="absolute left-[-100px] bottom-[-120px] h-[300px] w-[300px] rounded-full bg-[#C1FF3B]/10 blur-3xl" />
             </div>
           )}
-          <div className="relative mx-auto w-full max-w-6xl px-6 lg:px-10">
-            <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-            <motion.div initial="hidden" animate="visible" variants={stagger(0.11)} className="order-2 max-w-2xl lg:order-1">
+
+          {/* Speaker slideshow — vertically centered on the right, independent of
+              the bottom-anchored text below, so it reads as part of the backdrop
+              rather than sharing the text's baseline. Desktop only; a compact
+              in-flow version above the text covers mobile. */}
+          {heroPeople.length > 0 && (
+            <div className="pointer-events-none absolute inset-y-0 right-6 z-[1] hidden w-[440px] items-center justify-center lg:right-10 lg:flex xl:right-16 xl:w-[500px]">
+              <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.3, ease: E }}
+                className="pointer-events-auto w-full max-w-[380px] px-8 xl:max-w-[420px]">
+                <HeroSpeakerSlideshow people={heroPeople} />
+              </motion.div>
+            </div>
+          )}
+
+          <div className="relative mx-auto w-full max-w-5xl px-6 lg:px-10 lg:pr-[420px] xl:pr-[480px]">
+            {heroPeople.length > 0 && (
+              <div className="mx-auto mb-10 w-full max-w-[220px] sm:max-w-[260px] lg:hidden">
+                <HeroSpeakerSlideshow people={heroPeople} />
+              </div>
+            )}
+
+            <motion.div initial="hidden" animate="visible" variants={stagger(0.11)} className="max-w-2xl">
               <motion.a variants={fadeUp} href={`/community/events/${pillar.slug}`}
                 className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/60 hover:text-white">
                 ← Back to {pillar.title}
@@ -470,21 +489,10 @@ export function EventLandingPageClient({
                 </motion.p>
               )}
 
-              <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold text-white/80">
-                <span className="inline-flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4 text-[#C1FF3B]" strokeWidth={2.25} /> {event.date}
-                </span>
-                {event.timeRange && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Clock className="h-4 w-4 text-[#C1FF3B]" strokeWidth={2.25} /> {event.timeRange}
-                  </span>
-                )}
-                <span className="inline-flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-[#C1FF3B]" strokeWidth={2.25} /> {event.location}
-                </span>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-4">
+              {/* Date/time/location/seats live once, in the quick-facts card right
+                  below the hero — repeating them here as a second list was pure
+                  duplication. */}
+              <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-4">
                 <a href={registerHref} target={event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
                   className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-sm font-bold text-[#111111] transition hover:translate-y-[-2px]">
                   Save my seat <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
@@ -500,14 +508,6 @@ export function EventLandingPageClient({
                 )}
               </motion.div>
             </motion.div>
-
-            {heroPeople.length > 0 && (
-              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.35, ease: E }}
-                className="order-1 mx-auto w-full max-w-[240px] shrink-0 sm:max-w-[260px] lg:order-2 lg:mx-0 lg:w-72">
-                <HeroSpeakerSlideshow people={heroPeople} />
-              </motion.div>
-            )}
-            </div>
           </div>
         </section>
 
