@@ -4,7 +4,9 @@ import { getSiteSettings, getCommunityTestimonials } from "@/lib/queries/content
 import { getEventPillarBySlug } from "@/lib/event-pillars";
 import { EventLandingPageClient } from "@/components/EventLandingPageClient";
 
-export const revalidate = 0;
+// Cached for 60s (admin edits still show instantly via revalidatePath in
+// the admin action) — read-heavy, rarely-changing content.
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,

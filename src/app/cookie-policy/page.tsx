@@ -1,7 +1,9 @@
 import { getSiteSettings } from "@/lib/queries/content";
 import { LegalPageClient, type LegalSection } from "@/components/LegalPageClient";
 
-export const revalidate = 0;
+// Cached for 60s (admin edits still show instantly via revalidatePath in
+// the admin action) — read-heavy, rarely-changing content.
+export const revalidate = 60;
 
 export const metadata = {
   title: "Cookie Policy | Successbrew",

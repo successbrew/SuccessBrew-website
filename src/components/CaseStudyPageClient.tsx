@@ -148,7 +148,7 @@ export function CaseStudyPageClient({
                     <p className="text-sm font-semibold uppercase tracking-[0.15em] text-white/40">
                       Key Result
                     </p>
-                    <div className="mt-6 text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white">
+                    <div className="mt-6 break-words text-[clamp(2.75rem,10vw,6rem)] font-black leading-[1.05] tracking-tight text-white md:text-7xl lg:text-8xl">
                       <span className="text-accent">{primaryMetric.value}</span>
                     </div>
                     <p className="mt-4 text-xl md:text-2xl text-white/80">

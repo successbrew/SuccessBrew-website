@@ -88,7 +88,7 @@ export function DigestPreferencesClient({
 
             <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur">
               <label className="mb-1.5 block text-xs font-medium text-white/50">Email used on your membership</label>
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <Input
                   type="email"
                   value={email}
@@ -96,7 +96,7 @@ export function DigestPreferencesClient({
                   placeholder="you@example.com"
                   className="border-white/15 bg-white/10 text-white placeholder:text-white/30"
                 />
-                <Button onClick={() => load(email)} disabled={isPending || !email.trim()}>
+                <Button onClick={() => load(email)} disabled={isPending || !email.trim()} className="w-full sm:w-auto">
                   {isPending && status === "loading" ? "Checking…" : "Load"}
                 </Button>
               </div>

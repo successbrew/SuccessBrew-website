@@ -9,7 +9,9 @@ import {
 } from "@/lib/queries/content";
 import { CommunityPageClient } from "@/components/CommunityPageClient";
 
-export const revalidate = 0;
+// Cached for 60s (admin edits still show instantly via revalidatePath in
+// the admin action) — read-heavy, rarely-changing content.
+export const revalidate = 60;
 
 export default async function CommunityPage() {
   const [events, episodes, communityTestimonials, posts, communityPartners, communityMembers, siteSettings] = await Promise.all([

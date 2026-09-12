@@ -1,7 +1,9 @@
 import { getPodcastEpisodes, getSiteSettings } from "@/lib/queries/content";
 import { CommunityPodcastPageClient } from "@/components/CommunityPodcastPageClient";
 
-export const revalidate = 0;
+// Cached for 60s (admin edits still show instantly via revalidatePath in
+// the admin action) — read-heavy, rarely-changing content.
+export const revalidate = 60;
 
 export const metadata = {
   title: "All Episodes | Successbrew Podcast",

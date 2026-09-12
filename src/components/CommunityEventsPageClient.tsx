@@ -139,10 +139,10 @@ function NextUpCard({ event }: { event: EventItem }) {
             <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#111111]/40">{event.location}</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 border-b border-[#111111]/10 pb-6">
+          <div className="grid grid-cols-1 gap-3 border-b border-[#111111]/10 pb-6 sm:grid-cols-3 sm:gap-4">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Date</p>
-              <p className="mt-1 text-sm font-bold text-[#111111]">{event.date}</p>
+              <p className="mt-1 truncate text-sm font-bold text-[#111111]">{event.date}</p>
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Location</p>

@@ -16,8 +16,9 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
     title: "Ecosystem",
     links: [
       { label: "Community", href: "/community" },
-      { label: "Events", href: "/community#events" },
-      { label: "Podcast", href: "/community#podcast" },
+      { label: "Events", href: "/community/events" },
+      { label: "Offers", href: "/community/offers" },
+      { label: "Podcast", href: "/community/podcast" },
       { label: "Learning Hub", href: "/community#learning-hub" },
     ],
   },

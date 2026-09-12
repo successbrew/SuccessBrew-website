@@ -11,7 +11,7 @@ function SummaryRow({ label, value, onEdit }: { label: string; value: string; on
         <p className="text-xs font-semibold uppercase tracking-wide text-[#111111]/40">{label}</p>
         <p className="mt-0.5 break-all text-sm text-[#111111]">{value || "—"}</p>
       </div>
-      <button type="button" onClick={onEdit} className="shrink-0 text-xs font-semibold text-[#0037D2] hover:underline">
+      <button type="button" onClick={onEdit} className="-m-2 shrink-0 p-2 text-xs font-semibold text-[#0037D2] hover:underline">
         Edit
       </button>
     </div>

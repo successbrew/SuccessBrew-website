@@ -1,16 +1,16 @@
 import { getSiteSettings } from "@/lib/queries/content";
-import { AboutPageClient } from "@/components/AboutPageClient";
+import { CommunityOffersPageClient } from "@/components/CommunityOffersPageClient";
 
 // Cached for 60s (admin edits still show instantly via revalidatePath in
 // the admin action) — read-heavy, rarely-changing content.
 export const revalidate = 60;
 
 export const metadata = {
-  title: "About | Successbrew",
-  description: "The story behind Successbrew — our mission, our journey, and the people building India's startup ecosystem.",
+  title: "Community Offers | Successbrew",
+  description: "Free to join, always. See what the Growth and Founder tiers unlock inside the Successbrew community.",
 };
 
-export default async function AboutPage() {
+export default async function CommunityOffersPage() {
   const siteSettings = await getSiteSettings().catch(() => ({
     instagramUrl: null,
     instagramUrl2: null,
@@ -18,5 +18,5 @@ export default async function AboutPage() {
     youtubeUrl: null,
   }));
 
-  return <AboutPageClient siteSettings={siteSettings} />;
+  return <CommunityOffersPageClient siteSettings={siteSettings} />;
 }

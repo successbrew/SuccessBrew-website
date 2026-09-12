@@ -85,7 +85,7 @@ const NAV: NavEntry[] = [
     dropdown: {
       items: [
         { icon: Globe,    title: "Ecosystem",      desc: "The 6 pillars of Successbrew",        href: "/community#ecosystem"    },
-        { icon: Gift,     title: "Offers",         desc: "What every member unlocks",           href: "/community#offers"       },
+        { icon: Gift,     title: "Offers",         desc: "What every member unlocks",           href: "/community/offers"       },
         { icon: Calendar, title: "Events",         desc: "Meetups, summits & workshops",        href: "/community/events"       },
         { icon: Mic,      title: "Podcast",        desc: "100+ raw founder conversations",      href: "/community/podcast"      },
         { icon: Trophy,   title: "Community Wins", desc: "Stories from our members",            href: "/community#wins"         },

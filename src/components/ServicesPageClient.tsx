@@ -450,7 +450,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                   transition={{ duration: 0.65, ease: E, delay: i * 0.1 }}
                   whileHover={{ y: -6, boxShadow: "0 24px 60px -10px rgba(0,0,0,0.18)", transition: { duration: 0.25, ease: E } }}
                   className={`group relative overflow-hidden rounded-3xl border border-ink/5 p-8 md:p-10 cursor-default ${statBg[s.colorScheme] ?? statBg.default}`}>
-                  <div className="text-[clamp(1.5rem,4.5vw,2.75rem)] font-black tracking-tight whitespace-nowrap">
+                  <div className="text-[clamp(1.15rem,4.5vw,2.75rem)] font-black tracking-tight">
                     <AnimatedNumber value={s.number} inView={statsInView} />
                   </div>
                   <div className="mt-6 text-base font-medium opacity-60">{s.label}</div>

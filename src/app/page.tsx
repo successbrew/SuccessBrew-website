@@ -9,7 +9,9 @@ import {
 } from "@/lib/queries/content";
 import { ServicesPageClient } from "@/components/ServicesPageClient";
 
-export const revalidate = 0;
+// Cached for 60s (admin edits still show instantly via revalidatePath in
+// the admin action) — read-heavy, rarely-changing content.
+export const revalidate = 60;
 
 export default async function ServicesPage() {
   const [services, processSteps, caseStudies, testimonials, stats, brandPartners, siteSettings] = await Promise.all([

@@ -200,10 +200,14 @@ function FeaturedTestimonial({ testimonials, tokens }: { testimonials: Testimoni
               <button
                 key={i}
                 onClick={() => setActiveIdx(i)}
-                className="h-1.5 rounded-full transition-all duration-300"
-                style={{ width: i === activeIdx ? 28 : 8, background: i === activeIdx ? tokens.dotActive : tokens.dotInactive }}
+                className="-m-2 p-2"
                 aria-label={`View testimonial ${i + 1}`}
-              />
+              >
+                <span
+                  className="block h-1.5 rounded-full transition-all duration-300"
+                  style={{ width: i === activeIdx ? 28 : 8, background: i === activeIdx ? tokens.dotActive : tokens.dotInactive }}
+                />
+              </button>
             ))}
           </div>
         )}
