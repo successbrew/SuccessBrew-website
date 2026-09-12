@@ -11,7 +11,10 @@ export const personalInfoSchema = z.object({
   city: z.string().min(1, "Required").max(100),
   birthday: z.string().min(1, "Required").max(20),
   gender: z.string().min(1, "Required").max(50),
-  headshotUrl: z.string().url().max(2048).optional(),
+  // Not a public URL — an opaque S3 object key returned by /api/apply/upload
+  // (see H5 in the security audit), resolved to a signed URL only when an
+  // authorized admin views the application.
+  headshotUrl: z.string().min(1).max(2048).optional(),
 });
 export const personalInfoDraftSchema = personalInfoSchema.partial();
 
@@ -64,7 +67,8 @@ export const professionalInfoDraftSchema = professionalInfoSchema.partial();
 export const DOCUMENT_KINDS = ["RESUME", "MEDIA_KIT", "DECK", "LOGO", "HEADSHOT"] as const;
 export const documentUploadSchema = z.object({
   kind: z.enum(DOCUMENT_KINDS),
-  url: z.string().url().max(2048),
+  // Opaque S3 object key, not a public URL (see headshotUrl above).
+  url: z.string().min(1).max(2048),
 });
 
 // ── Draft autosave: everything optional, saved as-you-go ─────────────────────

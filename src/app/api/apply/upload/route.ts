@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3, S3_BUCKET, publicUrlForKey } from "@/lib/s3";
+import { s3, S3_BUCKET } from "@/lib/s3";
 import { checkRateLimit, clientIp } from "@/lib/rate-limit";
 
 const ALLOWED_TYPES = new Set([
@@ -16,6 +16,11 @@ const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
  * gets bucket credentials or a direct write URL, so this is the only place
  * bytes can land in the bucket, and the type allowlist + size cap + per-IP
  * rate limit are what keep it from being spammed.
+ *
+ * Returns the bare object key, not a public URL (H5 fix) — these are
+ * resumes/decks/headshots, not public marketing assets. Whoever needs to
+ * view one later (an admin reviewing the application) resolves the key to a
+ * short-lived signed URL at render time via resolveDownloadUrl().
  */
 export async function POST(request: Request) {
   const ip = clientIp(request);
@@ -44,5 +49,5 @@ export async function POST(request: Request) {
     new PutObjectCommand({ Bucket: S3_BUCKET, Key: key, Body: bytes, ContentType: file.type, ContentLength: bytes.byteLength })
   );
 
-  return NextResponse.json({ url: publicUrlForKey(key) });
+  return NextResponse.json({ key });
 }

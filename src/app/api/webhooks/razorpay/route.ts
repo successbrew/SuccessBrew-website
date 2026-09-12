@@ -75,11 +75,34 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
-      // Already processed this exact webhook delivery — idempotent no-op.
-      return NextResponse.json({ ok: true, duplicate: true });
+      const existing = await prisma.paymentEvent.findUnique({ where: { eventId } });
+      if (!existing) {
+        console.error("razorpay payment event unique-conflict but row not found", eventId);
+        return NextResponse.json({ error: "Failed to record event" }, { status: 500 });
+      }
+
+      if (existing.status === "PROCESSED") {
+        // Genuinely already processed this exact webhook delivery — no-op.
+        return NextResponse.json({ ok: true, duplicate: true });
+      }
+
+      // FAILED (a prior attempt errored, e.g. a transient DB blip) or still
+      // PROCESSING (a concurrent request) — reclaim it atomically so a
+      // Razorpay retry can actually recover instead of permanently 200'ing
+      // out as a false "duplicate" while the order is never settled.
+      const claim = await prisma.paymentEvent.updateMany({
+        where: { id: existing.id, status: "FAILED" },
+        data: { status: "PROCESSING", payload: parsed as Prisma.InputJsonValue },
+      });
+      if (claim.count === 0) {
+        // Another request is already (re)processing this event right now.
+        return NextResponse.json({ ok: true, duplicate: true });
+      }
+      eventRow = existing;
+    } else {
+      console.error("failed to record razorpay payment event", err);
+      return NextResponse.json({ error: "Failed to record event" }, { status: 500 });
     }
-    console.error("failed to record razorpay payment event", err);
-    return NextResponse.json({ error: "Failed to record event" }, { status: 500 });
   }
 
   try {

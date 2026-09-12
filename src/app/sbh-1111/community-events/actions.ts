@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { verifyAdminSession } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { runCreate, runUpdate, runDelete } from "@/lib/admin/crud";
 import { communityEventSchema } from "@/lib/admin/schemas/community-event";
 import { formDataToObject } from "@/lib/admin/form-data";
@@ -15,17 +16,17 @@ const REVALIDATE = [
 ];
 
 export async function createCommunityEvent(formData: FormData) {
-  await verifyAdminSession();
+  await requirePermission(PERMISSIONS.COMMUNITY_MANAGE);
   return runCreate(prisma.communityEvent, communityEventSchema, formDataToObject(formData), REVALIDATE);
 }
 
 export async function updateCommunityEvent(id: string, formData: FormData) {
-  await verifyAdminSession();
+  await requirePermission(PERMISSIONS.COMMUNITY_MANAGE);
   return runUpdate(prisma.communityEvent, communityEventSchema, id, formDataToObject(formData), REVALIDATE);
 }
 
 export async function deleteCommunityEvent(formData: FormData) {
-  await verifyAdminSession();
+  await requirePermission(PERMISSIONS.COMMUNITY_MANAGE);
   const id = String(formData.get("id") ?? "");
   return runDelete(prisma.communityEvent, id, REVALIDATE);
 }

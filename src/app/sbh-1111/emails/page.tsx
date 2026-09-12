@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { verifyAdminSession } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -14,7 +15,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function EmailsPage() {
-  await verifyAdminSession();
+  await requirePermission(PERMISSIONS.AUDIT_VIEW);
 
   const logs = await prisma.emailLog.findMany({
     orderBy: { createdAt: "desc" },

@@ -13,6 +13,7 @@ import { legalNextStatuses, STATUS_LABELS } from "@/lib/services/applications/st
 import { ApplicationStatus } from "@prisma/client";
 import { changeApplicationStatus, addApplicationReview, createSpeakerAction, deleteApplicationAction } from "./actions";
 import type { PersonalInfo, ProfessionalInfo } from "@/lib/types/application";
+import { resolveDownloadUrl } from "@/lib/s3";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,11 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
   const personal = app.personal as unknown as PersonalInfo;
   const professional = app.professional as unknown as ProfessionalInfo;
   const socials = professional?.socials;
+
+  // Application documents/headshot are private (H5) — resolve each stored
+  // key to a signed URL good for this one render, never a permanent link.
+  const headshotViewUrl = personal.headshotUrl ? await resolveDownloadUrl(personal.headshotUrl) : null;
+  const documentViewUrls = await Promise.all(app.documents.map((doc) => resolveDownloadUrl(doc.url)));
 
   const canApprove = hasPermission(admin.roles, PERMISSIONS.APPLICATIONS_APPROVE);
   // SPEAKER_CREATED is never a bare status flip — it only happens via the dedicated
@@ -146,11 +152,11 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
             <Field label="City" value={personal.city} />
             <Field label="Birthday" value={personal.birthday} />
             <Field label="Gender" value={personal.gender} />
-            {personal.headshotUrl && (
+            {headshotViewUrl && (
               <div className="col-span-2">
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Headshot</p>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={personal.headshotUrl} alt="Headshot" className="h-32 w-32 rounded-lg object-cover" />
+                <img src={headshotViewUrl} alt="Headshot" className="h-32 w-32 rounded-lg object-cover" />
               </div>
             )}
           </CardContent>
@@ -209,9 +215,9 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
               <p className="text-sm text-muted-foreground">No documents uploaded.</p>
             ) : (
               <ul className="space-y-2">
-                {app.documents.map((doc) => (
+                {app.documents.map((doc, i) => (
                   <li key={doc.id}>
-                    <a href={doc.url} target="_blank" rel="noreferrer noopener" className="text-sm text-primary underline underline-offset-2">
+                    <a href={documentViewUrls[i]} target="_blank" rel="noreferrer noopener" className="text-sm text-primary underline underline-offset-2">
                       {doc.kind}
                     </a>
                   </li>

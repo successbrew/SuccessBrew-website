@@ -6,9 +6,9 @@ export async function sendDailyDigestEmail(params: {
   dateLabel: string;
   topicTitles: string[];
   pdfUrl: string;
-}) {
+}): Promise<{ success: boolean; error?: string }> {
   const { subject, html } = buildDailyDigestEmail(params);
-  await sendEmail({
+  return sendEmail({
     to: params.email,
     subject,
     html,

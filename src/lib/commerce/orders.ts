@@ -57,10 +57,18 @@ export async function createOrderForCheckout(params: {
   };
 }
 
-/** Grants access after a verified `payment.captured` webhook. Single transaction:
- * Order -> PAID, Payment row, Entitlement upsert, ResourceAccess upsert, Lead -> PAID.
- * Brevo sync happens after commit, best-effort — a Brevo outage must never roll
- * back a paid order (PDF §9F). */
+/** Order statuses a `payment.captured` webhook is allowed to move *from*.
+ * REFUNDED/CANCELLED are deliberately excluded — a delayed or replayed
+ * capture event must never reactivate a refunded/cancelled order. */
+const PAYABLE_FROM_STATUSES = ["INITIATED", "PENDING", "FAILED"] as const;
+
+/** Grants access after a verified `payment.captured` webhook. The order's
+ * current status is re-checked with a conditional update *inside* the
+ * transaction (not just read-then-write beforehand), so a concurrent refund
+ * can't be clobbered back to PAID by a late/replayed capture event (H7).
+ * Single transaction: Order -> PAID, Payment row, Entitlement upsert,
+ * ResourceAccess upsert, Lead -> PAID. Brevo sync happens after commit,
+ * best-effort — a Brevo outage must never roll back a paid order (PDF §9F). */
 export async function markOrderPaidFromWebhook(params: {
   razorpayOrderId: string;
   razorpayPaymentId: string;
@@ -74,19 +82,30 @@ export async function markOrderPaidFromWebhook(params: {
     throw new Error(`Order not found for razorpayOrderId=${params.razorpayOrderId}`);
   }
 
-  // Idempotent: a payment.captured retry for an already-PAID order is a no-op.
+  // Fast-path idempotency checks — the authoritative check is the conditional
+  // update inside the transaction below.
   if (order.status === "PAID") return order;
+  if (order.status === "REFUNDED" || order.status === "CANCELLED") {
+    console.warn(
+      `payment.captured for razorpayOrderId=${params.razorpayOrderId} ignored — order ${order.id} is already ${order.status}.`
+    );
+    return order;
+  }
 
   const product = getProductByKey(order.productKey);
   const resource = product
     ? await prisma.resource.findUnique({ where: { slug: product.resourceSlug } })
     : null;
 
-  await prisma.$transaction(async (tx) => {
-    await tx.order.update({
-      where: { id: order.id },
+  const settled = await prisma.$transaction(async (tx) => {
+    const claim = await tx.order.updateMany({
+      where: { id: order.id, status: { in: PAYABLE_FROM_STATUSES } },
       data: { status: "PAID", paidAt: new Date() },
     });
+
+    // Order moved to a terminal state (REFUNDED/CANCELLED) or was already PAID
+    // between our read above and this transaction — do not grant/re-grant access.
+    if (claim.count === 0) return false;
 
     await tx.payment.upsert({
       where: { provider_providerPaymentId: { provider: "razorpay", providerPaymentId: params.razorpayPaymentId } },
@@ -128,9 +147,11 @@ export async function markOrderPaidFromWebhook(params: {
     if (order.leadId) {
       await tx.lead.update({ where: { id: order.leadId }, data: { status: "PAID" } });
     }
+
+    return true;
   });
 
-  if (order.leadId) {
+  if (settled && order.leadId) {
     await syncLeadToBrevo(order.leadId).catch(() => {});
   }
 
@@ -138,19 +159,27 @@ export async function markOrderPaidFromWebhook(params: {
 }
 
 /** payment.failed webhook — order stays retryable, lead is left as-is
- * (PDF §9A: "remain LEAD/Checkout state"). */
+ * (PDF §9A: "remain LEAD/Checkout state"). Conditional update guards the same
+ * race as markOrderPaidFromWebhook: a failure event must never downgrade an
+ * order that's already PAID/REFUNDED/CANCELLED. */
 export async function markOrderFailed(params: { razorpayOrderId: string }) {
   const order = await prisma.order.findUnique({
     where: { provider_providerOrderId: { provider: "razorpay", providerOrderId: params.razorpayOrderId } },
   });
   if (!order) throw new Error(`Order not found for razorpayOrderId=${params.razorpayOrderId}`);
-  if (order.status === "PAID") return order;
+  if (order.status !== "INITIATED" && order.status !== "PENDING") return order;
 
-  return prisma.order.update({ where: { id: order.id }, data: { status: "FAILED" } });
+  await prisma.order.updateMany({
+    where: { id: order.id, status: { in: ["INITIATED", "PENDING"] } },
+    data: { status: "FAILED" },
+  });
+  return order;
 }
 
 /** refund.processed webhook — revokes the entitlement and any granted resource
- * access per the PDF's refund/revocation policy (§9E). */
+ * access per the PDF's refund/revocation policy (§9E). Guarded so a retried
+ * refund webhook (or one for a payment that was never captured) can't
+ * re-apply revocation side effects or overwrite a differently-settled order. */
 export async function markOrderRefunded(params: { razorpayPaymentId: string }) {
   const payment = await prisma.payment.findUnique({
     where: { provider_providerPaymentId: { provider: "razorpay", providerPaymentId: params.razorpayPaymentId } },
@@ -158,15 +187,33 @@ export async function markOrderRefunded(params: { razorpayPaymentId: string }) {
   });
   if (!payment) throw new Error(`Payment not found for razorpayPaymentId=${params.razorpayPaymentId}`);
 
+  // Idempotent no-op: already processed this refund.
+  if (payment.status === "REFUNDED") return payment.order;
+
   const order = payment.order;
   const product = getProductByKey(order.productKey);
   const resource = product
     ? await prisma.resource.findUnique({ where: { slug: product.resourceSlug } })
     : null;
 
-  await prisma.$transaction(async (tx) => {
-    await tx.payment.update({ where: { id: payment.id }, data: { status: "REFUNDED" } });
-    await tx.order.update({ where: { id: order.id }, data: { status: "REFUNDED", refundedAt: new Date() } });
+  const settled = await prisma.$transaction(async (tx) => {
+    const claimedPayment = await tx.payment.updateMany({
+      where: { id: payment.id, status: { not: "REFUNDED" } },
+      data: { status: "REFUNDED" },
+    });
+    if (claimedPayment.count === 0) return false;
+
+    // Only an order we actually marked PAID can be refunded — a refund event
+    // for an order that's e.g. still PENDING or already CANCELLED indicates
+    // a data mismatch worth surfacing rather than silently revoking access.
+    const claimedOrder = await tx.order.updateMany({
+      where: { id: order.id, status: "PAID" },
+      data: { status: "REFUNDED", refundedAt: new Date() },
+    });
+    if (claimedOrder.count === 0) {
+      console.warn(`refund.processed for payment ${payment.id} ignored — order ${order.id} was not PAID.`);
+      return false;
+    }
 
     await tx.entitlement.updateMany({
       where: { customerEmail: order.customerEmail, productKey: order.productKey },
@@ -183,9 +230,11 @@ export async function markOrderRefunded(params: { razorpayPaymentId: string }) {
     if (order.leadId) {
       await tx.lead.update({ where: { id: order.leadId }, data: { status: "REFUNDED" } });
     }
+
+    return true;
   });
 
-  if (order.leadId) {
+  if (settled && order.leadId) {
     await syncLeadToBrevo(order.leadId).catch(() => {});
   }
 

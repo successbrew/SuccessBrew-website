@@ -12,9 +12,9 @@ export const metadata = {
 export default async function DigestPreferencesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: Promise<{ email?: string; token?: string }>;
 }) {
-  const { email } = await searchParams;
+  const { email, token } = await searchParams;
 
   const [topics, siteSettings] = await Promise.all([
     prisma.digestTopic.findMany({ where: { isActive: true }, orderBy: { order: "asc" } }),
@@ -26,6 +26,7 @@ export default async function DigestPreferencesPage({
       siteSettings={siteSettings}
       topics={topics.map((t) => ({ id: t.id, title: t.title }))}
       initialEmail={email ?? ""}
+      initialToken={token ?? ""}
     />
   );
 }

@@ -55,3 +55,18 @@ export async function requirePermission(permission: Permission) {
   }
   return admin;
 }
+
+/**
+ * Non-redirecting super-admin check for contexts that can't use next/navigation's
+ * redirect() (e.g. Route Handlers) — returns a boolean instead of throwing/redirecting.
+ * Used to gate Neon Auth's native admin/* endpoints (see api/auth/[...path]/route.ts),
+ * which would otherwise let any authenticated admin bypass our SUPER_ADMIN-only
+ * user-management actions by calling the provider's endpoints directly.
+ */
+export async function isSuperAdminSession(): Promise<boolean> {
+  const { data: session } = await auth.getSession();
+  if (!session?.user || session.user.role !== ADMIN_ROLES.ADMIN) return false;
+
+  const profile = await prisma.adminProfile.findUnique({ where: { id: session.user.id } });
+  return profile?.roles.includes("SUPER_ADMIN") ?? false;
+}

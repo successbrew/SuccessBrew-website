@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { verifyAdminSession } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatTile } from "@/components/admin/analytics/StatTile";
@@ -28,7 +29,7 @@ const NEEDS_ATTENTION_STATUSES: ApplicationStatus[] = [
 ];
 
 export default async function AdminDashboardPage() {
-  const admin = await verifyAdminSession();
+  const admin = await requirePermission(PERMISSIONS.ANALYTICS_VIEW);
 
   const startOfMonth = new Date();
   startOfMonth.setDate(1);

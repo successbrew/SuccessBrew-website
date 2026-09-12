@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs";
 import type { PersonalInfo, ProfessionalInfo } from "@/lib/types/application";
+import { resolveDownloadUrl } from "@/lib/s3";
 
 interface ExportableApplication {
   applicationCode: string;
@@ -48,12 +49,15 @@ export async function buildApplicationsWorkbook(applications: ExportableApplicat
     { header: "Portfolio", key: "portfolio", width: 30 },
     { header: "Previous Podcasts", key: "podcastLinks", width: 30 },
     { header: "Articles", key: "articles", width: 30 },
-    { header: "Headshot URL", key: "headshotUrl", width: 40 },
+    { header: "Headshot Link (valid 15 min from export)", key: "headshotUrl", width: 40 },
   ];
   sheet.getRow(1).font = { bold: true };
 
   for (const app of applications) {
     const socials = app.professional.socials;
+    // Signed on export, not stored — a workbook downloaded once shouldn't
+    // carry a permanent link to a private document (H5).
+    const headshotUrl = app.personal.headshotUrl ? await resolveDownloadUrl(app.personal.headshotUrl) : "";
     sheet.addRow({
       applicationCode: app.applicationCode,
       status: app.status,
@@ -86,7 +90,7 @@ export async function buildApplicationsWorkbook(applications: ExportableApplicat
       portfolio: socials?.portfolio ?? "",
       podcastLinks: socials?.podcastLinks?.join(", ") ?? "",
       articles: socials?.articles?.join(", ") ?? "",
-      headshotUrl: app.personal.headshotUrl ?? "",
+      headshotUrl,
     });
   }
 

@@ -7,29 +7,35 @@ import { Footer } from "@/components/Footer";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getMemberTopicSelections, saveTopicSelections } from "@/app/community/digest/preferences/actions";
+import { getMemberTopicSelections, requestPreferencesLink, saveTopicSelections } from "@/app/community/digest/preferences/actions";
 
-type Status = "idle" | "loading" | "not-eligible" | "ready" | "saved";
+type Status = "idle" | "loading" | "link-sent" | "not-eligible" | "ready" | "saved";
 
 export function DigestPreferencesClient({
   siteSettings,
   topics,
   initialEmail,
+  initialToken,
 }: {
   siteSettings: SiteSettings;
   topics: { id: string; title: string }[];
   initialEmail: string;
+  initialToken: string;
 }) {
   const [email, setEmail] = useState(initialEmail);
+  // Only ever set from the emailed link's URL — there's no UI path that lets
+  // a visitor type their own token, since a typed value proves nothing.
+  const [token] = useState(initialToken);
   // Initialized directly (not via an effect-driven setState) so the mount
   // effect below never needs to synchronously update state itself.
-  const [status, setStatus] = useState<Status>(initialEmail ? "loading" : "idle");
+  const [status, setStatus] = useState<Status>(initialEmail && initialToken ? "loading" : "idle");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
 
-  function fetchSelections(targetEmail: string) {
+  useEffect(() => {
+    if (!initialEmail || !initialToken) return;
     startTransition(async () => {
-      const res = await getMemberTopicSelections(targetEmail);
+      const res = await getMemberTopicSelections(initialEmail, initialToken);
       if (!res.eligible) {
         setStatus("not-eligible");
         return;
@@ -37,19 +43,19 @@ export function DigestPreferencesClient({
       setSelected(new Set(res.selectedTopicIds));
       setStatus("ready");
     });
-  }
-
-  function load(targetEmail: string) {
-    if (!targetEmail.trim()) return;
-    setStatus("loading");
-    fetchSelections(targetEmail);
-  }
-
-  useEffect(() => {
-    if (initialEmail) fetchSelections(initialEmail);
-    // Only run once on mount for a pre-filled email — not on every keystroke.
+    // Only run once on mount for a pre-filled email+token pair — not on every keystroke.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function requestLink() {
+    if (!email.trim()) return;
+    startTransition(async () => {
+      await requestPreferencesLink(email);
+      // Same message whether or not this email turned out to be an active
+      // member — the response can't be allowed to leak that distinction.
+      setStatus("link-sent");
+    });
+  }
 
   function toggleTopic(id: string) {
     setSelected((prev) => {
@@ -62,7 +68,7 @@ export function DigestPreferencesClient({
 
   function handleSave() {
     startTransition(async () => {
-      const res = await saveTopicSelections(email, [...selected]);
+      const res = await saveTopicSelections(email, token, [...selected]);
       if ("success" in res) setStatus("saved");
     });
   }
@@ -87,29 +93,41 @@ export function DigestPreferencesClient({
             </p>
 
             <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur">
-              <label className="mb-1.5 block text-xs font-medium text-white/50">Email used on your membership</label>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="border-white/15 bg-white/10 text-white placeholder:text-white/30"
-                />
-                <Button onClick={() => load(email)} disabled={isPending || !email.trim()} className="w-full sm:w-auto">
-                  {isPending && status === "loading" ? "Checking…" : "Load"}
-                </Button>
-              </div>
+              {(status === "idle" || status === "link-sent") && (
+                <>
+                  <label className="mb-1.5 block text-xs font-medium text-white/50">Email used on your membership</label>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="border-white/15 bg-white/10 text-white placeholder:text-white/30"
+                    />
+                    <Button onClick={requestLink} disabled={isPending || !email.trim()} className="w-full sm:w-auto">
+                      {isPending ? "Sending…" : "Email me a link"}
+                    </Button>
+                  </div>
+                  {status === "link-sent" && (
+                    <p className="mt-4 text-sm text-white/60">
+                      If that email has an active membership, we&rsquo;ve sent a link to manage your topics — it expires in 30 minutes.
+                    </p>
+                  )}
+                </>
+              )}
+
+              {status === "loading" && <p className="text-sm text-white/60">Checking your link…</p>}
 
               {status === "not-eligible" && (
-                <p className="mt-4 text-sm text-white/60">
-                  We couldn&rsquo;t find an active paid membership for this email.{" "}
-                  <a href="/community" className="text-accent underline">Explore membership tiers →</a>
+                <p className="text-sm text-white/60">
+                  This link is invalid, expired, or this email doesn&rsquo;t have an active membership.{" "}
+                  <a href="/community/digest/preferences" className="text-accent underline">Request a new link</a> or{" "}
+                  <a href="/community" className="text-accent underline">explore membership tiers →</a>
                 </p>
               )}
 
               {(status === "ready" || status === "saved") && (
-                <div className="mt-6 space-y-4">
+                <div className="space-y-4">
                   <ul className="space-y-2">
                     {topics.map((t) => (
                       <li key={t.id}>

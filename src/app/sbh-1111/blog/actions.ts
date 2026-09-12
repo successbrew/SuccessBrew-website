@@ -2,14 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { verifyAdminSession } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 import { blogSchema, type BlogInput } from "@/lib/admin/schemas/blog";
 import type { ActionResult } from "@/lib/admin/crud";
 
 const REVALIDATE = ["/sbh-1111/blog", "/blog"];
 
 export async function createBlog(input: BlogInput): Promise<ActionResult> {
-  const admin = await verifyAdminSession();
+  const admin = await requirePermission(PERMISSIONS.CONTENT_MANAGE);
   const parsed = blogSchema.safeParse(input);
   if (!parsed.success) return { error: parsed.error.issues.map((i) => i.message).join(", ") };
 
@@ -30,7 +31,7 @@ export async function createBlog(input: BlogInput): Promise<ActionResult> {
 }
 
 export async function updateBlog(id: string, input: BlogInput): Promise<ActionResult> {
-  await verifyAdminSession();
+  await requirePermission(PERMISSIONS.CONTENT_MANAGE);
   const parsed = blogSchema.safeParse(input);
   if (!parsed.success) return { error: parsed.error.issues.map((i) => i.message).join(", ") };
 
@@ -54,7 +55,7 @@ export async function updateBlog(id: string, input: BlogInput): Promise<ActionRe
 }
 
 export async function deleteBlog(formData: FormData): Promise<ActionResult> {
-  await verifyAdminSession();
+  await requirePermission(PERMISSIONS.CONTENT_MANAGE);
   const id = String(formData.get("id") ?? "");
   if (!id) return { error: "Missing id." };
 

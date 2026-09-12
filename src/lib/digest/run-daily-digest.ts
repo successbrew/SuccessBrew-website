@@ -1,8 +1,8 @@
-import { createHash } from "crypto";
+import { randomUUID } from "crypto";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { prisma } from "@/lib/prisma";
-import { s3, S3_BUCKET, publicUrlForKey } from "@/lib/s3";
+import { s3, S3_BUCKET, getSignedDownloadUrl } from "@/lib/s3";
 import { generateTopicBrief, AnthropicNotConfiguredError } from "./anthropic";
 import { DigestPdfDocument, type DigestTopicSection } from "./DigestPdfDocument";
 import { sendDailyDigestEmail } from "@/lib/services/email/notify-digest";
@@ -47,6 +47,11 @@ async function ensureTodaysTopicBriefs(date: Date): Promise<{ generated: number;
   return { generated, failed };
 }
 
+/** Returns the S3 key (not a URL — H5: this used to be a public bucket URL
+ * keyed by an unsalted sha256(email), so anyone who knew a member's email
+ * could compute the exact path and download their digest with no auth at
+ * all). The key is now fully random and the object is never public; the
+ * caller signs a time-limited link for the one email that goes out. */
 async function renderAndUploadPdf(params: {
   email: string;
   dateLabel: string;
@@ -57,8 +62,7 @@ async function renderAndUploadPdf(params: {
     DigestPdfDocument({ memberEmail: params.email, dateLabel: params.dateLabel, sections: params.sections })
   );
 
-  const emailHash = createHash("sha256").update(params.email).digest("hex").slice(0, 16);
-  const key = `digests/${params.dateKey}/${emailHash}.pdf`;
+  const key = `digests/${params.dateKey}/${randomUUID()}.pdf`;
 
   await s3.send(
     new PutObjectCommand({
@@ -70,7 +74,7 @@ async function renderAndUploadPdf(params: {
     })
   );
 
-  return publicUrlForKey(key);
+  return key;
 }
 
 export interface RunDailyDigestResult {
@@ -142,17 +146,28 @@ export async function runDailyDigest(): Promise<RunDailyDigestResult> {
         .filter((s) => s.topic.isActive)
         .map((s) => ({ title: s.topic.title, content: briefByTopicId.get(s.topicId) ?? null }));
 
-      const pdfUrl = await renderAndUploadPdf({ email, dateLabel, sections, dateKey });
+      const pdfKey = await renderAndUploadPdf({ email, dateLabel, sections, dateKey });
+      // One week: long enough that the member can open the email whenever
+      // they get to it, short enough that a leaked/forwarded link doesn't
+      // stay live indefinitely (unlike the old permanent public URL).
+      const pdfUrl = await getSignedDownloadUrl(pdfKey, 7 * 24 * 60 * 60);
 
-      await sendDailyDigestEmail({
+      const emailResult = await sendDailyDigestEmail({
         email,
         dateLabel,
         topicTitles: sections.map((s) => s.title),
         pdfUrl,
       });
 
+      // A provider-reported send error (e.g. bad recipient, unverified
+      // domain) resolves rather than throws (see sendEmail/H9) — check it
+      // explicitly so a real failure is never recorded as delivered.
+      if (!emailResult.success) {
+        throw new Error(emailResult.error ?? "Email provider reported a send failure.");
+      }
+
       await prisma.digestDelivery.create({
-        data: { customerEmail: email, date, status: "SENT", pdfUrl },
+        data: { customerEmail: email, date, status: "SENT", pdfUrl: pdfKey },
       });
       sent += 1;
     } catch (err) {
