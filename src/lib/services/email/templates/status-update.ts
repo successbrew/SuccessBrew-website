@@ -20,6 +20,11 @@ const STATUS_COPY: Partial<Record<ApplicationStatus, StatusCopy>> = {
     heading: (n) => `We need a bit more from you, ${n}.`,
     body: "Before we can move forward, our team needs some additional information — check the note below for what's missing, then reply to this email.",
   },
+  WAITING_LIST: {
+    eyebrow: "Application Update",
+    heading: (n) => `You're on our waiting list, ${n}.`,
+    body: "Thank you for your interest in Successbrew. We've added your application to our waiting list and will contact you as soon as a place becomes available.",
+  },
   INTERVIEW_SCHEDULED: {
     eyebrow: "Interview Scheduled",
     heading: (n) => `Let's talk, ${n}.`,
@@ -29,6 +34,16 @@ const STATUS_COPY: Partial<Record<ApplicationStatus, StatusCopy>> = {
     eyebrow: "Application Update",
     heading: (n) => `Thanks for applying, ${n}.`,
     body: "After careful review, we won't be moving forward with your application this time. We'd love to hear from you again in the future as Successbrew grows.",
+  },
+  APPROVED: {
+    eyebrow: "Application Approved",
+    heading: (n) => `Welcome to Successbrew, ${n}.`,
+    body: "Your application has been approved. We'll be in touch with the next steps shortly.",
+  },
+  ARCHIVED: {
+    eyebrow: "Application Update",
+    heading: (n) => `Your application has been archived, ${n}.`,
+    body: "We've archived this application for now. You can reply to this email if you believe this was done in error or if you'd like to share an update.",
   },
 };
 

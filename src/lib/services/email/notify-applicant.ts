@@ -32,7 +32,9 @@ export async function sendApplicationStatusUpdateEmail(params: {
   firstName: string;
   applicationCode: string;
   note?: string;
+  source?: ApplicationSource;
 }) {
+  if (params.status === "APPROVED" && params.source === "COMMUNITY") return;
   const built = buildStatusUpdateEmail(params);
   if (!built) return;
 

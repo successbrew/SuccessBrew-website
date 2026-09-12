@@ -13,6 +13,7 @@ const ALLOWED_TRANSITIONS: Record<ApplicationStatus, ApplicationStatus[]> = {
   DRAFT: [ApplicationStatus.SUBMITTED],
   SUBMITTED: [ApplicationStatus.UNDER_REVIEW],
   UNDER_REVIEW: [
+    ApplicationStatus.WAITING_LIST,
     ApplicationStatus.NEED_MORE_INFO,
     ApplicationStatus.INTERVIEW_SCHEDULED,
     ApplicationStatus.APPROVED,
@@ -20,6 +21,7 @@ const ALLOWED_TRANSITIONS: Record<ApplicationStatus, ApplicationStatus[]> = {
     ApplicationStatus.ARCHIVED,
   ],
   NEED_MORE_INFO: [ApplicationStatus.UNDER_REVIEW, ApplicationStatus.ARCHIVED],
+  WAITING_LIST: [ApplicationStatus.UNDER_REVIEW, ApplicationStatus.APPROVED, ApplicationStatus.REJECTED, ApplicationStatus.ARCHIVED],
   INTERVIEW_SCHEDULED: [
     ApplicationStatus.INTERVIEW_COMPLETED,
     ApplicationStatus.REJECTED,
@@ -48,6 +50,7 @@ export const STATUS_LABELS: Record<ApplicationStatus, string> = {
   DRAFT: "Draft",
   SUBMITTED: "Submitted",
   UNDER_REVIEW: "Under Review",
+  WAITING_LIST: "Waiting List",
   NEED_MORE_INFO: "Need More Info",
   INTERVIEW_SCHEDULED: "Interview Scheduled",
   INTERVIEW_COMPLETED: "Interview Completed",

@@ -48,6 +48,7 @@ export async function changeApplicationStatus(
         firstName: personal.firstName,
         applicationCode: updated.applicationCode,
         note: note.trim() || undefined,
+        source: updated.source,
       }),
       // COMMUNITY-source approvals additionally get a dedicated email pointing
       // them at the paid Growth/Founder tiers — SPEAKER approvals never do.
