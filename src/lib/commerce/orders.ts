@@ -1,3 +1,4 @@
+import type { OrderStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getProductByKey } from "./product";
 import { createRazorpayOrder } from "./razorpay";
@@ -60,7 +61,7 @@ export async function createOrderForCheckout(params: {
 /** Order statuses a `payment.captured` webhook is allowed to move *from*.
  * REFUNDED/CANCELLED are deliberately excluded — a delayed or replayed
  * capture event must never reactivate a refunded/cancelled order. */
-const PAYABLE_FROM_STATUSES = ["INITIATED", "PENDING", "FAILED"] as const;
+const PAYABLE_FROM_STATUSES: OrderStatus[] = ["INITIATED", "PENDING", "FAILED"];
 
 /** Grants access after a verified `payment.captured` webhook. The order's
  * current status is re-checked with a conditional update *inside* the
