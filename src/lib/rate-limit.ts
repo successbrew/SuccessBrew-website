@@ -2,8 +2,10 @@ import { headers } from "next/headers";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
-const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+// Vercel's Upstash marketplace integration injects KV_REST_API_* instead of
+// the UPSTASH_* names, so accept either.
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 
 // Shared storage is mandatory in production.
 const redis = UPSTASH_URL && UPSTASH_TOKEN ? new Redis({ url: UPSTASH_URL, token: UPSTASH_TOKEN }) : null;
@@ -56,8 +58,8 @@ export async function checkRateLimit(key: string, limit: number, windowMs: numbe
     const { success, reason } = await getLimiter(limit, windowMs).limit(key);
     return success && reason !== "timeout";
   } catch (err) {
-    // An Upstash outage shouldn't take down checkout/apply — fail open to
-    // the in-memory fallback rather than blocking every request.
+    // Production fails closed (see SECURITY-ROLLOUT.md); only development
+    // falls back to the in-memory limiter.
     console.error("Upstash rate limit check failed, falling back to in-memory limiter", err);
     return process.env.NODE_ENV !== "production" && checkRateLimitInMemory(key, limit, windowMs);
   }

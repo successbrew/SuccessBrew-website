@@ -57,7 +57,14 @@ export async function buildApplicationsWorkbook(applications: ExportableApplicat
     const socials = app.professional.socials;
     // Signed on export, not stored — a workbook downloaded once shouldn't
     // carry a permanent link to a private document (H5).
-    const headshotUrl = app.personal.headshotUrl ? await resolveDownloadUrl(app.personal.headshotUrl) : "";
+    // A file that can't be signed (e.g. private storage misconfigured, or a
+    // legacy URL not yet migrated) shouldn't take the whole export down.
+    const headshotUrl = app.personal.headshotUrl
+      ? await resolveDownloadUrl(app.personal.headshotUrl).catch((err) => {
+          console.error(`Export: could not sign headshot for ${app.applicationCode}`, err);
+          return "Unavailable — open the application in admin";
+        })
+      : "";
     sheet.addRow({
       applicationCode: app.applicationCode,
       status: app.status,

@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth/server";
+import { ADMIN_ROLES } from "@/lib/auth/roles";
 import { submitApplication } from "@/lib/services/applications/submit";
 import { notifyTeamOfSubmission } from "@/lib/services/email/notify-team";
 import { sendApplicationConfirmationEmail } from "@/lib/services/email/notify-applicant";
@@ -16,18 +17,21 @@ const payloadSchema = applicationSubmitSchema.extend({
 type SubmitApplicationResult = { success: true; applicationCode: string } | { error: string };
 
 export async function submitApplicationAction(raw: unknown): Promise<SubmitApplicationResult> {
-  // Now that login is never required to apply, this is the main unauthenticated
-  // write path in the app — rate-limit per IP so it can't be used to spam
-  // fake applications (and the emails/notifications each one triggers).
-  const ip = await clientIpFromHeaders();
-  if (!(await checkRateLimit(`apply-submit:${ip}`, 5, 15 * 60 * 1000))) {
-    return { error: "Too many applications submitted from this network. Please try again in a while." };
-  }
-
   // Login is never required to apply — if the browser happens to carry a
   // session (e.g. an existing admin testing the form), attribute the
   // application to that account; otherwise it's submitted anonymously.
   const { data: session } = await auth.getSession();
+
+  // Now that login is never required to apply, this is the main unauthenticated
+  // write path in the app — rate-limit per IP so it can't be used to spam
+  // fake applications (and the emails/notifications each one triggers).
+  // Signed-in admins skip it so the team can test the form repeatedly.
+  if (session?.user?.role !== ADMIN_ROLES.ADMIN) {
+    const ip = await clientIpFromHeaders();
+    if (!(await checkRateLimit(`apply-submit:${ip}`, 5, 15 * 60 * 1000))) {
+      return { error: "Too many applications submitted from this network. Please try again in a while." };
+    }
+  }
 
   const parsed = payloadSchema.safeParse(raw);
   if (!parsed.success) {
