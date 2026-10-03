@@ -62,10 +62,12 @@ Partial refunds retain access until cumulative processed refunds equal the paid
 amount. Full refunds revoke only when no qualifying paid purchase remains. Refund
 IDs deduplicate deliveries. This is the implemented business policy.
 
-Set `CRON_SECRET` and Razorpay credentials. The ten-minute
+Set `CRON_SECRET` and Razorpay credentials. The
 `/api/cron/reconcile-payments` job rotates through 25 pending/failed/paid orders
-per run, fetching provider payments and processed refunds. Confirm the hosting
-plan supports this schedule. Increase throughput as the order volume grows;
+per run, fetching provider payments and processed refunds. Vercel Hobby only
+allows daily crons, so `vercel.json` runs it once a day as a backstop; the
+ten-minute cadence comes from an external scheduler (cron-job.org) calling the
+same URL with `Authorization: Bearer $CRON_SECRET`. Increase throughput as the order volume grows;
 monitor reconciliation errors and failed payment event records. It makes no
 capture, refund, or charge requests. Investigate historical incorrect revocations
 separately; automatically reopening previously refunded local orders is unsafe.
