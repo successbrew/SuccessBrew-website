@@ -31,7 +31,10 @@ export async function sendEmail(params: {
     });
 
     if (error) {
-      const message = typeof error === "object" && error && "message" in error ? String(error.message) : String(error);
+      // Record which sender was used — most provider rejections (e.g. "verify a
+      // domain") come down to the `from` address the deployment is configured with.
+      const providerMessage = typeof error === "object" && error && "message" in error ? String(error.message) : String(error);
+      const message = `${providerMessage} [from: ${EMAIL_FROM}]`;
       console.error(`Resend reported a send error (${params.template}) to ${params.to}:`, message);
       await prisma.emailLog
         .create({

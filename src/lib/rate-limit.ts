@@ -4,11 +4,33 @@ import { Redis } from "@upstash/redis";
 
 // Vercel's Upstash marketplace integration injects KV_REST_API_* instead of
 // the UPSTASH_* names, so accept either.
-const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+// Values pasted into a dashboard often pick up stray whitespace, newlines or
+// surrounding quotes — strip those before use.
+function envValue(...names: string[]): string | undefined {
+  for (const name of names) {
+    const value = process.env[name]?.trim().replace(/^["']|["']$/g, "").trim();
+    if (value) return value;
+  }
+  return undefined;
+}
+const UPSTASH_URL = envValue("UPSTASH_REDIS_REST_URL", "KV_REST_API_URL");
+const UPSTASH_TOKEN = envValue("UPSTASH_REDIS_REST_TOKEN", "KV_REST_API_TOKEN");
 
-// Shared storage is mandatory in production.
-const redis = UPSTASH_URL && UPSTASH_TOKEN ? new Redis({ url: UPSTASH_URL, token: UPSTASH_TOKEN }) : null;
+// Shared storage is mandatory in production. A malformed URL is logged and
+// treated as missing (requests fail closed) instead of crashing at import
+// time, which would otherwise break the whole build.
+function createRedis(): Redis | null {
+  if (!UPSTASH_URL || !UPSTASH_TOKEN) return null;
+  if (!UPSTASH_URL.startsWith("https://")) {
+    console.error(
+      `SECURITY: Upstash REST URL must start with https:// (got "${UPSTASH_URL.slice(0, 12)}…"). ` +
+        "Use the REST URL from the Upstash console, not the rediss:// connection string."
+    );
+    return null;
+  }
+  return new Redis({ url: UPSTASH_URL, token: UPSTASH_TOKEN });
+}
+const redis = createRedis();
 
 // A Ratelimit instance is tied to one (limit, window) pair — cache one per
 // pair rather than constructing a new client on every call.
