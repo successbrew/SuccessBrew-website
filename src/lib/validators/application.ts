@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 // ── Step 1: Personal Information ─────────────────────────────────────────────
 export const personalInfoSchema = z.object({
-  firstName: z.string().min(1, "Required").max(100),
-  lastName: z.string().min(1, "Required").max(100),
+  firstName: z.string().trim().min(1, "Required").max(100),
+  lastName: z.string().trim().min(1, "Required").max(100),
   email: z.string().email("Enter a valid email").max(254),
   phone: z.string().min(6, "Enter a valid phone number").max(30),
   country: z.string().min(1, "Required").max(100),

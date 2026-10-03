@@ -55,7 +55,11 @@ export function DeleteApplicationDialog({
     });
   }
 
-  const nameMatches = confirmText.trim().toLowerCase() === applicantName.trim().toLowerCase();
+  // Compare with whitespace collapsed — names saved with a stray space (e.g.
+  // "Kunal " + "Goyal" → "Kunal  Goyal") must still match what the admin types.
+  const normalize = (v: string) => v.trim().replace(/\s+/g, " ").toLowerCase();
+  const displayName = applicantName.trim().replace(/\s+/g, " ");
+  const nameMatches = normalize(confirmText) === normalize(applicantName);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -66,7 +70,7 @@ export function DeleteApplicationDialog({
         {step === 1 && (
           <>
             <DialogHeader>
-              <DialogTitle>Delete {applicantName}&rsquo;s application?</DialogTitle>
+              <DialogTitle>Delete {displayName}&rsquo;s application?</DialogTitle>
               <DialogDescription>
                 This permanently erases their application ({applicationCode}) and everything attached to it. This
                 cannot be undone — there is no archive or recovery for this action.
@@ -104,7 +108,7 @@ export function DeleteApplicationDialog({
             <DialogHeader>
               <DialogTitle>Type the applicant&rsquo;s name to confirm</DialogTitle>
               <DialogDescription>
-                Type <strong>{applicantName}</strong> below to permanently delete this application.
+                Type <strong>{displayName}</strong> below to permanently delete this application.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-2">
@@ -113,7 +117,7 @@ export function DeleteApplicationDialog({
                 id="confirm-name"
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
-                placeholder={applicantName}
+                placeholder={displayName}
                 autoComplete="off"
               />
             </div>
