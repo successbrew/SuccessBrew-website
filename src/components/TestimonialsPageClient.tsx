@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { AmbientBackground } from "@/components/AmbientBackground";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import NavBar from "@/components/NavBar";
@@ -66,12 +67,13 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
         />
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
-        <section className="bg-cream py-24 lg:py-32">
+        <section className="relative overflow-hidden bg-cream py-24 lg:py-32">
+          <AmbientBackground tone="light" />
           <motion.div
             initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.12)}
-            className="mx-auto max-w-3xl px-6 text-center lg:px-10">
+            className="relative mx-auto max-w-3xl px-6 text-center lg:px-10">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Ready to join them?</motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Your story could be next.</motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-lg text-lg text-ink/60">

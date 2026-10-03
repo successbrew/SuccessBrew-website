@@ -149,8 +149,8 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="grid gap-6 lg:grid-cols-3">
               {membershipTiers.map((tier) => (
-                <motion.div key={tier.name} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
-                  className={`relative flex flex-col rounded-3xl border p-8 md:p-10 ${tier.highlight ? "border-[#003CD1] bg-[#003CD1] text-white shadow-[0_30px_60px_-30px_rgba(0, 60, 209,0.4)]" : "border-[#111111]/5 bg-[#FFF3D0]"}`}>
+                <motion.div key={tier.name} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
+                  className={`relative flex flex-col rounded-3xl border p-8 md:p-10 ${tier.highlight ? "border-[#003CD1] bg-[#003CD1] text-white shadow-[0_30px_60px_-30px_rgba(0,60,209,0.4)]" : "border-[#111111]/5 bg-[#FFF3D0]"}`}>
                   {tier.highlight && (
                     <span className="absolute -top-3 left-8 rounded-full bg-[#C6FF3A] px-3 py-1 text-[11px] font-black text-[#111111]">Most Popular</span>
                   )}

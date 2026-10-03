@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AmbientBackground } from "@/components/AmbientBackground";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowDown } from "lucide-react";
 import NavBar from "@/components/NavBar";
@@ -724,8 +725,9 @@ export function EventLandingPageClient({
 
         {/* ══ WHO SHOULD ATTEND ═══════════════════════════════════════════ */}
         {hasAudienceSection && (
-          <section id="audience" className="scroll-mt-36 bg-[#FFF3D0] py-16 lg:py-24">
-            <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
+          <section id="audience" className="relative overflow-hidden scroll-mt-36 bg-[#FFF3D0] py-16 lg:py-24">
+            <AmbientBackground tone="light" />
+            <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/50">Who&rsquo;s in the Room</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Built for the room, not the crowd.</h2>

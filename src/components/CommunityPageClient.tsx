@@ -155,7 +155,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
           <AmbientBackground tone="light" noise={false} />
 
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-            <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
 
               {/* LEFT: headline, copy, CTAs */}
               <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
@@ -197,14 +197,14 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 </motion.p>
 
                 <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
-                  <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#003CD1] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0, 60, 209,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
+                  <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#003CD1] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,60,209,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
                   <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#FFF3D0]">Explore Ecosystem</a>
                 </motion.div>
               </motion.div>
 
               {/* RIGHT: community video */}
               <motion.div initial={{ opacity: 0, scale: 0.97, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
-                className="relative aspect-video w-full overflow-hidden rounded-[1.75rem] border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
+                className="relative aspect-video w-full overflow-hidden rounded-xl border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
                 <YouTubeEmbed
                   videoId="rFocbWfZe5E"
                   title="See the Successbrew community in action"
@@ -222,12 +222,10 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[#C6FF3A] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
                 { num: "50+",    label: "Brand Partners",  sub: "Collaborations & partnerships",   bg: "bg-[#FFF3D0] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.8 },
                 { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[#003CD1] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
-              ] as const).map(({ num, label, sub, bg, subColor, floatDelay }) => (
+              ] as const).map(({ num, label, sub, bg, subColor }) => (
                 <motion.div key={label}
                   variants={{ hidden: { opacity: 0, y: 18, scale: 0.94 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: E } } }}
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ y: { delay: 1.4 + floatDelay, duration: 3.2, repeat: Infinity, ease: "easeInOut" } }}
-                  whileHover={{ scale: 1.05, transition: { duration: 0.25, ease: E } }}
+                  whileHover={{ scale: 1.02, transition: { duration: 0.25, ease: E } }}
                   className={`relative w-[calc(50%-8px)] cursor-default overflow-hidden rounded-3xl border border-[#111111]/5 p-6 text-center shadow-[0_8px_32px_-8px_rgba(0,0,0,0.14)] sm:w-44 md:w-48 ${bg}`}>
                   <div className="text-3xl font-black tracking-tight sm:text-4xl">{num}</div>
                   <div className="mt-2 text-sm font-bold">{label}</div>
@@ -256,8 +254,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
         </motion.div>
 
         {/* ══ ECOSYSTEM ═════════════════════════════════════════════════ */}
-        <section id="ecosystem" className="bg-[#FFF3D0] py-16 lg:py-20">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section id="ecosystem" className="relative overflow-hidden bg-[#FFF3D0] py-16 lg:py-20">
+          <AmbientBackground tone="light" />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
@@ -271,7 +270,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
               className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {pillars.map((p) => (
-                <motion.article key={p.num} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+                <motion.article key={p.num} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
                   className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#111111]/5 bg-white p-8 hover:border-[#003CD1]/30 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.2)] md:p-10">
                   <div>
                     <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40">
@@ -376,7 +375,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
                 className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {communityTestimonials.slice(0, 6).map((t) => (
-                  <motion.figure key={t._id} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.3, ease: E } }}
+                  <motion.figure key={t._id} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
                     className={`flex h-full flex-col justify-between rounded-3xl border border-[#111111]/5 p-8 md:p-10 ${winCardBg[t.cardStyle] ?? winCardBg.sand}`}>
                     <blockquote className="text-balance text-lg font-medium leading-snug">
                       <ExpandableQuote
@@ -409,8 +408,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
         </section>
 
         {/* ══ EVENTS (CMS) ══════════════════════════════════════════════ */}
-        <section id="events" className="bg-[#FFF3D0] py-16 lg:py-20">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section id="events" className="relative overflow-hidden bg-[#FFF3D0] py-16 lg:py-20">
+          <AmbientBackground tone="light" />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
@@ -453,7 +453,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {previewEpisodes.map((ep) => (
-                <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+                <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
                   className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
                   <a href={ep.listenUrl ?? "#"} className="relative block aspect-video w-full overflow-hidden">
                     <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -513,7 +513,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
               className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {resources.map((r) => (
-                <motion.div key={r.type} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.25, ease: E } }} onClick={() => setActiveResource(r.type)}
+                <motion.div key={r.type} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.25, ease: E } }} onClick={() => setActiveResource(r.type)}
                   className={`flex cursor-pointer flex-col justify-between rounded-3xl p-7 transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.14)] ${r.bg} ${activeResource === r.type ? "ring-2 ring-offset-2 ring-[#003CD1]" : ""}`}>
                   <div>
                     <div className="text-3xl">{r.icon}</div>

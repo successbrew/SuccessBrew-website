@@ -42,7 +42,7 @@ function LogoCard({ partner, alwaysColor }: { partner: BrandPartner; alwaysColor
       style={{ x: sx, y: sy }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      whileHover={{ scale: 1.08, transition: { duration: 0.3, ease: E } }}
+      whileHover={{ scale: 1.02, transition: { duration: 0.3, ease: E } }}
       className="group relative flex h-20 w-40 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-ink/5 bg-background/80 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-shadow duration-300 hover:shadow-[0_16px_40px_-12px_rgba(45,25,140,0.25)] sm:h-24 sm:w-48"
     >
       <span
@@ -155,13 +155,9 @@ export function LogoShowcase({
       {/* Ambient drifting background blobs — slow, decorative, non-interactive */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
         <motion.div
-          animate={{ x: [0, 60, 0], y: [0, 40, 0] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -left-24 top-0 h-[380px] w-[380px] rounded-full bg-accent/15 blur-3xl"
         />
         <motion.div
-          animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -right-20 bottom-0 h-[420px] w-[420px] rounded-full bg-primary/10 blur-3xl"
         />
       </div>

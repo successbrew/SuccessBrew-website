@@ -14,7 +14,7 @@ import Link from "next/link";
 // Hover button — scales up slightly so the cursor's position over it reads clearly, no cursor-chasing wobble
 function MagneticLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
   return (
-    <motion.a href={href} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+    <motion.a href={href} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.99 }}
       transition={{ duration: 0.2, ease: "easeOut" }} className={className}>
       {children}
     </motion.a>
@@ -236,7 +236,7 @@ export default function NavBar({
   const isDark = variant === "dark";
   const headerBg =
     isDark
-      ? scrolled ? "bg-[#111111]/95 backdrop-blur-xl border-white/8" : "bg-transparent border-transparent"
+      ? scrolled ? "bg-[#111111]/95 backdrop-blur-xl border-white/10" : "bg-[#111111]/40 backdrop-blur-md border-white/10"
       : scrolled ? "bg-[#F2ECDD]/95 backdrop-blur-xl border-[#111111]/5" : "bg-[#F2ECDD]/65 backdrop-blur-md border-[#111111]/5";
 
   const logoFilter = isDark ? "brightness(0) invert(1)" : "contrast(1.5) brightness(1.1)";
@@ -245,10 +245,11 @@ export default function NavBar({
   const activeColor  = isDark ? "text-white"   : "text-[#111111]";
   const ctaBg        = isDark ? "bg-white text-[#111111] hover:bg-[#C6FF3A]" : "bg-[#111111] text-white hover:bg-[#003CD1]";
   const chevronColor = isDark ? "text-white/40" : "text-[#111111]/30";
+  const navPillBorder = isDark ? "border-white/15 bg-white/5" : "border-[#111111]/10 bg-white/60";
 
   return (
     <>
-      <header className={`fixed inset-x-3 top-3 z-50 mx-auto max-w-7xl rounded-full border shadow-[0_8px_30px_-12px_rgba(0,0,0,0.18)] transition-all duration-300 sm:inset-x-6 sm:top-4 lg:inset-x-10 ${headerBg}`}>
+      <header className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${headerBg}`}>
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-10">
 
           {/* Logo */}
@@ -256,25 +257,25 @@ export default function NavBar({
             <img
               src="/SB-logo.png"
               alt="Successbrew"
-              style={{ height: 25, width: "auto", objectFit: "contain", mixBlendMode: logoBlend, filter: logoFilter }}
+              style={{ height: 36, width: "auto", objectFit: "contain", mixBlendMode: logoBlend, filter: logoFilter }}
             />
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 md:flex" onMouseLeave={handleLeave}>
+          <nav className="hidden items-center gap-2 md:flex" onMouseLeave={handleLeave}>
             {NAV.map((entry) => (
               <div key={entry.label} className="relative" onMouseEnter={() => handleEnter(entry.label)}>
                 <Link
                   href={entry.href}
-                  className={`relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors
-                    ${activePage === entry.label ? activeColor : navTextColor}`}
+                  className={`relative inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-colors
+                    ${navPillBorder} ${activePage === entry.label ? activeColor : navTextColor}`}
                 >
                   {/* Sliding active pill */}
                   {(activePage === entry.label || open === entry.label) && (
                     <motion.span
                       layoutId="nav-pill"
                       className="absolute inset-0 rounded-full"
-                      style={{ background: isDark ? "rgba(255,255,255,0.08)" : "rgba(17,17,17,0.06)" }}
+                      style={{ background: isDark ? "rgba(255,255,255,0.14)" : "rgba(17,17,17,0.08)" }}
                       transition={{ type: "spring", stiffness: 500, damping: 40 }}
                     />
                   )}
@@ -430,7 +431,7 @@ export default function NavBar({
               key="panel"
               initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.22, ease: E }}
-              className="fixed inset-x-3 top-20 z-50 overflow-y-auto rounded-3xl border border-[#111111]/10 bg-white shadow-2xl md:hidden"
+              className="fixed inset-x-3 top-[72px] z-50 overflow-y-auto rounded-3xl border border-[#111111]/10 bg-white shadow-2xl md:hidden"
               style={{ maxHeight: "calc(100dvh - 96px)" }}
             >
               <nav className="px-5 py-3">

@@ -44,7 +44,7 @@ function LogoCell({ partner, index }: { partner: BrandPartner; index: number }) 
       initial={{ opacity: 0, scale: 0.85 }}
       whileInView={{ opacity: 1, scale: 1, transition: { duration: 0.5, delay: (index % 9) * 0.04, ease: E } }}
       viewport={{ once: true, margin: "-40px" }}
-      whileHover={{ scale: 1.08, transition: { duration: 0.25, ease: E } }}
+      whileHover={{ scale: 1.02, transition: { duration: 0.25, ease: E } }}
       className="group flex h-full w-full items-center justify-center p-4"
     >
       <img
@@ -90,13 +90,9 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
     <section className="relative overflow-hidden bg-[#F2ECDD] py-24 lg:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <motion.div
-          animate={{ x: [0, 40, 0], y: [0, 25, 0] }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -left-16 top-0 h-[340px] w-[340px] rounded-full bg-[#003CD1]/10 blur-3xl"
         />
         <motion.div
-          animate={{ x: [0, -35, 0], y: [0, -20, 0] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -right-16 bottom-0 h-[360px] w-[360px] rounded-full bg-[#C6FF3A]/25 blur-3xl"
         />
       </div>

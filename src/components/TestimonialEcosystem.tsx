@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AmbientBackground } from "@/components/AmbientBackground";
 import { motion, AnimatePresence, useMotionValue, useSpring, useMotionTemplate } from "framer-motion";
 import { ExpandableQuote } from "@/components/ExpandableQuote";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
@@ -95,7 +96,7 @@ function TestimonialCard({ t, tokens, index }: { t: Testimonial; tokens: ThemeTo
     <motion.figure
       ref={ref}
       variants={cardUp}
-      whileHover={{ y: -5, transition: { duration: 0.28, ease: E } }}
+      whileHover={{ y: -2, transition: { duration: 0.28, ease: E } }}
       style={{ rotateX, rotateY, transformPerspective: 900 }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
@@ -229,8 +230,9 @@ export function TestimonialEcosystem({
         </>
       )}
 
-      <section className={`${tokens.gridBg} py-24 lg:py-32`}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-10">
+      <section className={`relative overflow-hidden ${tokens.gridBg} py-24 lg:py-32`}>
+        {tokens.gridBg.includes("FFF3D0") && <AmbientBackground tone="light" />}
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
           <motion.div
             initial="hidden"
             whileInView="visible"

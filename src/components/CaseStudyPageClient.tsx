@@ -215,7 +215,7 @@ export function CaseStudyPageClient({
                     href={caseStudy.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198, 255, 58,0.5)] transition hover:translate-y-[-2px]"
+                    className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
                   >
                     📄 View Full Case Study PDF
                   </a>
@@ -255,8 +255,9 @@ export function CaseStudyPageClient({
         {/* ══ BEFORE → AFTER SECTION ════════════════════════════════════════ */}
         {beforeAfter && beforeAfter.before && beforeAfter.after && (
           <>
-            <section className="bg-cream py-20 lg:py-32">
-              <div className="mx-auto max-w-6xl px-6 lg:px-10">
+            <section className="relative overflow-hidden bg-cream py-20 lg:py-32">
+              <AmbientBackground tone="light" />
+              <div className="relative mx-auto max-w-6xl px-6 lg:px-10">
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
@@ -434,8 +435,9 @@ export function CaseStudyPageClient({
         {/* ══ TIMELINE SECTION ══════════════════════════════════════════════ */}
         {timelineSteps.length > 0 && (
           <>
-            <section className="bg-cream py-20 lg:py-32">
-              <div className="mx-auto max-w-4xl px-6 lg:px-10">
+            <section className="relative overflow-hidden bg-cream py-20 lg:py-32">
+              <AmbientBackground tone="light" />
+              <div className="relative mx-auto max-w-4xl px-6 lg:px-10">
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
@@ -513,7 +515,7 @@ export function CaseStudyPageClient({
                         href={caseStudy.pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198, 255, 58,0.5)] transition hover:translate-y-[-2px]"
+                        className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
                       >
                         📄 View Full Case Study
                       </a>
@@ -624,7 +626,7 @@ export function CaseStudyPageClient({
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
                 <a
                   href="https://ntis.in/7oApLV"
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198, 255, 58,0.5)] transition hover:translate-y-[-2px]"
+                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
                 >
                   Book a Strategy Call
                 </a>

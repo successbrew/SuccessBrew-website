@@ -27,7 +27,7 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudy; index: number }) {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, delay: (index % 3) * 0.08, ease: E } }}
         viewport={{ once: true, margin: "-60px" }}
-        whileHover={{ y: -8, transition: { duration: 0.3, ease: E } }}
+        whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
         className="group relative h-full overflow-hidden rounded-3xl border border-ink/5 bg-background transition-shadow duration-300 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.18)]"
       >
         {/* Image Section */}
@@ -230,8 +230,9 @@ export function CaseStudiesPageClient({
         {/* ══ STATS SECTION ═════════════════════════════════════════════ */}
         {caseStudies.length > 0 && (
           <>
-            <section className="bg-cream py-20 lg:py-28">
-              <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <section className="relative overflow-hidden bg-cream py-20 lg:py-28">
+              <AmbientBackground tone="light" />
+              <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
@@ -292,7 +293,7 @@ export function CaseStudiesPageClient({
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
                 <a
                   href="https://ntis.in/7oApLV"
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198, 255, 58,0.5)] transition hover:translate-y-[-2px]"
+                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
                 >
                   Book a Strategy Call
                 </a>

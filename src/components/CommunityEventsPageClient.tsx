@@ -2,6 +2,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { AmbientBackground } from "@/components/AmbientBackground";
 import { motion, AnimatePresence } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
@@ -51,7 +52,7 @@ function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past
   return (
     <motion.a
       variants={cardUp}
-      whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+      whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
       href={href}
       className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]"
     >
@@ -277,8 +278,9 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
 
         {/* ══ CATEGORY FILTER (hidden on pillar-scoped pages — already single-category) ══ */}
         {!pillar && (
-          <section className="bg-[#FFF3D0] pt-12">
-            <div className="mx-auto max-w-7xl px-6 lg:px-10">
+          <section className="relative overflow-hidden bg-[#FFF3D0] pt-12">
+            <AmbientBackground tone="light" />
+            <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
               <div className="flex flex-wrap gap-2">
                 <button onClick={() => setCategory("ALL")}
                   className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === "ALL" ? "border-[#003CD1] bg-[#003CD1] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
@@ -296,8 +298,9 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
         )}
 
         {/* ══ UPCOMING ══════════════════════════════════════════════════ */}
-        <section id="upcoming" className="scroll-mt-24 bg-[#FFF3D0] py-16 lg:py-20">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section id="upcoming" className="relative overflow-hidden scroll-mt-24 bg-[#FFF3D0] py-16 lg:py-20">
+          <AmbientBackground tone="light" />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
               className="mb-10">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Upcoming</p>

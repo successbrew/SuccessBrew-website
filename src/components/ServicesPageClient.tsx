@@ -131,6 +131,9 @@ function Typewriter({ text, delay = 300, speed = 42, highlight, highlightClassNa
 
   if (reducedMotion) return <>{renderTyped(text.length)}</>;
 
+  // The untyped remainder is still laid out (just invisible) so the headline
+  // occupies its final size from the first frame — nothing below it shifts.
+  const rest = text.slice(count);
   return (
     <>
       {renderTyped(count)}
@@ -139,9 +142,10 @@ function Typewriter({ text, delay = 300, speed = 42, highlight, highlightClassNa
           aria-hidden="true"
           animate={{ opacity: [1, 0, 1] }}
           transition={{ duration: 0.7, repeat: Infinity, ease: "linear" }}
-          className="ml-[2px] inline-block h-[0.82em] w-[3px] translate-y-[0.05em] rounded-sm bg-primary align-middle"
+          className="-mr-[5px] ml-[2px] inline-block h-[0.82em] w-[3px] translate-y-[0.05em] rounded-sm bg-primary align-middle"
         />
       )}
+      <span aria-hidden="true" className="invisible">{rest}</span>
     </>
   );
 }
@@ -178,7 +182,7 @@ function AnimatedNumber({ value, inView }: { value: string; inView: boolean }) {
 // Hover button — scales up slightly so the cursor's position over it reads clearly, no cursor-chasing wobble
 function MagneticButton({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
   return (
-    <motion.a href={href} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+    <motion.a href={href} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.99 }}
       transition={{ duration: 0.2, ease: "easeOut" }} className={className}>
       {children}
     </motion.a>
@@ -258,7 +262,7 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, delay: (i % 3) * 0.08, ease: E } }}
       viewport={{ once: true, margin: "-60px" }}
-      whileHover={{ y: -5, transition: { duration: 0.25, ease: E } }}
+      whileHover={{ y: -2, transition: { duration: 0.25, ease: E } }}
       className="group block overflow-hidden rounded-2xl border border-ink/5 bg-background transition-shadow duration-300 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.18)]">
       <div className="relative h-52 overflow-hidden">
         <img src={cs.imageUrl ?? "/grid-images/IMG_9736.JPG"} alt={cs.title} draggable={false}
@@ -337,7 +341,7 @@ function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
   return (
     <motion.article
       variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } }}
-      whileHover={{ y: -8, transition: { duration: 0.3, ease: E } }}
+      whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
       role="button"
       tabIndex={0}
       onClick={onOpen}
@@ -354,7 +358,7 @@ function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
           <motion.span
             aria-hidden="true"
             className="h-2 w-2 rounded-full bg-accent"
-            whileHover={{ scale: 1.6 }}
+            whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           />
         </div>
@@ -431,7 +435,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.9, ease: E }}
-              className="relative mx-auto mt-16 aspect-video w-full max-w-3xl overflow-hidden rounded-[2rem] border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
+              className="relative mx-auto mt-16 aspect-video w-full max-w-[calc((100svh-8rem)*16/9)] overflow-hidden rounded-xl border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
               <YouTubeEmbed
                 videoId="LPjwAuFAil0"
                 title="Successbrew studio in action"
@@ -460,7 +464,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                   initial={{ opacity: 0, y: 20, scale: 0.96 }}
                   animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
                   transition={{ duration: 0.65, ease: E, delay: i * 0.1 }}
-                  whileHover={{ y: -6, boxShadow: "0 24px 60px -10px rgba(0,0,0,0.18)", transition: { duration: 0.25, ease: E } }}
+                  whileHover={{ y: -2, boxShadow: "0 24px 60px -10px rgba(0,0,0,0.18)", transition: { duration: 0.25, ease: E } }}
                   className={`group relative overflow-hidden rounded-3xl border border-ink/5 p-8 md:p-10 cursor-default ${statBg[s.colorScheme] ?? statBg.default}`}>
                   <div className="text-[clamp(1.15rem,4.5vw,2.75rem)] font-black tracking-tight">
                     <AnimatedNumber value={s.number} inView={statsInView} />
@@ -571,7 +575,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                       scale: isActive ? 1.08 : 1,
                     }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    whileHover={{ scale: 1.12, backgroundColor: "#003CD1", color: "#fff" }}
+                    whileHover={{ scale: 1.02, backgroundColor: "#003CD1", color: "#fff" }}
                     className="relative z-10 grid h-12 w-12 place-items-center rounded-full border border-ink/10 text-sm font-bold tracking-tight cursor-default">
                     {step.stepNumber}
                   </motion.div>
@@ -591,8 +595,9 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
         </section>
 
         {/* â•â• WORK â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-        <section id="work" className="bg-cream py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section id="work" className="relative overflow-hidden bg-cream py-24 lg:py-32">
+          <AmbientBackground tone="light" />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>

@@ -350,7 +350,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               <motion.div key={title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.08, duration: 0.65, ease: E }}
-                whileHover={{ y: -5 }} className="cursor-default">
+                whileHover={{ y: -2 }} className="cursor-default">
                 <Card className="h-full rounded-[24px] border border-white/8 bg-white/[0.03] p-7 shadow-none transition-shadow hover:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.5)] hover:border-white/14">
                   <CardContent className="p-0">
                     <div className="mb-5 grid h-11 w-11 place-items-center rounded-[14px] bg-[#003CD1]/25 text-[#C6FF3A]">
@@ -530,7 +530,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               <motion.div key={v.n} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.08, duration: 0.65, ease: E }}
-                whileHover={{ y: -6 }}
+                whileHover={{ y: -2 }}
                 className="w-[80vw] shrink-0 snap-start sm:w-[45vw] lg:w-auto rounded-[20px] border border-white/8 bg-white/[0.03] p-6 cursor-default transition-colors hover:border-white/16">
                 <div className="mb-5 text-[11px] font-semibold uppercase tracking-[0.1em]st text-[#C6FF3A]">Phase {v.n}</div>
                 <h3 className="mb-3 text-base font-black text-white">{v.t}</h3>

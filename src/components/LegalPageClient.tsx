@@ -1,6 +1,7 @@
 "use client";
 
 import NavBar from "@/components/NavBar";
+import { AmbientBackground } from "@/components/AmbientBackground";
 import { Footer } from "@/components/Footer";
 import type { SiteSettings } from "@/components/SocialLinks";
 
@@ -35,8 +36,9 @@ export function LegalPageClient({
           </div>
         </section>
 
-        <section className="bg-[#FFF3D0] py-16 lg:py-20">
-          <div className="mx-auto max-w-3xl space-y-12 px-6 lg:px-10">
+        <section className="relative overflow-hidden bg-[#FFF3D0] py-16 lg:py-20">
+          <AmbientBackground tone="light" />
+          <div className="relative mx-auto max-w-3xl space-y-12 px-6 lg:px-10">
             {sections.map((s) => (
               <div key={s.heading}>
                 <h2 className="text-xl font-black tracking-tight md:text-2xl">{s.heading}</h2>

@@ -2,6 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { AmbientBackground } from "@/components/AmbientBackground";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import type { SiteSettings } from "@/components/SocialLinks";
@@ -59,13 +60,14 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
         </section>
 
         {/* ══ EPISODES GRID ═════════════════════════════════════════════ */}
-        <section className="bg-[#FFF3D0] py-16 lg:py-20">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section className="relative overflow-hidden bg-[#FFF3D0] py-16 lg:py-20">
+          <AmbientBackground tone="light" />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             {episodes.length > 0 ? (
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.07)}
                 className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {episodes.map((ep) => (
-                  <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
+                  <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
                     className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]">
                     <a href={ep.listenUrl ?? "#"} className="relative block aspect-video w-full overflow-hidden">
                       <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />

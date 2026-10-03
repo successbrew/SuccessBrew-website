@@ -125,14 +125,14 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
                 <motion.div
                   key={s.label}
                   variants={fadeUp}
-                  whileHover={{ y: -6, boxShadow: "0 20px 40px -12px rgba(0, 60, 209,0.12)", transition: { duration: 0.25, ease: E } }}
+                  whileHover={{ y: -2, boxShadow: "0 20px 40px -12px rgba(0,60,209,0.12)", transition: { duration: 0.25, ease: E } }}
                   className={`group relative flex flex-col justify-center gap-3 overflow-hidden rounded-3xl border border-dashed border-ink/10 bg-sand px-7 py-8 cursor-default ${bentoSpan(i, sections.length)}`}>
                   <span className="absolute right-5 top-5 rounded-full bg-ink/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em]st text-ink/30">
                     Coming Soon
                   </span>
                   <motion.span
                     className="block text-5xl"
-                    whileHover={{ scale: 1.2, rotate: 5, transition: { duration: 0.2 } }}>
+                    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}>
                     {s.icon}
                   </motion.span>
                   <p className="mt-2 text-lg font-bold text-ink/70">{s.label}</p>
