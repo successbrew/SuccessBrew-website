@@ -30,7 +30,7 @@ export function renderEmailShell(params: { headerBg: string; bodyHtml: string })
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-  <body style="margin:0; padding:0; background-color:#F2ECDD; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <body style="margin:0; padding:0; background-color:#F2ECDD; font-family:Montserrat,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F2ECDD; padding:40px 16px;">
       <tr>
         <td align="center">
@@ -75,7 +75,7 @@ export function codeBox(label: string, value: string) {
   return `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
       <tr>
-        <td style="background-color:#F0EBD8; border-radius:14px; padding:20px 24px; text-align:center;">
+        <td style="background-color:#FFF3D0; border-radius:14px; padding:20px 24px; text-align:center;">
           <p style="margin:0 0 4px; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#111111; opacity:0.5;">${label}</p>
           <p style="margin:0; font-size:22px; font-weight:800; color:#003CD1; letter-spacing:0.02em;">${value}</p>
         </td>

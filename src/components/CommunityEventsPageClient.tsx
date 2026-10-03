@@ -64,16 +64,16 @@ function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past
           </div>
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#003CD1]">
+        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#003CD1]">
           {eventCategoryLabel(event.category)}
         </span>
         {when === "upcoming" ? (
           <span className="absolute right-3 top-3 flex flex-col items-center rounded-lg bg-white px-2 py-1 leading-none shadow-sm">
             <span className="text-sm font-black text-[#111111]">{day}</span>
-            <span className="text-[9px] font-bold uppercase text-[#003CD1]">{month}</span>
+            <span className="text-[9px] font-semibold uppercase text-[#003CD1]">{month}</span>
           </span>
         ) : (
-          <span className="absolute right-3 top-3 rounded-full bg-[#111111]/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-white">
+          <span className="absolute right-3 top-3 rounded-full bg-[#111111]/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-white">
             Past
           </span>
         )}
@@ -83,7 +83,7 @@ function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past
       </div>
       <div className="flex flex-1 flex-col justify-between p-5">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-wide text-[#003CD1]">{event.tag}</span>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#003CD1]">{event.tag}</span>
           <h3 className="mt-1 text-lg font-black leading-snug text-[#111111]">{event.title}</h3>
           <p className="mt-2 text-xs text-[#111111]/50">📍 {event.location}{event.speaker ? ` · 👤 ${event.speaker}` : ""}</p>
         </div>
@@ -125,9 +125,9 @@ function NextUpCard({ event }: { event: EventItem }) {
           )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#003CD1]/60 via-transparent to-transparent" />
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-            <span className="rounded-full bg-[#C1FF3B] px-3 py-1 text-[10px] font-black uppercase tracking-wide text-[#111111]">Next Up</span>
+            <span className="rounded-full bg-[#C6FF3A] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]">Next Up</span>
             {event.isFeatured && (
-              <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-white backdrop-blur">Featured</span>
+              <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-white backdrop-blur">Featured</span>
             )}
           </div>
         </div>
@@ -135,20 +135,20 @@ function NextUpCard({ event }: { event: EventItem }) {
         <div className="flex flex-col justify-center p-6 lg:p-10">
           <div className="mb-6 text-center">
             <h3 className="text-2xl font-black leading-tight text-[#111111]">{event.title}</h3>
-            <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#111111]/40">{event.location}</p>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40">{event.location}</p>
           </div>
 
           <div className="grid grid-cols-1 gap-3 border-b border-[#111111]/10 pb-6 sm:grid-cols-3 sm:gap-4">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Date</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Date</p>
               <p className="mt-1 truncate text-sm font-bold text-[#111111]">{event.date}</p>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Location</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Location</p>
               <p className="mt-1 truncate text-sm font-bold text-[#111111]">{event.location}</p>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Seats</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Seats</p>
               <p className="mt-1 truncate text-sm font-bold text-[#003CD1]">{event.seatsNote ?? "Open"}</p>
             </div>
           </div>
@@ -221,15 +221,15 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -right-32 -top-32 h-[480px] w-[480px] rounded-full border border-white/10" />
             <div className="absolute right-[-140px] top-[-40px] h-[380px] w-[380px] rounded-full border border-white/10" />
-            <div className="absolute left-[-100px] bottom-[-120px] h-[340px] w-[340px] rounded-full bg-[#C1FF3B]/10 blur-3xl" />
+            <div className="absolute left-[-100px] bottom-[-120px] h-[340px] w-[340px] rounded-full bg-[#C6FF3A]/10 blur-3xl" />
           </div>
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.a variants={fadeUp} href={pillar ? "/community/events" : "/community"}
-                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/60 hover:text-white">
+                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/60 hover:text-white">
                 ← Back to {pillar ? "All Events" : "Community"}
               </motion.a>
-              <motion.p variants={fadeUp} className="mb-6 text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">
+              <motion.p variants={fadeUp} className="mb-6 text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">
                 {pillar ? `${pillar.icon} ${pillar.tagline}` : "Successbrew Events · 2026 Season"}
               </motion.p>
 
@@ -242,7 +242,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
                   <WordReveal text="Rooms where founders" mode="nested" staggerDelay={0.06} />
                   {" "}
                   <span className="relative inline-block">
-                    <span className="relative z-10 text-[#C1FF3B]"><WordReveal text="get found." mode="nested" staggerDelay={0.06} /></span>
+                    <span className="relative z-10 text-[#C6FF3A]"><WordReveal text="get found." mode="nested" staggerDelay={0.06} /></span>
                   </span>
                 </h1>
               )}
@@ -252,7 +252,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
               </motion.p>
 
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-4">
-                <a href="#upcoming" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+                <a href="#upcoming" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                   See what&rsquo;s next →
                 </a>
                 <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">
@@ -268,8 +268,8 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
           <div className="mx-auto grid max-w-7xl grid-cols-2 gap-y-6 px-6 py-8 lg:grid-cols-4 lg:px-10">
             {stats.map((s) => (
               <div key={s.label}>
-                <p className="text-2xl font-black text-[#C1FF3B] md:text-3xl">{s.value}</p>
-                <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white/60">{s.label}</p>
+                <p className="text-2xl font-black text-[#C6FF3A] md:text-3xl">{s.value}</p>
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-white/60">{s.label}</p>
               </div>
             ))}
           </div>
@@ -277,7 +277,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
 
         {/* ══ CATEGORY FILTER (hidden on pillar-scoped pages — already single-category) ══ */}
         {!pillar && (
-          <section className="bg-[#F0EBD8] pt-12">
+          <section className="bg-[#FFF3D0] pt-12">
             <div className="mx-auto max-w-7xl px-6 lg:px-10">
               <div className="flex flex-wrap gap-2">
                 <button onClick={() => setCategory("ALL")}
@@ -296,11 +296,11 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
         )}
 
         {/* ══ UPCOMING ══════════════════════════════════════════════════ */}
-        <section id="upcoming" className="scroll-mt-24 bg-[#F0EBD8] py-16 lg:py-20">
+        <section id="upcoming" className="scroll-mt-24 bg-[#FFF3D0] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
               className="mb-10">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Upcoming</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Upcoming</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">What&rsquo;s next</h2>
             </motion.div>
 
@@ -327,7 +327,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
               className="mb-10">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Past Events</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Past Events</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">Everything we&rsquo;ve already brewed</h2>
             </motion.div>
 
@@ -351,10 +351,10 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.12)}
             className="mx-auto max-w-3xl px-6 text-center lg:px-10">
-            <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Don&rsquo;t miss the next one</motion.p>
+            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Don&rsquo;t miss the next one</motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Be in the room next time.</motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">

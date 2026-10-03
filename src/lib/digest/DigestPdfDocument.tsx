@@ -13,7 +13,7 @@ const INK = "#111111";
 const styles = StyleSheet.create({
   page: { backgroundColor: "#FFFFFF", padding: 40, fontSize: 11, fontFamily: "Helvetica" },
   header: { backgroundColor: BLUE, marginHorizontal: -40, marginTop: -40, padding: 32, marginBottom: 28 },
-  headerEyebrow: { color: "#C1FF3B", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 },
+  headerEyebrow: { color: "#C6FF3A", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 },
   headerTitle: { color: "#FFFFFF", fontSize: 22, fontWeight: 700 },
   headerDate: { color: "rgba(255,255,255,0.7)", fontSize: 10, marginTop: 4 },
   topicSection: { marginBottom: 22 },

@@ -173,7 +173,7 @@ export function LogoShowcase({
           viewport={{ once: true, margin: "-60px" }}
           className="mb-14 text-center"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">{eyebrow}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">{eyebrow}</p>
           <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-5xl">
             {heading}
           </h2>

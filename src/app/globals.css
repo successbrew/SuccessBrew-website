@@ -7,20 +7,30 @@
 
   /* Montserrat loads as a true variable font here, so intermediate weights
      interpolate cleanly (no synthetic bolding). Compressing the top of the
-     scale so 600 is the new heaviest weight sitewide, with proportional
-     steps below it so bold/semibold/medium text still reads as a hierarchy
-     rather than collapsing to one weight. */
+     scale so 600 is the new heaviest weight sitewide — the full 800/900 reads
+     too heavy at hero sizes — with proportional steps below it so
+     bold/semibold/medium text still reads as a hierarchy. */
   --font-weight-medium: 450;
   --font-weight-semibold: 500;
   --font-weight-bold: 550;
   --font-weight-extrabold: 600;
   --font-weight-black: 600;
 
+  /* Brand type scale: headlines -2% tracking, body 1.55 line-height,
+     captions uppercase with +10% tracking. */
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.02em;
+  --text-xs--line-height: 1.55;
+  --text-sm--line-height: 1.55;
+  --text-base--line-height: 1.55;
+  --text-lg--line-height: 1.55;
+  --text-xl--line-height: 1.55;
+
   --color-brand: #003CD1;
-  --color-lime: oklch(93% 0.22 124);
-  --color-cream: oklch(97% 0.04 95);
-  --color-sand: oklch(94% 0.025 90);
-  --color-ink: oklch(16% 0.02 260);
+  --color-lime: #C6FF3A;
+  --color-cream: #FFF3D0;
+  --color-sand: #F2ECDD;
+  --color-ink: #111111;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -89,10 +99,10 @@
   :root {
     --radius: 1.25rem;
     --brand: #003CD1;
-    --lime: oklch(93% .22 124);
-    --cream: oklch(97% .04 95);
-    --sand: oklch(94% .025 90);
-    --ink: oklch(16% .02 260);
+    --lime: #C6FF3A;
+    --cream: #FFF3D0;
+    --sand: #F2ECDD;
+    --ink: #111111;
 
     --background: oklch(100% 0 0);
     --foreground: var(--ink);
@@ -136,21 +146,13 @@
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
+    line-height: 1.55;
     overflow-x: hidden;
   }
 
   html {
     overflow-x: hidden;
   }
-}
-
-/* Custom fonts */
-@font-face {
-  font-family: 'CameraPlainVariable';
-  src: url('https://cdn.gpteng.co/mcp-widgets/v1/fonts/CameraPlainVariable.woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
 }
 
 /* Navigation Dropdown Menu Styles */

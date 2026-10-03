@@ -80,7 +80,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
           <div ref={heroRef} className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
                 In the works
               </motion.div>
@@ -114,7 +114,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
             <motion.p
               initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="mb-10 text-xs font-bold uppercase tracking-[0.22em] text-ink/30">
+              className="mb-10 text-xs font-semibold uppercase tracking-[0.1em] text-ink/30">
               What's coming
             </motion.p>
             <motion.div
@@ -127,7 +127,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
                   variants={fadeUp}
                   whileHover={{ y: -6, boxShadow: "0 20px 40px -12px rgba(0, 60, 209,0.12)", transition: { duration: 0.25, ease: E } }}
                   className={`group relative flex flex-col justify-center gap-3 overflow-hidden rounded-3xl border border-dashed border-ink/10 bg-sand px-7 py-8 cursor-default ${bentoSpan(i, sections.length)}`}>
-                  <span className="absolute right-5 top-5 rounded-full bg-ink/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-ink/30">
+                  <span className="absolute right-5 top-5 rounded-full bg-ink/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em]st text-ink/30">
                     Coming Soon
                   </span>
                   <motion.span

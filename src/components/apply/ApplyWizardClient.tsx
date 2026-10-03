@@ -110,7 +110,7 @@ export function ApplyWizardClient({
         <NavBar activePage="Apply" ctaText="Home" ctaHref="/" />
         <main className="min-h-screen bg-[#F2ECDD] font-sans text-[#111111]">
           <section className="mx-auto max-w-xl px-6 pb-24 pt-40 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">
               {source === "COMMUNITY" ? "Welcome to the Community" : "Application Submitted"}
             </p>
             <h1 className="mt-4 text-4xl font-black tracking-tight">

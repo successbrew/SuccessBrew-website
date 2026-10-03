@@ -48,11 +48,12 @@ export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
             <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
           </Link>
           <p className="mt-2 max-w-xs text-sm text-background/60">India&apos;s startup ecosystem — community, content studio, podcast, learning and events.</p>
+          <p className="mt-4 text-sm font-semibold text-accent">#IBrewMyOwnSuccess</p>
           <SocialLinks settings={siteSettings} showLabel className="mt-6 text-background/70 hover:text-background" />
         </div>
         {COLUMNS.map(({ title, links }) => (
           <div key={title}>
-            <div className="text-xs font-bold uppercase tracking-[0.22em] text-background/50">{title}</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.1em] text-background/50">{title}</div>
             <ul className="mt-5 space-y-3 text-sm">
               {links.map((link) => (
                 <li key={link.label}>
@@ -67,7 +68,7 @@ export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
       </div>
       <div className="border-t border-background/10">
         <div className="mx-auto px-6 py-6 text-xs text-background/50 lg:px-10">
-          © 2026 Successbrew Studio. Building 1L entrepreneurs by 2030.
+          © 2026 Successbrew Studio. Building 1M entrepreneurs by 2030.
         </div>
       </div>
     </footer>

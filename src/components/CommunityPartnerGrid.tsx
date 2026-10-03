@@ -97,7 +97,7 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
         <motion.div
           animate={{ x: [0, -35, 0], y: [0, -20, 0] }}
           transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -right-16 bottom-0 h-[360px] w-[360px] rounded-full bg-[#C1FF3B]/25 blur-3xl"
+          className="absolute -right-16 bottom-0 h-[360px] w-[360px] rounded-full bg-[#C6FF3A]/25 blur-3xl"
         />
       </div>
 
@@ -123,9 +123,9 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0, transition: { duration: 0.7, ease: E } }}
             viewport={{ once: true, margin: "-60px" }}
-            className="flex flex-col items-center justify-center gap-3 border border-[#111111]/10 bg-[#F0EBD8] p-6 text-center [grid-column:var(--feat-col-base)] [grid-row:var(--feat-row-base)] sm:[grid-column:var(--feat-col-sm)] sm:[grid-row:var(--feat-row-sm)] lg:[grid-column:var(--feat-col-lg)] lg:[grid-row:var(--feat-row-lg)]"
+            className="flex flex-col items-center justify-center gap-3 border border-[#111111]/10 bg-[#FFF3D0] p-6 text-center [grid-column:var(--feat-col-base)] [grid-row:var(--feat-row-base)] sm:[grid-column:var(--feat-col-sm)] sm:[grid-row:var(--feat-row-sm)] lg:[grid-column:var(--feat-col-lg)] lg:[grid-row:var(--feat-row-lg)]"
           >
-            <span className="rounded-full bg-[#003CD1]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#003CD1]">
+            <span className="rounded-full bg-[#003CD1]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#003CD1]">
               Community Network
             </span>
             <h3 className="text-balance text-xl font-black leading-tight tracking-tight text-[#111111] sm:text-2xl lg:text-3xl">
@@ -138,7 +138,7 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
               href="#cta"
               className="group inline-flex items-center overflow-hidden rounded-full text-sm font-bold"
             >
-              <span className="bg-[#C1FF3B] px-5 py-3 text-[#111111]">Partner with us</span>
+              <span className="bg-[#C6FF3A] px-5 py-3 text-[#111111]">Partner with us</span>
               <span className="grid h-full place-items-center bg-[#111111] px-4 py-3 text-white transition-transform duration-300 group-hover:translate-x-0.5">
                 →
               </span>

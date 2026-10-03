@@ -62,14 +62,14 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudy; index: number }) {
 
           {/* Client Name (if available) */}
           {cs.clientName && (
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary mb-4">
               {cs.clientName}
             </p>
           )}
 
           {/* Problem Section */}
           <div className="mb-6 pb-6 border-b border-ink/10">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-ink/40 mb-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink/40 mb-2">
               The Challenge
             </p>
             <p className="text-sm leading-relaxed text-ink/70 line-clamp-2">
@@ -79,7 +79,7 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudy; index: number }) {
 
           {/* Strategy Section */}
           <div className="mb-6 pb-6 border-b border-ink/10">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-ink/40 mb-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink/40 mb-2">
               The Strategy
             </p>
             <p className="text-sm leading-relaxed text-ink/70 line-clamp-2">
@@ -89,7 +89,7 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudy; index: number }) {
 
           {/* Results Highlight */}
           <div className="mb-auto">
-            <p className="text-xs font-bold uppercase tracking-[0.15em] text-primary mb-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary mb-2">
               The Impact
             </p>
             <p className="text-sm font-semibold text-ink line-clamp-2">
@@ -138,7 +138,7 @@ export function CaseStudiesPageClient({
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div
                 variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/60 backdrop-blur"
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/60 backdrop-blur"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 Selected Work
@@ -196,7 +196,7 @@ export function CaseStudiesPageClient({
                   className="mb-12 flex items-center justify-between"
                 >
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-primary">
+                    <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">
                       Portfolio
                     </p>
                     <h2 className="mt-3 text-4xl md:text-5xl font-black tracking-tight">
@@ -280,7 +280,7 @@ export function CaseStudiesPageClient({
               viewport={{ once: true }}
               variants={stagger(0.12)}
             >
-              <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">
+              <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
                 Let&apos;s work together
               </motion.p>
               <motion.h2 variants={fadeUp} className="mt-4 text-4xl md:text-5xl font-black tracking-tight text-white">
@@ -292,7 +292,7 @@ export function CaseStudiesPageClient({
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
                 <a
                   href="https://ntis.in/7oApLV"
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(193,255,59,0.5)] transition hover:translate-y-[-2px]"
+                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198, 255, 58,0.5)] transition hover:translate-y-[-2px]"
                 >
                   Book a Strategy Call
                 </a>

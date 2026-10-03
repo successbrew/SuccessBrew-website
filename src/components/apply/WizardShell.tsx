@@ -30,7 +30,7 @@ export function WizardShell({
   return (
     <section className="mx-auto max-w-2xl px-6 pb-24 pt-32 lg:pt-40">
       <div className="mb-8">
-        <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50">
+        <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/50">
           <span>Step {stepIndex + 1} of {total}</span>
           <span>{STEP_LABELS[stepIndex]}</span>
         </div>

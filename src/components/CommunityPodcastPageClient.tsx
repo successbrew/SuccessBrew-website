@@ -28,16 +28,16 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
         <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-16 lg:pt-44 lg:pb-24">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#003CD1]/15 blur-3xl" />
-            <div className="absolute right-[-100px] bottom-0 h-[380px] w-[380px] rounded-full bg-[#C1FF3B]/30 blur-3xl" />
+            <div className="absolute right-[-100px] bottom-0 h-[380px] w-[380px] rounded-full bg-[#C6FF3A]/30 blur-3xl" />
           </div>
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.a variants={fadeUp} href="/community"
-                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#003CD1]">
+                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/50 hover:text-[#003CD1]">
                 ← Back to Community
               </motion.a>
               <motion.div variants={fadeUp}
-                className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
+                className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/70 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
                 {episodes.length} episode{episodes.length !== 1 ? "s" : ""} and counting
               </motion.div>
@@ -47,7 +47,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                 {" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-[#003CD1]"><WordReveal text="Real founders." mode="nested" staggerDelay={0.06} /></span>
-                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
+                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C6FF3A] md:h-6" />
                 </span>
               </h1>
 
@@ -59,7 +59,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
         </section>
 
         {/* ══ EPISODES GRID ═════════════════════════════════════════════ */}
-        <section className="bg-[#F0EBD8] py-16 lg:py-20">
+        <section className="bg-[#FFF3D0] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             {episodes.length > 0 ? (
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.07)}
@@ -71,10 +71,10 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                       <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                       {ep.isFeatured && (
-                        <span className="absolute left-3 top-3 rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black uppercase text-[#111111]">Featured</span>
+                        <span className="absolute left-3 top-3 rounded-full bg-[#C6FF3A] px-2.5 py-1 text-[10px] font-semibold uppercase text-[#111111]">Featured</span>
                       )}
                       <div className="absolute inset-0 grid place-items-center opacity-0 transition-opacity group-hover:opacity-100">
-                        <span className="grid h-14 w-14 place-items-center rounded-full bg-[#C1FF3B] text-[#111111] shadow-lg">
+                        <span className="grid h-14 w-14 place-items-center rounded-full bg-[#C6FF3A] text-[#111111] shadow-lg">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                         </span>
                       </div>
@@ -109,10 +109,10 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.12)}
             className="mx-auto max-w-3xl px-6 text-center lg:px-10">
-            <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Never miss an episode</motion.p>
+            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Never miss an episode</motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Join the community.</motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">

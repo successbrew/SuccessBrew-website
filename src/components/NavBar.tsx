@@ -92,7 +92,7 @@ const NAV: NavEntry[] = [
         { icon: BookOpen, title: "Learning Hub",   desc: "200+ playbooks, templates & ebooks", href: "/community#learning-hub" },
       ],
       featured: {
-        bg: "bg-[#C1FF3B]",
+        bg: "bg-[#C6FF3A]",
         textColor: "dark",
         eyebrow: "India's Startup Community",
         stat: "8K+",
@@ -243,7 +243,7 @@ export default function NavBar({
   const logoBlend  = isDark ? undefined : ("multiply" as const);
   const navTextColor = isDark ? "text-white/65 hover:text-white" : "text-[#111111]/65 hover:text-[#111111]";
   const activeColor  = isDark ? "text-white"   : "text-[#111111]";
-  const ctaBg        = isDark ? "bg-white text-[#111111] hover:bg-[#C1FF3B]" : "bg-[#111111] text-white hover:bg-[#003CD1]";
+  const ctaBg        = isDark ? "bg-white text-[#111111] hover:bg-[#C6FF3A]" : "bg-[#111111] text-white hover:bg-[#003CD1]";
   const chevronColor = isDark ? "text-white/40" : "text-[#111111]/30";
 
   return (
@@ -306,7 +306,7 @@ export default function NavBar({
                       style={{ transformOrigin: "top center" }}
                     >
                       {/* Gradient accent top bar */}
-                      <div className="h-[2.5px] bg-gradient-to-r from-[#003CD1] via-[#003CD1] to-[#C1FF3B]" />
+                      <div className="h-[2.5px] bg-gradient-to-r from-[#003CD1] via-[#003CD1] to-[#C6FF3A]" />
 
                       <div className="grid grid-cols-[1fr_164px]">
                         {/* Items */}
@@ -351,7 +351,7 @@ export default function NavBar({
                         {/* Featured panel */}
                         <div className={`flex flex-col justify-between p-5 ${entry.dropdown.featured.bg}`}>
                           <div>
-                            <p className={`text-[9px] font-bold uppercase tracking-[0.2em] ${entry.dropdown.featured.textColor === "white" ? "text-white/50" : "text-[#111111]/50"}`}>
+                            <p className={`text-[9px] font-semibold uppercase tracking-[0.1em] ${entry.dropdown.featured.textColor === "white" ? "text-white/50" : "text-[#111111]/50"}`}>
                               {entry.dropdown.featured.eyebrow}
                             </p>
                             <p className={`mt-3 text-3xl font-black leading-none ${entry.dropdown.featured.textColor === "white" ? "text-white" : "text-[#111111]"}`}>

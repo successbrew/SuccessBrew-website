@@ -80,7 +80,7 @@ export function DigestPreferencesClient({
         <section className="relative overflow-hidden bg-ink pb-20 pt-32 lg:pb-28 lg:pt-40">
           <AmbientBackground tone="dark" />
           <div className="relative mx-auto max-w-2xl px-6 lg:px-10">
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Daily Brief
             </div>

@@ -34,7 +34,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.div variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-background/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-ink/60 backdrop-blur">
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-background/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-ink/60 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 {testimonials.length} founder{testimonials.length !== 1 ? "s" : ""} & counting
               </motion.div>
@@ -72,7 +72,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.12)}
             className="mx-auto max-w-3xl px-6 text-center lg:px-10">
-            <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Ready to join them?</motion.p>
+            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Ready to join them?</motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Your story could be next.</motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-lg text-lg text-ink/60">
               Book a 30-minute strategy call — no pitch, just clarity on what your next 90 days could look like.

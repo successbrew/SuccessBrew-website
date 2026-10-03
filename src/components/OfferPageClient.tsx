@@ -121,7 +121,7 @@ export function OfferPageClient({
           <div className="relative mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[1.1fr_1fr] lg:items-start lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
               <motion.div variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 Limited-time offer
               </motion.div>
@@ -151,7 +151,7 @@ export function OfferPageClient({
                 <span className="text-4xl font-black text-white">{formatInr(offer.amount)}</span>
                 <span className="mb-1 text-lg text-white/40 line-through">{formatInr(offer.mrpAmount)}</span>
               </div>
-              <p className="mt-1 text-xs uppercase tracking-widest text-accent">One-time payment</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.1em]st text-accent">One-time payment</p>
 
               <form onSubmit={handleCheckout} className="mt-8 space-y-4">
                 <div>

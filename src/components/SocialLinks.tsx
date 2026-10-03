@@ -53,7 +53,7 @@ export function SocialLinks({
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {showLabel && <span className="text-xs font-semibold uppercase tracking-[0.16em] opacity-70">Follow us</span>}
+      {showLabel && <span className="text-xs font-semibold uppercase tracking-[0.1em] opacity-70">Follow us</span>}
       {links.map(({ url, label, Icon }) => (
         <a
           key={label}

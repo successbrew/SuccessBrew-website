@@ -58,9 +58,9 @@ const milestones = [
   { year: "2018", title: "First Idea",       desc: "The initial blueprint sketched out over late-night conversations about why talent stays invisible." },
   { year: "2019", title: "First Event",      desc: "A small gathering of 30 people in Bengaluru. No sponsors. No stage. Just raw conviction." },
   { year: "2020", title: "Community Launch", desc: "Took the movement online. One WhatsApp group became ten. Founders, students, creators — all connected." },
-  { year: "2021", title: "Growth Phase",     desc: "500 members. Monthly events. Guest speakers. SuccessBrew becomes the word people say when they want their people." },
+  { year: "2021", title: "Growth Phase",     desc: "500 members. Monthly events. Guest speakers. Successbrew becomes the word people say when they want their people." },
   { year: "2022", title: "Expansion",        desc: "Chapters in three cities. Podcast launches. 2,000 members. First founders close pre-seed rounds." },
-  { year: "2023", title: "Ecosystem Born",   desc: "Brand, studio, platform — formalized. Not just a community. An ecosystem. A promise: 1 lakh entrepreneurs by 2030." },
+  { year: "2023", title: "Ecosystem Born",   desc: "Brand, studio, platform — formalized. Not just a community. An ecosystem. A promise: 1M entrepreneurs by 2030." },
 ];
 
 const values = [
@@ -104,14 +104,14 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             <motion.div className="flex flex-col" initial="hidden" animate="visible"
               variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.14 } } }}>
               <motion.div variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } } }}
-                className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-[#C1FF3B]/30 bg-[#C1FF3B]/10 px-4 py-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#C1FF3B]" />
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C1FF3B]">The Story Behind Successbrew</span>
+                className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-[#C6FF3A]/30 bg-[#C6FF3A]/10 px-4 py-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#C6FF3A]" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">The Story Behind Successbrew</span>
               </motion.div>
 
               <motion.h1 variants={{ hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: E } } }}
                 className="text-[clamp(2.8rem,6vw,5.5rem)] font-black leading-[0.9] tracking-tight text-white">
-                Building<br />Opportunity<br />For The<br /><span className="text-[#C1FF3B]">Next Generation.</span>
+                Building<br />Opportunity<br />For The<br /><span className="text-[#C6FF3A]">Next Generation.</span>
               </motion.h1>
 
               <motion.p variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } } }}
@@ -142,8 +142,8 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                   <React.Fragment key={s.l}>
                     {i > 0 && <div className="h-7 w-px bg-white/12" />}
                     <div className="text-center">
-                      <div className={`text-xl font-black leading-none ${s.lime ? "text-[#C1FF3B]" : "text-white"}`}>{s.v}</div>
-                      <div className="mt-1.5 text-[10px] font-bold uppercase tracking-widest text-white/40">{s.l}</div>
+                      <div className={`text-xl font-black leading-none ${s.lime ? "text-[#C6FF3A]" : "text-white"}`}>{s.v}</div>
+                      <div className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.1em]st text-white/40">{s.l}</div>
                     </div>
                   </React.Fragment>
                 ))}
@@ -163,14 +163,14 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 </div>
                 {/* year badge */}
                 <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.75, duration: 0.65, ease: E }}
-                  className="absolute -bottom-4 -left-4 rounded-2xl bg-[#C1FF3B] px-5 py-3.5 text-[#111111] shadow-xl">
+                  className="absolute -bottom-4 -left-4 rounded-2xl bg-[#C6FF3A] px-5 py-3.5 text-[#111111] shadow-xl">
                   <div className="text-2xl font-black leading-none">2018</div>
                   <div className="mt-1 text-[11px] font-semibold opacity-65">Where it began</div>
                 </motion.div>
                 {/* vision badge */}
                 <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.9, duration: 0.65, ease: E }}
                   className="absolute -right-4 top-10 rounded-2xl border border-white/12 bg-[#111111]/85 px-5 py-3 backdrop-blur-xl shadow-xl">
-                  <div className="text-[11px] font-bold uppercase tracking-widest text-[#C1FF3B]">Vision 2030</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.1em]st text-[#C6FF3A]">Vision 2030</div>
                   <div className="mt-1 text-base font-black text-white">1 Lakh Entrepreneurs</div>
                 </motion.div>
               </div>
@@ -181,7 +181,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
         {/* scroll hint */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.6, duration: 0.6 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-white/28">Scroll</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-white/28">Scroll</span>
           <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
             className="h-8 w-px bg-gradient-to-b from-white/30 to-transparent" />
         </motion.div>
@@ -190,7 +190,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 2 — THE BEGINNING  (dark editorial)
       ════════════════════════════════════════════════════════════════════ */}
-      <section id="story" className="bg-[#0a0a0a] py-24 lg:py-36 border-t border-white/6">
+      <section id="story" className="bg-[#111111] py-24 lg:py-36 border-t border-white/6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="grid gap-16 lg:grid-cols-[1fr_1.2fr] lg:items-center">
 
@@ -201,10 +201,10 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl">
                 <Image src="/grid-images/Teach-5.jpg" alt="Early days of building"
                   fill sizes="(max-width:1024px) 100vw, 45vw" className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/50 to-transparent" />
               </div>
               <div className="absolute -bottom-5 left-6 rounded-xl bg-[#003CD1] px-5 py-3 text-white shadow-xl shadow-[#003CD1]/30">
-                <div className="text-[11px] font-bold uppercase tracking-widest opacity-70">Started with a</div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.1em]st opacity-70">Started with a</div>
                 <div className="text-lg font-black">Simple Question.</div>
               </div>
             </motion.div>
@@ -214,7 +214,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.15 } } }}
               className="flex flex-col pt-4 lg:pt-0">
               <motion.p variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } } }}
-                className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">The Beginning</motion.p>
+                className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">The Beginning</motion.p>
 
               <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5 } } }}
                 aria-hidden className="mt-4 select-none text-[clamp(6rem,14vw,11rem)] font-black leading-none text-[#003CD1]/20">
@@ -238,7 +238,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 ))}
                 <motion.p variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } }}
                   className="text-xl font-black text-white">
-                  He built it himself. That room became SuccessBrew.
+                  He built it himself. That room became Successbrew.
                 </motion.p>
               </div>
             </motion.div>
@@ -254,7 +254,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.75, ease: E }}
             className="mb-16">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">The Journey</p>
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">The Journey</p>
             <h2 className="text-[clamp(2.4rem,5vw,4rem)] font-black tracking-tight text-white">Six years. One mission.</h2>
           </motion.div>
 
@@ -276,11 +276,11 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                     className="flex flex-col items-center">
                     <div className={`relative z-10 flex h-14 w-14 items-center justify-center rounded-full text-xs font-black border-2 transition-colors ${
                       i === milestones.length - 1
-                        ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]"
+                        ? "border-[#C6FF3A] bg-[#C6FF3A] text-[#111111]"
                         : "border-white/20 bg-[#111111] text-white/40"
                     }`}>{m.year.slice(2)}</div>
                     <div className="mt-6 w-full rounded-2xl border border-white/8 bg-white/[0.03] p-5">
-                      <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#C1FF3B]">{m.year}</div>
+                      <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.1em]st text-[#C6FF3A]">{m.year}</div>
                       <div className="mb-2 text-sm font-black text-white">{m.title}</div>
                       <p className="text-[11px] leading-[1.75] text-white/40">{m.desc}</p>
                     </div>
@@ -299,12 +299,12 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 className="flex gap-4">
                 <div className="flex flex-col items-center">
                   <div className={`mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[11px] font-black ${
-                    i === milestones.length - 1 ? "bg-[#C1FF3B] text-[#111111]" : "border border-white/18 text-white/40"
+                    i === milestones.length - 1 ? "bg-[#C6FF3A] text-[#111111]" : "border border-white/18 text-white/40"
                   }`}>{m.year.slice(2)}</div>
                   {i < milestones.length - 1 && <div className="mt-2 w-px flex-1 bg-white/10 mb-2" />}
                 </div>
                 <div className="flex-1 rounded-2xl border border-white/8 bg-white/[0.03] p-5 mb-4">
-                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-[#C1FF3B]">{m.year}</div>
+                  <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em]st text-[#C6FF3A]">{m.year}</div>
                   <div className="mb-2 text-sm font-black text-white">{m.title}</div>
                   <p className="text-xs leading-7 text-white/40">{m.desc}</p>
                 </div>
@@ -321,12 +321,12 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
         <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }} transition={{ duration: 1, ease: E }}
           className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-10">
-          <p className="mb-8 text-[11px] font-bold uppercase tracking-[0.28em] text-white/45">Our North Star</p>
+          <p className="mb-8 text-[11px] font-semibold uppercase tracking-[0.1em] text-white/45">Our North Star</p>
           <h2 className="text-[clamp(3rem,9vw,8.5rem)] font-black leading-[0.86] tracking-tighter text-white">
-            NO TALENT<br />SHOULD GO<br /><span className="text-[#C1FF3B]">UNSEEN.</span>
+            NO TALENT<br />SHOULD GO<br /><span className="text-[#C6FF3A]">UNSEEN.</span>
           </h2>
           <p className="mx-auto mt-10 max-w-xl text-lg leading-8 text-white/55">
-            Every city has thousands of people with world-class potential and no address to send their ambition. SuccessBrew is that address.
+            Every city has thousands of people with world-class potential and no address to send their ambition. Successbrew is that address.
           </p>
         </motion.div>
       </section>
@@ -339,7 +339,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.75, ease: E }}
             className="mb-14">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">What We Stand For</p>
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">What We Stand For</p>
             <h2 className="text-[clamp(2.2rem,4.5vw,3.5rem)] font-black tracking-tight text-white">
               Six principles.<br />One direction.
             </h2>
@@ -353,7 +353,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 whileHover={{ y: -5 }} className="cursor-default">
                 <Card className="h-full rounded-[24px] border border-white/8 bg-white/[0.03] p-7 shadow-none transition-shadow hover:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.5)] hover:border-white/14">
                   <CardContent className="p-0">
-                    <div className="mb-5 grid h-11 w-11 place-items-center rounded-[14px] bg-[#003CD1]/25 text-[#C1FF3B]">
+                    <div className="mb-5 grid h-11 w-11 place-items-center rounded-[14px] bg-[#003CD1]/25 text-[#C6FF3A]">
                       <Icon className="h-5 w-5" />
                     </div>
                     <h3 className="mb-3 text-base font-black text-white">{title}</h3>
@@ -369,12 +369,12 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 6 — GALLERY  (dark, local images, masonry columns)
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#0a0a0a] py-24 lg:py-36 border-t border-white/6">
+      <section className="bg-[#111111] py-24 lg:py-36 border-t border-white/6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.75, ease: E }}
             className="mb-12">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Behind The Scenes</p>
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Behind The Scenes</p>
             <h2 className="text-[clamp(2.2rem,4.5vw,3.5rem)] font-black tracking-tight text-white">
               Building it from<br />the ground up.
             </h2>
@@ -406,7 +406,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: E }}
             className="mb-10">
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#003CD1]">A Personal Note</p>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#003CD1]">A Personal Note</p>
             <h2 className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-black tracking-tight text-[#111111]">Letter from the Founder</h2>
           </motion.div>
 
@@ -420,26 +420,26 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               </div>
               <div>
                 <div className="text-sm font-black text-[#111111]">Sourabh</div>
-                <div className="text-xs text-[#999]">Founder, SuccessBrew</div>
+                <div className="text-xs text-[#999]">Founder, Successbrew</div>
               </div>
             </div>
 
             {/* letter body */}
-            <div className="space-y-6 font-serif text-[17px] italic leading-[1.95] text-[#333]">
+            <div className="space-y-6 text-[17px] italic leading-[1.95] text-[#333]">
               <p className="text-xl font-bold not-italic text-[#003CD1] leading-8">
                 &ldquo;If one person receives an opportunity because of this community, the mission is worth it.&rdquo;
               </p>
-              <p>I didn&apos;t start SuccessBrew because I had it all figured out. I started it because I didn&apos;t — and I couldn&apos;t find anyone willing to help me figure it out either. The meetings I needed weren&apos;t happening. The introductions weren&apos;t being made. The rooms I needed to be in were closed to me.</p>
+              <p>I didn&apos;t start Successbrew because I had it all figured out. I started it because I didn&apos;t — and I couldn&apos;t find anyone willing to help me figure it out either. The meetings I needed weren&apos;t happening. The introductions weren&apos;t being made. The rooms I needed to be in were closed to me.</p>
               <p>So I decided those rooms shouldn&apos;t exist in the first place. Not closed rooms. Open tables. Places where the student next to the investor next to the creator next to the operator is a completely normal thing.</p>
               <p>What I&apos;ve learned is that opportunity isn&apos;t rare. Access is. And when you remove that barrier — even slightly — extraordinary things happen. Companies get built. Careers change direction. Ideas that would have died in someone&apos;s notebook find their way into the world.</p>
-              <p>SuccessBrew is my commitment to keep removing that barrier. For every person who walks in unsure of where they belong and walks out knowing exactly who they are and what they&apos;re building.</p>
+              <p>Successbrew is my commitment to keep removing that barrier. For every person who walks in unsure of where they belong and walks out knowing exactly who they are and what they&apos;re building.</p>
               <p>We&apos;re just getting started. And this is your invitation.</p>
             </div>
 
             {/* signature */}
             <div className="mt-10 border-t border-[#111111]/8 pt-8">
-              <div className="font-serif text-[2.8rem] font-bold italic leading-none tracking-tight text-[#111111]">Sourabh</div>
-              <div className="mt-2 text-sm text-[#999]">Founder & Chief Brewer, SuccessBrew</div>
+              <div className="text-[2.8rem] font-bold italic leading-none tracking-tight text-[#111111]">Sourabh</div>
+              <div className="mt-2 text-sm text-[#999]">Founder & Chief Brewer, Successbrew</div>
             </div>
           </motion.div>
         </div>
@@ -453,7 +453,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.75, ease: E }}
             className="mb-20 text-center">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">By The Numbers</p>
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">By The Numbers</p>
             <h2 className="text-[clamp(2.2rem,4.5vw,3.5rem)] font-black tracking-tight text-white">The impact, so far.</h2>
           </motion.div>
 
@@ -465,10 +465,10 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               { from: 0, to: 1,     suffix: "L",  label: "Entrepreneurs by 2030",duration: 1.2 },
             ].map(s => (
               <div key={s.label} className="flex flex-col items-center gap-3 text-center">
-                <div className="text-[clamp(2.8rem,6vw,5rem)] font-black leading-none tracking-tight text-[#C1FF3B]">
+                <div className="text-[clamp(2.8rem,6vw,5rem)] font-black leading-none tracking-tight text-[#C6FF3A]">
                   <AnimatedCounter from={s.from} to={s.to} duration={s.duration} suffix={s.suffix} />
                 </div>
-                <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">{s.label}</div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/45">{s.label}</div>
               </div>
             ))}
           </div>
@@ -491,7 +491,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               <motion.div key={line.text}
                 variants={{ hidden: { opacity: 0, y: 44 }, visible: { opacity: 1, y: 0, transition: { duration: 0.85, ease: E } } }}
                 className={`block text-[clamp(3rem,10vw,9rem)] font-black leading-[0.86] tracking-tighter ${
-                  line.lime ? "text-[#C1FF3B]" : line.dim ? "text-white/45" : "text-white"
+                  line.lime ? "text-[#C6FF3A]" : line.dim ? "text-white/45" : "text-white"
                 }`}>
                 {line.text}
               </motion.div>
@@ -514,25 +514,25 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.75, ease: E }}
             className="mb-12">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">The Roadmap</p>
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">The Roadmap</p>
             <h2 className="text-[clamp(2.2rem,4.5vw,3.5rem)] font-black tracking-tight text-white">What comes next.</h2>
           </motion.div>
 
           {/* Horizontal scroll on mobile, grid on desktop */}
           <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-5 hide-scrollbar">
             {[
-              { n: "01", t: "More Cities",     d: "SuccessBrew chapters in 20+ Indian cities so no ambitious person is limited by geography." },
+              { n: "01", t: "More Cities",     d: "Successbrew chapters in 20+ Indian cities so no ambitious person is limited by geography." },
               { n: "02", t: "10K Founders",    d: "Founders who found their co-founder, investor, or first customer through this community." },
               { n: "03", t: "Creator Economy", d: "A new wave of Indian creators building businesses and brands from their bedrooms." },
               { n: "04", t: "Direct Access",   d: "Fellowships and grants flowing straight to the people who deserve them — no gatekeepers." },
-              { n: "05", t: "Global Stage",    d: "India's startup story on the world stage, with SuccessBrew alumni at the center of it." },
+              { n: "05", t: "Global Stage",    d: "India's startup story on the world stage, with Successbrew alumni at the center of it." },
             ].map((v, i) => (
               <motion.div key={v.n} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.08, duration: 0.65, ease: E }}
                 whileHover={{ y: -6 }}
                 className="w-[80vw] shrink-0 snap-start sm:w-[45vw] lg:w-auto rounded-[20px] border border-white/8 bg-white/[0.03] p-6 cursor-default transition-colors hover:border-white/16">
-                <div className="mb-5 text-[11px] font-black uppercase tracking-widest text-[#C1FF3B]">Phase {v.n}</div>
+                <div className="mb-5 text-[11px] font-semibold uppercase tracking-[0.1em]st text-[#C6FF3A]">Phase {v.n}</div>
                 <h3 className="mb-3 text-base font-black text-white">{v.t}</h3>
                 <p className="text-sm leading-7 text-white/42">{v.d}</p>
               </motion.div>
@@ -554,12 +554,12 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}>
             <motion.p variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } } }}
-              className="mb-6 text-[11px] font-bold uppercase tracking-[0.28em] text-[#C1FF3B]/65">
+              className="mb-6 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]/65">
               You&apos;re invited
             </motion.p>
             <motion.h2 variants={{ hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: E } } }}
               className="text-[clamp(3.5rem,9vw,7.5rem)] font-black leading-[0.88] tracking-tighter text-white">
-              JOIN THE<br /><span className="text-[#C1FF3B]">MOVEMENT.</span>
+              JOIN THE<br /><span className="text-[#C6FF3A]">MOVEMENT.</span>
             </motion.h2>
             <motion.p variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.7, ease: E } } }}
               className="mx-auto mt-8 max-w-md text-lg leading-8 text-white/50">
@@ -567,7 +567,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             </motion.p>
             <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } } }}
               className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <Button asChild className="rounded-full bg-[#C1FF3B] px-9 py-7 text-base font-bold text-[#111111] shadow-none hover:bg-[#b0e633]">
+              <Button asChild className="rounded-full bg-[#C6FF3A] px-9 py-7 text-base font-bold text-[#111111] shadow-none hover:bg-[#B5EB2A]">
                 <Link href="/apply?source=community">Join Community <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button asChild variant="outline" className="rounded-full border-white/22 bg-transparent px-9 py-7 text-base font-bold text-white shadow-none hover:bg-white/8 hover:text-white">

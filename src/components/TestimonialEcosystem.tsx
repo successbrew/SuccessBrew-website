@@ -39,19 +39,19 @@ const THEMES: Record<Theme, ThemeTokens> = {
     emptyText: "text-ink/40",
     featuredBg: "bg-primary",
     featuredText: "text-primary-foreground",
-    dotActive: "#C1FF3B",
+    dotActive: "#C6FF3A",
     dotInactive: "rgba(255,255,255,0.25)",
   },
   community: {
     cardBg: { sand: "bg-white text-[#111111]", dark: "bg-white text-[#111111]" },
     cardIsDark: { sand: false, dark: false },
-    avatarBg: { primary: "bg-[#003CD1] text-white", accent: "bg-[#C1FF3B] text-[#111111]" },
+    avatarBg: { primary: "bg-[#003CD1] text-white", accent: "bg-[#C6FF3A] text-[#111111]" },
     quoteMark: { sand: "text-[#003CD1]/15", dark: "text-[#003CD1]/15" },
-    gridBg: "bg-[#F0EBD8]",
+    gridBg: "bg-[#FFF3D0]",
     emptyText: "text-[#111111]/40",
     featuredBg: "bg-[#003CD1]",
     featuredText: "text-white",
-    dotActive: "#C1FF3B",
+    dotActive: "#C6FF3A",
     dotInactive: "rgba(255,255,255,0.25)",
   },
 };
@@ -102,7 +102,7 @@ function TestimonialCard({ t, tokens, index }: { t: Testimonial; tokens: ThemeTo
       className={`relative mb-5 break-inside-avoid overflow-hidden rounded-3xl border border-black/5 p-8 md:p-9 cursor-default ${tokens.cardBg[t.cardStyle] ?? tokens.cardBg.sand}`}
     >
       <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: spotlight }} />
-      <div aria-hidden className={`absolute right-6 top-4 font-serif text-7xl leading-none select-none ${tokens.quoteMark[t.cardStyle] ?? tokens.quoteMark.sand}`}>&quot;</div>
+      <div aria-hidden className={`absolute right-6 top-4 text-7xl leading-none select-none ${tokens.quoteMark[t.cardStyle] ?? tokens.quoteMark.sand}`}>&quot;</div>
 
       <blockquote className="relative text-balance text-lg font-medium leading-snug">
         <ExpandableQuote
@@ -129,7 +129,7 @@ function TestimonialCard({ t, tokens, index }: { t: Testimonial; tokens: ThemeTo
         </div>
       </figcaption>
 
-      <div aria-hidden className={`relative mt-6 text-[10px] font-bold uppercase tracking-[0.2em] ${isDark ? "text-white/20" : "opacity-20"}`}>
+      <div aria-hidden className={`relative mt-6 text-[10px] font-semibold uppercase tracking-[0.1em] ${isDark ? "text-white/20" : "opacity-20"}`}>
         #{String(index).padStart(2, "0")}
       </div>
     </motion.figure>
@@ -154,7 +154,7 @@ function FeaturedTestimonial({ testimonials, tokens }: { testimonials: Testimoni
   return (
     <section className={`relative overflow-hidden py-20 lg:py-28 ${tokens.featuredBg}`}>
       <div className="mx-auto max-w-5xl px-6 lg:px-10">
-        <div aria-hidden className="mb-6 font-serif text-[8rem] leading-none text-white/10 select-none">&quot;</div>
+        <div aria-hidden className="mb-6 text-[8rem] leading-none text-white/10 select-none">&quot;</div>
 
         <AnimatePresence mode="wait">
           <motion.div

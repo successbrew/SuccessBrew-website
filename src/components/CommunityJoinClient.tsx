@@ -131,7 +131,7 @@ export function CommunityJoinClient({
           <div className="relative mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[1.1fr_1fr] lg:items-start lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
               <motion.div variants={fadeUp}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 Approved members only
               </motion.div>
@@ -160,7 +160,7 @@ export function CommunityJoinClient({
               <div className="flex items-end gap-3">
                 <span className="text-4xl font-black text-white">{formatInr(product.amount)}</span>
               </div>
-              <p className="mt-1 text-xs uppercase tracking-widest text-accent">One-time payment</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.1em]st text-accent">One-time payment</p>
 
               {!enabled ? (
                 <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">

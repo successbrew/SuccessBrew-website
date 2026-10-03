@@ -349,7 +349,7 @@ function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
       }}
       className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border border-ink/5 bg-background p-8 hover:border-primary/30 hover:shadow-[0_30px_60px_-30px_oklch(0.16_0.02_260_/_0.35)] md:p-10">
       <div>
-        <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.22em] text-ink/40">
+        <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-ink/40">
           <span>{svc.num}</span>
           <motion.span
             aria-hidden="true"
@@ -401,7 +401,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div variants={fadeUp}
-                className="mb-10 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-background/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-ink/70 backdrop-blur">
+                className="mb-10 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-background/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-ink/70 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 Successbrew · Content Marketing Company
               </motion.div>
@@ -449,7 +449,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.12)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">By the numbers</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">By the numbers</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Not just a content marketing system, but a global Ecosystem that your brand needs." /></h2>
               </motion.div>
             </motion.div>
@@ -480,7 +480,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">What we do</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">What we do</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Everything your brand needs. In one place." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-ink underline-offset-4 hover:underline">
@@ -528,7 +528,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                   </button>
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-ink/35">{svc.num}</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink/35">{svc.num}</p>
                   <h3 className="mt-4 text-3xl font-black tracking-tight">{svc.title}</h3>
                   <p className="mt-5 text-base leading-relaxed text-ink/65">{svc.description}</p>
                   <div className="mt-8 flex flex-wrap gap-2">
@@ -550,7 +550,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-20 max-w-3xl">
-              <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-primary">How we work</motion.p>
+              <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">How we work</motion.p>
               <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="A five-step process." /></h2>
             </motion.div>
             <motion.ol ref={processRef} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
@@ -567,7 +567,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                   <motion.div
                     animate={{
                       backgroundColor: isActive ? "#003CD1" : "oklch(1 0 0)",
-                      color: isActive ? "#fff" : "oklch(0.16 0.02 260)",
+                      color: isActive ? "#fff" : "#111111",
                       scale: isActive ? 1.08 : 1,
                     }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
@@ -596,7 +596,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Selected work</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Selected work</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Results that compound." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/case-studies" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-ink underline-offset-4 hover:underline">
@@ -613,7 +613,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Founder voices</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Founder voices</p>
                 <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Trusted by the operators we are built for." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/testimonials" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-ink underline-offset-4 hover:underline">
@@ -663,7 +663,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.14)}
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
-            <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-primary-foreground/70">Let's build</motion.p>
+            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary-foreground/70">Let's build</motion.p>
             <motion.h2 variants={fadeUp}
               className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
               Ready To Build <br /><span className="text-accent">Momentum?</span>

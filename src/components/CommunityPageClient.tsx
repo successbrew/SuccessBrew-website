@@ -87,22 +87,22 @@ const stagger = (d = 0.1) => ({ hidden: {}, visible: { transition: { staggerChil
 
 // ── Color maps ────────────────────────────────────────────────────────────────
 const winCardBg: Record<string, string> = {
-  sand: "bg-[#F0EBD8] text-[#111111]",
+  sand: "bg-[#FFF3D0] text-[#111111]",
   blue: "bg-[#003CD1] text-white",
   dark: "bg-[#111111] text-white",
 };
 const winAvatarBg: Record<string, string> = {
   blue: "bg-[#003CD1] text-white",
-  lime: "bg-[#C1FF3B] text-[#111111]",
+  lime: "bg-[#C6FF3A] text-[#111111]",
   primary: "bg-[#003CD1] text-white",
-  accent: "bg-[#C1FF3B] text-[#111111]",
+  accent: "bg-[#C6FF3A] text-[#111111]",
 };
 const postAvatarBg: Record<string, string> = {
   blue: "bg-[#003CD1] text-white",
   dark: "bg-[#111111] text-white",
 };
 const postTagBg: Record<string, string> = {
-  lime:      "bg-[#C1FF3B] text-[#111111]",
+  lime:      "bg-[#C6FF3A] text-[#111111]",
   dark:      "bg-[#111111] text-white",
   lightBlue: "bg-[#D4F0FF] text-[#0a4a7a]",
 };
@@ -118,11 +118,11 @@ const pillars = [
 ];
 
 const resources = [
-  { type: "Blogs",     count: "120+", desc: "Tactical articles on growth, fundraising and product-market fit.",    icon: "📝", bg: "bg-[#003CD1] text-white",    countColor: "text-[#C1FF3B]" },
-  { type: "Playbooks", count: "35+",  desc: "Step-by-step frameworks for go-to-market, hiring and content.",       icon: "📖", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#003CD1]" },
-  { type: "Templates", count: "80+",  desc: "Investor decks, SOPs, content calendars — grab and go.",              icon: "📄", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#003CD1]" },
-  { type: "Ebooks",    count: "18+",  desc: "Deep dives from founders who did it and documented it.",               icon: "📘", bg: "bg-[#C1FF3B] text-[#111111]", countColor: "text-[#003CD1]" },
-  { type: "Webinars",  count: "60+",  desc: "Recorded sessions with operators, VCs and brand builders.",           icon: "🎥", bg: "bg-[#111111] text-white",      countColor: "text-[#C1FF3B]" },
+  { type: "Blogs",     count: "120+", desc: "Tactical articles on growth, fundraising and product-market fit.",    icon: "📝", bg: "bg-[#003CD1] text-white",    countColor: "text-[#C6FF3A]" },
+  { type: "Playbooks", count: "35+",  desc: "Step-by-step frameworks for go-to-market, hiring and content.",       icon: "📖", bg: "bg-[#FFF3D0] text-[#111111]", countColor: "text-[#003CD1]" },
+  { type: "Templates", count: "80+",  desc: "Investor decks, SOPs, content calendars — grab and go.",              icon: "📄", bg: "bg-[#FFF3D0] text-[#111111]", countColor: "text-[#003CD1]" },
+  { type: "Ebooks",    count: "18+",  desc: "Deep dives from founders who did it and documented it.",               icon: "📘", bg: "bg-[#C6FF3A] text-[#111111]", countColor: "text-[#003CD1]" },
+  { type: "Webinars",  count: "60+",  desc: "Recorded sessions with operators, VCs and brand builders.",           icon: "🎥", bg: "bg-[#111111] text-white",      countColor: "text-[#C6FF3A]" },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               {/* LEFT: headline, copy, CTAs */}
               <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
                 <motion.div variants={fadeUp}
-                  className="mb-10 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
+                  className="mb-10 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/70 backdrop-blur">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
                   Successbrew · India's Most Loved Startup Ecosystem
                 </motion.div>
@@ -188,7 +188,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                         </span>
                       ))}
                     </span>
-                    <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
+                    <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C6FF3A] md:h-6" />
                   </span>
                 </motion.h1>
 
@@ -198,7 +198,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
 
                 <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
                   <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#003CD1] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0, 60, 209,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
-                  <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#F0EBD8]">Explore Ecosystem</a>
+                  <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#FFF3D0]">Explore Ecosystem</a>
                 </motion.div>
               </motion.div>
 
@@ -218,9 +218,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               className="mt-12 flex flex-wrap justify-center gap-4">
               {([
                 { num: "8000+",  label: "Members",         sub: "Founders · Creators · Investors", bg: "bg-[#003CD1] text-white",     subColor: "text-white/70",     floatDelay: 0   },
-                { num: "200K+",  label: "Followers",       sub: "Across social platforms",          bg: "bg-[#F0EBD8] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 0.6 },
-                { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[#C1FF3B] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
-                { num: "50+",    label: "Brand Partners",  sub: "Collaborations & partnerships",   bg: "bg-[#F0EBD8] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.8 },
+                { num: "200K+",  label: "Followers",       sub: "Across social platforms",          bg: "bg-[#FFF3D0] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 0.6 },
+                { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[#C6FF3A] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
+                { num: "50+",    label: "Brand Partners",  sub: "Collaborations & partnerships",   bg: "bg-[#FFF3D0] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.8 },
                 { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[#003CD1] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
               ] as const).map(({ num, label, sub, bg, subColor, floatDelay }) => (
                 <motion.div key={label}
@@ -245,8 +245,8 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
           <div className="flex w-max whitespace-nowrap animate-marquee">
             {Array.from({ length: 2 }).map((_, g) => (
               <div key={g} className="flex">
-                {["Community", "Content Studio", "Podcast", "Events", "Learning Hub", "Mentor Network", "Visibility", "Momentum", "Belonging", "1L by 2030"].map(item => (
-                  <span key={item} className="inline-flex items-center gap-8 px-6 text-[12px] font-bold uppercase tracking-[0.12em]">
+                {["Community", "Content Studio", "Podcast", "Events", "Learning Hub", "Mentor Network", "Visibility", "Momentum", "Belonging", "1M by 2030"].map(item => (
+                  <span key={item} className="inline-flex items-center gap-8 px-6 text-[12px] font-semibold uppercase tracking-[0.1em]">
                     {item}<span className="opacity-40">·</span>
                   </span>
                 ))}
@@ -256,12 +256,12 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
         </motion.div>
 
         {/* ══ ECOSYSTEM ═════════════════════════════════════════════════ */}
-        <section id="ecosystem" className="bg-[#F0EBD8] py-16 lg:py-20">
+        <section id="ecosystem" className="bg-[#FFF3D0] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">The Ecosystem</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">The Ecosystem</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="6 Pillars of Successbrew Ecosystem" /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -274,9 +274,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 <motion.article key={p.num} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
                   className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#111111]/5 bg-white p-8 hover:border-[#003CD1]/30 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.2)] md:p-10">
                   <div>
-                    <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/40">
+                    <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40">
                       <span>{p.num}</span>
-                      <span aria-hidden className="h-2 w-2 rounded-full bg-[#C1FF3B] transition group-hover:bg-[#003CD1]" />
+                      <span aria-hidden className="h-2 w-2 rounded-full bg-[#C6FF3A] transition group-hover:bg-[#003CD1]" />
                     </div>
                     <div className="mt-6 text-3xl">{p.icon}</div>
                     <h3 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">{p.title}</h3>
@@ -284,7 +284,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   </div>
                   <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap gap-2">
-                      {p.tags.map(t => <span key={t} className="rounded-full bg-[#F0EBD8] px-3 py-1 text-xs font-semibold text-[#111111]/70">{t}</span>)}
+                      {p.tags.map(t => <span key={t} className="rounded-full bg-[#FFF3D0] px-3 py-1 text-xs font-semibold text-[#111111]/70">{t}</span>)}
                     </div>
                     <span className="rounded-full bg-[#003CD1]/8 px-3 py-1 text-[11px] font-bold text-[#003CD1]">{p.badge}</span>
                   </div>
@@ -300,7 +300,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
           eyebrow="Who's Inside"
           heading="Community Members From"
           alwaysColor
-          sectionBg="bg-[#F0EBD8]"
+          sectionBg="bg-[#FFF3D0]"
         />
 
         {/* ══ OUR WHY ═══════════════════════════════════════════════════ */}
@@ -308,10 +308,10 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
-                <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-white/55">Our Why</motion.p>
+                <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-white/55">Our Why</motion.p>
                 <h2 className="mt-3 text-balance text-[clamp(2.6rem,5vw,5rem)] font-black leading-[0.95] tracking-tight">
                   <WordReveal text="Talent is everywhere." />{" "}<br />
-                  <span className="text-[#C1FF3B]"><WordReveal text="Opportunity is not." /></span>
+                  <span className="text-[#C6FF3A]"><WordReveal text="Opportunity is not." /></span>
                 </h2>
                 <motion.p variants={fadeUp} className="mt-6 max-w-xl text-balance text-lg text-white/75">
                   Most ambitious Indians never get the room, the mentor, or the mic. Successbrew exists to close that gap — not by replacing hard work, but by amplifying it with access, visibility and a community that actually shows up.
@@ -322,7 +322,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   <img src="/grid-images/edits-55.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-top" />
                 </div>
                 <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
-                  className="absolute -bottom-5 left-6 rounded-2xl bg-[#C1FF3B] px-6 py-4 text-[#111111] shadow-lg">
+                  className="absolute -bottom-5 left-6 rounded-2xl bg-[#C6FF3A] px-6 py-4 text-[#111111] shadow-lg">
                   <div className="text-2xl font-black">1 Lakh</div>
                   <div className="text-xs font-medium text-black/60">Entrepreneurs · Vision 2030</div>
                 </motion.div>
@@ -333,10 +333,10 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mt-20">
               <ol className="relative grid grid-cols-5 gap-0">
                 <div aria-hidden className="absolute left-0 right-0 top-[18px] h-px bg-white/20 sm:top-6" />
-                {[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
+                {[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1M 🎯"]].map(([yr, lbl], i) => (
                   <li key={yr} className="relative text-center">
-                    <div className={`relative z-10 mx-auto grid h-9 w-9 place-items-center rounded-full border text-xs font-bold sm:h-12 sm:w-12 sm:text-sm ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#003CD1] text-white"}`}>{yr}</div>
-                    <div className={`mt-2 text-[9px] font-bold leading-tight sm:mt-3 sm:text-xs ${i === 4 ? "text-[#C1FF3B]" : "text-white/60"}`}>{lbl}</div>
+                    <div className={`relative z-10 mx-auto grid h-9 w-9 place-items-center rounded-full border text-xs font-bold sm:h-12 sm:w-12 sm:text-sm ${i === 4 ? "border-[#C6FF3A] bg-[#C6FF3A] text-[#111111]" : "border-white/30 bg-[#003CD1] text-white"}`}>{yr}</div>
+                    <div className={`mt-2 text-[9px] font-bold leading-tight sm:mt-3 sm:text-xs ${i === 4 ? "text-[#C6FF3A]" : "text-white/60"}`}>{lbl}</div>
                   </li>
                 ))}
               </ol>
@@ -350,7 +350,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 { label: "Momentum",   value: "From idea to traction.",         desc: "Playbooks, cohorts and accountability structures that compress years of learning into months." },
               ].map(({ label, value, desc }) => (
                 <motion.div key={label} variants={cardUp} className="rounded-2xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">{label}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">{label}</p>
                   <p className="mt-2 text-lg font-black text-white">{value}</p>
                   <p className="mt-3 text-sm leading-7 text-white/60">{desc}</p>
                 </motion.div>
@@ -365,7 +365,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Community Wins</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Community Wins</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Success stories brewed here." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/community/testimonials" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -409,12 +409,12 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
         </section>
 
         {/* ══ EVENTS (CMS) ══════════════════════════════════════════════ */}
-        <section id="events" className="bg-[#F0EBD8] py-16 lg:py-20">
+        <section id="events" className="bg-[#FFF3D0] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Four Rooms, One Ecosystem</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Four Rooms, One Ecosystem</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Be in the room where it happens." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/community/events" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -442,7 +442,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Successbrew Podcast</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Successbrew Podcast</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Real talk. Real founders." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/community/podcast" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -459,10 +459,10 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                     <img src={ep.thumbnailUrl ?? "/grid-images/IMG20241127141737.jpg"} alt={ep.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                     {ep.isFeatured && (
-                      <span className="absolute left-3 top-3 rounded-full bg-[#C1FF3B] px-2.5 py-1 text-[10px] font-black uppercase text-[#111111]">Featured</span>
+                      <span className="absolute left-3 top-3 rounded-full bg-[#C6FF3A] px-2.5 py-1 text-[10px] font-semibold uppercase text-[#111111]">Featured</span>
                     )}
                     <div className="absolute inset-0 grid place-items-center opacity-0 transition-opacity group-hover:opacity-100">
-                      <span className="grid h-14 w-14 place-items-center rounded-full bg-[#C1FF3B] text-[#111111] shadow-lg">
+                      <span className="grid h-14 w-14 place-items-center rounded-full bg-[#C6FF3A] text-[#111111] shadow-lg">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                       </span>
                     </div>
@@ -486,7 +486,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
               className="mt-6 rounded-2xl border border-[#111111]/5 bg-white p-6 text-center">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/45">100+ Episodes · 60+ Guests</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/45">100+ Episodes · 60+ Guests</p>
               <a href="/community/podcast" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#003CD1] hover:underline">All Episodes →</a>
             </motion.div>
           </div>
@@ -498,7 +498,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Learning Hub</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Learning Hub</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="200+ resources built for builders." /></h2>
               </motion.div>
               <motion.div variants={fadeUp} className="flex flex-wrap gap-2">
@@ -539,15 +539,15 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
           <AmbientBackground tone="dark" />
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.14)}
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
-            <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">8,000+ already inside</motion.p>
+            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">8,000+ already inside</motion.p>
             <motion.h2 variants={fadeUp} className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
-              Ready to <span className="text-[#003CD1]">Brew</span> <span className="text-[#C1FF3B]">Yours?</span>
+              Ready to <span className="text-[#003CD1]">Brew</span> <span className="text-[#C6FF3A]">Yours?</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-lg text-white/60">
               Join a community of founders, creators and students building India's next decade — together.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C1FF3B] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#b6eb32]">Join Community</a>
+              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#B5EB2A]">Join Community</a>
               <a href="/about" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">Our Story</a>
             </motion.div>
           </motion.div>

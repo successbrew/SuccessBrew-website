@@ -20,8 +20,8 @@ export function FieldLabel({
       <span
         className={
           required
-            ? "text-[10px] font-semibold uppercase tracking-wide text-destructive"
-            : "text-[10px] font-semibold uppercase tracking-wide text-[#111111]/40"
+            ? "text-[10px] font-semibold uppercase tracking-[0.1em] text-destructive"
+            : "text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40"
         }
       >
         {required ? "Mandatory" : "Optional"}

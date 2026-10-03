@@ -123,7 +123,7 @@ export function CommunityMapBackground() {
           return (
             <g key={i}>
               <path d={path} fill="none" stroke="#003CD1" strokeWidth={1} strokeOpacity={0.16} />
-              <circle r={2.4} fill="#C1FF3B" opacity={0.9}>
+              <circle r={2.4} fill="#C6FF3A" opacity={0.9}>
                 <animateMotion dur={`${dur}s`} begin={`${begin}s`} repeatCount="indefinite" path={path} />
                 <animate
                   attributeName="opacity"

@@ -67,7 +67,7 @@ export function buildStatusUpdateEmail(params: {
       params.note
         ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
              <tr>
-               <td style="background-color:#F0EBD8; border-radius:14px; padding:18px 22px;">
+               <td style="background-color:#FFF3D0; border-radius:14px; padding:18px 22px;">
                  <p style="margin:0; font-size:14px; line-height:1.6; color:#111111;">${escapeHtml(params.note)}</p>
                </td>
              </tr>

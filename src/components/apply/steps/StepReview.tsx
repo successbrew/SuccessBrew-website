@@ -8,7 +8,7 @@ function SummaryRow({ label, value, onEdit }: { label: string; value: string; on
   return (
     <div className="flex items-start justify-between gap-4 border-b border-[#111111]/8 py-3 last:border-0">
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#111111]/40">{label}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40">{label}</p>
         <p className="mt-0.5 break-all text-sm text-[#111111]">{value || "—"}</p>
       </div>
       <button type="button" onClick={onEdit} className="-m-2 shrink-0 p-2 text-xs font-semibold text-[#003CD1] hover:underline">
