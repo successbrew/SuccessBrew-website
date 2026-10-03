@@ -1,10 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { formatApplicationCode } from "./code-generator-format";
 
-const MIN_DIGITS = 3;
-
-export function formatApplicationCode(year: number, sequenceNumber: number): string {
-  return `SB-${year}-${String(sequenceNumber).padStart(MIN_DIGITS, "0")}`;
-}
+export { formatApplicationCode };
 
 /**
  * Sequential, human-readable application code, e.g. "SB-2026-001". The numeric
@@ -37,4 +34,18 @@ export async function generateApplicationCode(): Promise<string> {
   }
 
   throw new Error("Failed to generate a unique application code after 5 attempts.");
+}
+
+/**
+ * Highest sequence number among codes currently in use (0 if none). The admin
+ * "set counter" tool refuses to go below this, so the counter can never be
+ * rolled back onto a number a live application already holds — deleting test
+ * applications first is what frees their numbers up.
+ */
+export async function highestIssuedSequenceNumber(): Promise<number> {
+  const rows = await prisma.$queryRaw<{ max: number | null }[]>`
+    SELECT MAX(CAST(substring("applicationCode" from '([0-9]+)$') AS INTEGER)) AS max
+    FROM "Application"
+  `;
+  return rows[0]?.max ?? 0;
 }

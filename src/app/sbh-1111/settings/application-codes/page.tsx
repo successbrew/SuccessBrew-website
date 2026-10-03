@@ -1,15 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { requireSuperAdmin } from "@/lib/auth/dal";
-import { formatApplicationCode } from "@/lib/services/applications/code-generator";
+import { formatApplicationCode, highestIssuedSequenceNumber } from "@/lib/services/applications/code-generator";
 import { ResetApplicationCodeSequenceDialog } from "@/components/admin/settings/ResetApplicationCodeSequenceDialog";
-import { resetApplicationCodeSequence } from "./actions";
+import { SetApplicationCodeSequenceForm } from "@/components/admin/settings/SetApplicationCodeSequenceForm";
+import { resetApplicationCodeSequence, setApplicationCodeSequence } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function ApplicationCodesPage() {
   await requireSuperAdmin();
 
-  const sequence = await prisma.applicationCodeSequence.findUnique({ where: { id: "singleton" } });
+  const [sequence, highestInUse] = await Promise.all([
+    prisma.applicationCodeSequence.findUnique({ where: { id: "singleton" } }),
+    highestIssuedSequenceNumber(),
+  ]);
   const lastNumber = sequence?.lastNumber ?? 0;
   const currentYear = new Date().getFullYear();
   const lastIssuedCode = lastNumber > 0 ? formatApplicationCode(sequence?.lastYear ?? currentYear, lastNumber) : null;
@@ -29,6 +33,23 @@ export default async function ApplicationCodesPage() {
         <p className="mt-1 text-2xl font-semibold">{lastIssuedCode ?? "None yet"}</p>
         <p className="mt-4 text-xs font-medium uppercase text-muted-foreground">Next code (without a reset)</p>
         <p className="mt-1 text-lg font-medium text-muted-foreground">{nextCode}</p>
+      </div>
+
+      <div className="mt-6 max-w-md rounded-lg border border-border p-6">
+        <p className="font-medium">Set counter to a number</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Use this to wind the counter back after testing: note the last code issued before you test, delete the test
+          applications, then enter that number here. It can&rsquo;t go below the highest code still in use
+          ({highestInUse > 0 ? `number ${highestInUse}` : "none yet"}).
+        </p>
+        <div className="mt-4">
+          <SetApplicationCodeSequenceForm
+            action={setApplicationCodeSequence}
+            currentLastNumber={lastNumber}
+            minimum={highestInUse}
+            year={currentYear}
+          />
+        </div>
       </div>
 
       <div className="mt-6 max-w-md rounded-lg border border-destructive/30 bg-destructive/5 p-6">
