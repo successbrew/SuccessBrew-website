@@ -318,7 +318,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.9, ease: E }} className="relative">
                 <div className="aspect-[3/4] overflow-hidden rounded-[2rem] border border-white/10">
-                  <img src="/grid-images/edits-55.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-top" />
+                  <img src="/grid-images/our-why-founder.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-[62%_center]" />
                 </div>
                 <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
                   className="absolute -bottom-5 left-6 rounded-2xl bg-[#C6FF3A] px-6 py-4 text-[#111111] shadow-lg">
