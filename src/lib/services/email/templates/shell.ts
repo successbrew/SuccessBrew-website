@@ -29,6 +29,11 @@ export function renderEmailShell(params: { headerBg: string; bodyHtml: string })
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Ask mail apps that honour it (Apple Mail, iOS, Outlook) to keep this
+         email in light mode instead of auto-inverting its colours. -->
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light" />
+    <style>:root { color-scheme: light only; supported-color-schemes: light; }</style>
   </head>
   <body style="margin:0; padding:0; background-color:#F2ECDD; font-family:Montserrat,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F2ECDD; padding:40px 16px;">
@@ -39,11 +44,12 @@ export function renderEmailShell(params: { headerBg: string; bodyHtml: string })
               <td style="background-color:${params.headerBg}; height:6px; line-height:6px; font-size:0;">&nbsp;</td>
             </tr>
             <tr>
-              <!-- Logo shown in its real colours on white, as on the website. Email
-                   clients (Gmail, Outlook) ignore CSS filters, so it can't be
-                   recoloured to sit on a dark/blue band. -->
-              <td style="background-color:#ffffff; padding:32px 40px 8px; text-align:center;">
-                <img src="${SITE_URL}/SB-logo.png" alt="Successbrew" width="206" height="36" style="display:inline-block; height:36px; width:206px; border:0;" />
+              <!-- The logo image carries its own solid white rounded tile, so it
+                   stays readable when a mail app (e.g. Gmail) forces dark mode
+                   and darkens the background around it — mail apps recolour
+                   backgrounds and text, but never the pixels inside an image. -->
+              <td style="background-color:#ffffff; padding:28px 40px 4px; text-align:center;">
+                <img src="${SITE_URL}/email-logo.png" alt="Successbrew" width="240" height="60" style="display:inline-block; height:60px; width:240px; border:0;" />
               </td>
             </tr>
             <tr>
