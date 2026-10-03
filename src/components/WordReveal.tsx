@@ -15,6 +15,10 @@ interface WordRevealProps {
  * "standalone" self-triggers via whileInView + staggerChildren.
  * "nested" renders plain wrapper spans with a per-word delay, for use inside
  * a parent that already drives "hidden"/"visible" variants.
+ *
+ * Each word's clip box inherits the heading's own line-height (so lines sit as
+ * tight as the heading asks for); the py/-my pair widens only the clip area so
+ * ascenders and descenders aren't cut off, without adding to the line spacing.
  */
 export function WordReveal({ text, className, mode = "standalone", staggerDelay = 0.07 }: WordRevealProps) {
   const words = text.split(" ");
@@ -24,7 +28,7 @@ export function WordReveal({ text, className, mode = "standalone", staggerDelay 
       <span className={className}>
         {words.map((word, i) => (
           <span key={i}>
-            <span className="inline-block overflow-hidden leading-[1.2]">
+            <span className="inline-block overflow-hidden align-top py-[0.2em] -my-[0.2em]">
               <motion.span
                 className="inline-block"
                 variants={{
@@ -52,7 +56,7 @@ export function WordReveal({ text, className, mode = "standalone", staggerDelay 
     >
       {words.map((word, i) => (
         <span key={i}>
-          <span className="inline-block overflow-hidden leading-[1.2]">
+          <span className="inline-block overflow-hidden align-top py-[0.2em] -my-[0.2em]">
             <motion.span
               className="inline-block"
               variants={{

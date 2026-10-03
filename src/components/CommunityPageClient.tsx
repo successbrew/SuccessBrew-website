@@ -171,7 +171,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   className="text-balance text-[clamp(2.25rem,4.4vw,4.5rem)] font-black leading-[0.98] tracking-tight text-[#111111]">
                   {["Brew", "Your"].map((word, i) => (
                     <span key={i}>
-                      <span className="inline-block overflow-hidden leading-[1.2]">
+                      <span className="inline-block overflow-hidden align-top py-[0.2em] -my-[0.2em]">
                         <motion.span className={`inline-block ${word === "Brew" ? "text-[#003CD1]" : ""}`} variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
                       </span>
                       {i === 0 ? " " : ""}
@@ -181,7 +181,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                     <span className="relative z-10 text-[#111111]">
                       {["Own", "Success."].map((word, i) => (
                         <span key={i}>
-                          <span className="inline-block overflow-hidden leading-[1.2]">
+                          <span className="inline-block overflow-hidden align-top py-[0.2em] -my-[0.2em]">
                             <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
                           </span>
                           {i === 0 ? " " : ""}
@@ -317,8 +317,8 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 </motion.p>
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.9, ease: E }} className="relative">
-                <div className="aspect-[3/4] overflow-hidden rounded-[2rem] border border-white/10">
-                  <img src="/grid-images/our-why-founder.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-[62%_center]" />
+                <div className="aspect-square overflow-hidden rounded-[2rem] border border-white/10">
+                  <img src="/grid-images/our-why-founder.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-[44%_center]" />
                 </div>
                 <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
                   className="absolute -bottom-5 left-6 rounded-2xl bg-[#C6FF3A] px-6 py-4 text-[#111111] shadow-lg">
