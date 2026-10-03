@@ -9,10 +9,10 @@ interface RazorpayEventPayload {
   created_at?: number;
   payload?: {
     payment?: {
-      entity?: { id: string; order_id?: string; amount?: number; currency?: string };
+      entity?: { id: string; order_id?: string; amount?: number; currency?: string; status?: string };
     };
     refund?: {
-      entity?: { id: string; payment_id?: string };
+      entity?: { id: string; payment_id?: string; amount?: number; status?: string };
     };
     order?: {
       entity?: { id: string };
@@ -42,6 +42,9 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
+  if (!parsed || typeof parsed !== "object" || typeof (parsed as RazorpayEventPayload).event !== "string") {
+    return NextResponse.json({ error: "Invalid event" }, { status: 400 });
+  }
   const body = parsed as RazorpayEventPayload;
 
   const paymentEntity = body.payload?.payment?.entity;
@@ -61,6 +64,8 @@ export async function POST(request: Request) {
       })
     : null;
 
+  const leaseToken = crypto.randomUUID();
+  const leaseUntil = new Date(Date.now() + 5 * 60_000);
   let eventRow;
   try {
     eventRow = await prisma.paymentEvent.create({
@@ -69,7 +74,7 @@ export async function POST(request: Request) {
         eventId,
         eventType: body.event,
         payload: parsed as Prisma.InputJsonValue,
-        status: "PROCESSING",
+        status: "PROCESSING", leaseToken, leaseUntil,
         orderId: localOrder?.id,
       },
     });
@@ -91,12 +96,12 @@ export async function POST(request: Request) {
       // Razorpay retry can actually recover instead of permanently 200'ing
       // out as a false "duplicate" while the order is never settled.
       const claim = await prisma.paymentEvent.updateMany({
-        where: { id: existing.id, status: "FAILED" },
-        data: { status: "PROCESSING", payload: parsed as Prisma.InputJsonValue },
+        where: { id: existing.id, OR: [{ status: "FAILED" }, { status: "PROCESSING", leaseUntil: { lt: new Date() } }, { status: "PROCESSING", leaseUntil: null }] },
+        data: { status: "PROCESSING", leaseToken, leaseUntil, payload: parsed as Prisma.InputJsonValue },
       });
       if (claim.count === 0) {
-        // Another request is already (re)processing this event right now.
-        return NextResponse.json({ ok: true, duplicate: true });
+        // Keep provider retries alive while another worker holds the lease.
+        return NextResponse.json({ error: "Event is processing" }, { status: 503 });
       }
       eventRow = existing;
     } else {
@@ -113,7 +118,8 @@ export async function POST(request: Request) {
           razorpayOrderId,
           razorpayPaymentId: paymentEntity.id,
           amount: paymentEntity.amount ?? 0,
-          currency: paymentEntity.currency ?? "INR",
+          currency: paymentEntity.currency ?? "",
+          paymentStatus: paymentEntity.status ?? "",
         });
         break;
       }
@@ -125,7 +131,8 @@ export async function POST(request: Request) {
       case "refund.processed": {
         const paymentId = refundEntity?.payment_id ?? paymentEntity?.id;
         if (!paymentId) throw new Error("Missing payment id");
-        await markOrderRefunded({ razorpayPaymentId: paymentId });
+        if (!refundEntity?.id || refundEntity.status !== "processed") throw new Error("Invalid refund state");
+        await markOrderRefunded({ razorpayPaymentId: paymentId, refundId: refundEntity.id, amount: refundEntity.amount ?? 0 });
         break;
       }
       default:
@@ -133,16 +140,16 @@ export async function POST(request: Request) {
         break;
     }
 
-    await prisma.paymentEvent.update({
-      where: { id: eventRow.id },
+    await prisma.paymentEvent.updateMany({
+      where: { id: eventRow.id, leaseToken },
       data: { status: "PROCESSED", processedAt: new Date() },
     });
 
     return NextResponse.json({ ok: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    await prisma.paymentEvent.update({
-      where: { id: eventRow.id },
+    await prisma.paymentEvent.updateMany({
+      where: { id: eventRow.id, leaseToken },
       data: { status: "FAILED", lastError: message },
     });
     console.error("razorpay webhook processing failed", message);

@@ -1,39 +1,7 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
-// Content is admin-authored via /sbh-1111 and can reference arbitrary external
-// image URLs (see field-types.ts), so img-src stays permissive to https:
-// rather than an allowlist. script-src/style-src use 'unsafe-inline' because
-// this app has a mix of statically and dynamically rendered pages, which
-// rules out per-request nonces (nonces require every page to render
-// dynamically). The other directives (object-src, frame-ancestors, base-uri,
-// form-action) still meaningfully cut down the attack surface.
-//
-// 'unsafe-eval' is added to script-src in development only — Turbopack/React's
-// dev-mode tooling uses eval() to reconstruct cross-boundary stack traces
-// (React explicitly never uses eval() in production), so without it dev
-// logs a spurious "eval() is not supported" console error on every page.
-const isDev = process.env.NODE_ENV === "development";
-const cspHeader = `
-  default-src 'self';
-  script-src 'self' 'unsafe-inline' https://checkout.razorpay.com${isDev ? " 'unsafe-eval'" : ""};
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' https: data: blob:;
-  font-src 'self' data:;
-  connect-src 'self' https://*.amazonaws.com https://api.razorpay.com https://checkout.razorpay.com https://lumberjack.razorpay.com;
-  object-src 'none';
-  base-uri 'self';
-  form-action 'self';
-  frame-ancestors 'none';
-  child-src 'self' https://www.google.com https://www.google.co.in https://maps.google.com https://*.google.com https://www.youtube.com https://www.youtube-nocookie.com https://*.amazonaws.com https://api.razorpay.com https://checkout.razorpay.com;
-  frame-src 'self' https://www.google.com https://www.google.co.in https://maps.google.com https://*.google.com https://www.youtube.com https://www.youtube-nocookie.com https://*.amazonaws.com https://api.razorpay.com https://checkout.razorpay.com;
-  upgrade-insecure-requests;
-`
-  .replace(/\s{2,}/g, " ")
-  .trim();
-
 const securityHeaders = [
-  { key: "Content-Security-Policy", value: cspHeader },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

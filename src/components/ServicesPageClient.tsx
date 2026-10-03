@@ -11,8 +11,7 @@ import { ExpandableQuote } from "@/components/ExpandableQuote";
 import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { SectionWave } from "@/components/SectionWave";
-import { ScrollAutoplayYouTube } from "@/components/ScrollAutoplayYouTube";
+import { YouTubeEmbed } from "@/components/YouTubeEmbed";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 // â"€â"€ Types â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
@@ -100,7 +99,7 @@ const avatarBg: Record<string, string> = {
 
 
 // ── Typewriter — letter-by-letter typing effect ─────────────────────────────
-function Typewriter({ text, delay = 300, speed = 42 }: { text: string; delay?: number; speed?: number }) {
+function Typewriter({ text, delay = 300, speed = 42, highlight, highlightClassName }: { text: string; delay?: number; speed?: number; highlight?: string; highlightClassName?: string }) {
   const [count, setCount] = useState(0);
   const [started, setStarted] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
@@ -116,11 +115,25 @@ function Typewriter({ text, delay = 300, speed = 42 }: { text: string; delay?: n
     return () => clearTimeout(id);
   }, [started, count, text.length, speed]);
 
-  if (reducedMotion) return <>{text}</>;
+  // Renders the typed-so-far slice, coloring the `highlight` word as it appears.
+  const hlStart = highlight ? text.indexOf(highlight) : -1;
+  const hlEnd = hlStart + (highlight?.length ?? 0);
+  const renderTyped = (n: number) => {
+    if (hlStart < 0) return text.slice(0, n);
+    return (
+      <>
+        {text.slice(0, Math.min(n, hlStart))}
+        {n > hlStart && <span className={highlightClassName}>{text.slice(hlStart, Math.min(n, hlEnd))}</span>}
+        {n > hlEnd && text.slice(hlEnd, n)}
+      </>
+    );
+  };
+
+  if (reducedMotion) return <>{renderTyped(text.length)}</>;
 
   return (
     <>
-      {text.slice(0, count)}
+      {renderTyped(count)}
       {count < text.length && (
         <motion.span
           aria-hidden="true"
@@ -358,7 +371,7 @@ function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
       </span>
       {/* shimmer border on hover */}
       <div aria-hidden className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ boxShadow: "inset 0 0 0 1px oklch(0.45 0.22 264 / 0.2)" }} />
+        style={{ boxShadow: "inset 0 0 0 1px rgb(0 60 209 / 0.2)" }} />
     </motion.article>
   );
 }
@@ -395,7 +408,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
 
               {/* Typewriter headline */}
               <h1 className="text-[clamp(2.75rem,7vw,6.5rem)] font-black leading-[0.95] tracking-tight text-ink">
-                <Typewriter text="We Brew Brand's Growth Via Content and Community" delay={400} speed={40} />
+                <Typewriter text="We Brew Brand's Growth Via Content and Community" delay={400} speed={40} highlight="Brew" highlightClassName="text-primary" />
               </h1>
 
               <motion.div variants={fadeUp} className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-end">
@@ -404,7 +417,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                 </p>
                 <div className="flex flex-wrap items-center gap-3 lg:justify-end">
                   <MagneticButton href="https://ntis.in/7oApLV"
-                    className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-primary-foreground shadow-[0_10px_40px_-10px_oklch(0.45_0.22_264_/_0.6)]">
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-primary-foreground shadow-[0_10px_40px_-10px_rgb(0_60_209_/_0.6)]">
                     Book Discovery Call
                   </MagneticButton>
                   <MagneticButton href="#work"
@@ -419,7 +432,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.9, ease: E }}
               className="relative mx-auto mt-16 aspect-video w-full max-w-3xl overflow-hidden rounded-[2rem] border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
-              <ScrollAutoplayYouTube
+              <YouTubeEmbed
                 videoId="LPjwAuFAil0"
                 title="Successbrew studio in action"
                 className="h-full w-full"
@@ -427,7 +440,6 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--cream)" to="var(--background)" />
 
         <LogoShowcase brandPartners={brandPartners} />
 
@@ -461,7 +473,6 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </div>
           </div>
         </section>
-        <SectionWave from="var(--background)" to="var(--sand)" />
 
         {/* â•â• SERVICES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="services" className="bg-sand py-24 lg:py-32">
@@ -484,7 +495,6 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--sand)" to="var(--background)" />
 
         {/* Service card expanded modal */}
         <AnimatePresence>
@@ -527,7 +537,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                     ))}
                   </div>
                   <a href="#cta" onClick={() => setExpandedCard(null)}
-                    className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_oklch(0.45_0.22_264_/_0.5)] transition hover:translate-y-[-2px]">
+                    className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgb(0_60_209_/_0.5)] transition hover:translate-y-[-2px]">
                     Start a project
                   </a>
                 </motion.div>
@@ -556,12 +566,12 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                   className="relative">
                   <motion.div
                     animate={{
-                      backgroundColor: isActive ? "oklch(0.45 0.22 264)" : "oklch(1 0 0)",
+                      backgroundColor: isActive ? "#003CD1" : "oklch(1 0 0)",
                       color: isActive ? "#fff" : "oklch(0.16 0.02 260)",
                       scale: isActive ? 1.08 : 1,
                     }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    whileHover={{ scale: 1.12, backgroundColor: "oklch(0.45 0.22 264)", color: "#fff" }}
+                    whileHover={{ scale: 1.12, backgroundColor: "#003CD1", color: "#fff" }}
                     className="relative z-10 grid h-12 w-12 place-items-center rounded-full border border-ink/10 text-sm font-bold tracking-tight cursor-default">
                     {step.stepNumber}
                   </motion.div>
@@ -579,7 +589,6 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.ol>
           </div>
         </section>
-        <SectionWave from="var(--background)" to="var(--cream)" />
 
         {/* â•â• WORK â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="work" className="bg-cream py-24 lg:py-32">
@@ -597,7 +606,6 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <CaseStudyGrid caseStudies={caseStudies} />
           </div>
         </section>
-        <SectionWave from="var(--cream)" to="var(--background)" />
 
         {/* â•â• VOICES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="voices" className="bg-background py-24 lg:py-32">
@@ -648,7 +656,6 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             )}
           </div>
         </section>
-        <SectionWave from="var(--background)" to="var(--primary)" />
 
         {/* â•â• CTA â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="cta" className="relative overflow-hidden bg-primary text-primary-foreground">
@@ -676,7 +683,6 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.div>
           </motion.div>
         </section>
-        <SectionWave from="var(--primary)" to="var(--ink)" />
 
         {/* â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <Footer siteSettings={siteSettings} />

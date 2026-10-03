@@ -80,18 +80,18 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-20 lg:pt-44 lg:pb-28">
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#0037D2]/15 blur-3xl" />
+            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#003CD1]/15 blur-3xl" />
             <div className="absolute right-[-100px] bottom-0 h-[380px] w-[380px] rounded-full bg-[#C1FF3B]/30 blur-3xl" />
           </div>
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.a variants={fadeUp} href="/community"
-                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#0037D2]">
+                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#003CD1]">
                 ← Back to Community
               </motion.a>
               <motion.div variants={fadeUp}
                 className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
                 Community Offers
               </motion.div>
 
@@ -99,7 +99,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                 <WordReveal text="Pick your level of" mode="nested" staggerDelay={0.06} />
                 {" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#0037D2]"><WordReveal text="access." mode="nested" staggerDelay={0.06} /></span>
+                  <span className="relative z-10 text-[#003CD1]"><WordReveal text="access." mode="nested" staggerDelay={0.06} /></span>
                   <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
                 </span>
               </h1>
@@ -116,7 +116,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.75, ease: E }}
-              className="mb-5 overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-[#0037D2] text-white">
+              className="mb-5 overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-[#003CD1] text-white">
               <div className="grid gap-0 lg:grid-cols-[1.2fr_1fr]">
                 <div className="p-10 lg:p-14">
                   <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em]">
@@ -136,7 +136,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                 </div>
                 <div className="relative hidden overflow-hidden lg:block">
                   <img src="/grid-images/IMG_9736.JPG" alt="Community members" className="h-full w-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#0037D2]/80 via-[#0037D2]/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#003CD1]/80 via-[#003CD1]/20 to-transparent" />
                   <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }}
                     className="absolute bottom-8 left-8 right-8 rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
                     <p className="text-2xl font-black text-white">8,000+</p>
@@ -150,11 +150,11 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
               className="grid gap-6 lg:grid-cols-3">
               {membershipTiers.map((tier) => (
                 <motion.div key={tier.name} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
-                  className={`relative flex flex-col rounded-3xl border p-8 md:p-10 ${tier.highlight ? "border-[#0037D2] bg-[#0037D2] text-white shadow-[0_30px_60px_-30px_rgba(0,55,210,0.4)]" : "border-[#111111]/5 bg-[#F0EBD8]"}`}>
+                  className={`relative flex flex-col rounded-3xl border p-8 md:p-10 ${tier.highlight ? "border-[#003CD1] bg-[#003CD1] text-white shadow-[0_30px_60px_-30px_rgba(0, 60, 209,0.4)]" : "border-[#111111]/5 bg-[#F0EBD8]"}`}>
                   {tier.highlight && (
                     <span className="absolute -top-3 left-8 rounded-full bg-[#C1FF3B] px-3 py-1 text-[11px] font-black text-[#111111]">Most Popular</span>
                   )}
-                  <p className={`text-xs font-bold uppercase tracking-[0.22em] ${tier.highlight ? "text-white/60" : "text-[#0037D2]"}`}>{tier.name}</p>
+                  <p className={`text-xs font-bold uppercase tracking-[0.22em] ${tier.highlight ? "text-white/60" : "text-[#003CD1]"}`}>{tier.name}</p>
                   <div className="mt-4 flex items-baseline gap-2">
                     <span className="text-4xl font-black tracking-tight md:text-5xl">{tier.price}</span>
                     {tier.period && <span className={tier.highlight ? "text-white/60" : "text-[#111111]/50"}>{tier.period}</span>}
@@ -163,7 +163,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                   <ul className="mt-8 flex-1 space-y-3">
                     {tier.features.map((f) => (
                       <li key={f} className={`flex items-center gap-2.5 text-sm ${tier.highlight ? "text-white/80" : "text-[#111111]/75"}`}>
-                        <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black ${tier.highlight ? "bg-[#C1FF3B] text-[#111111]" : "bg-[#0037D2] text-white"}`}>✓</span>
+                        <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black ${tier.highlight ? "bg-[#C1FF3B] text-[#111111]" : "bg-[#003CD1] text-white"}`}>✓</span>
                         {f}
                       </li>
                     ))}
@@ -171,11 +171,11 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                   {tier.comingSoon ? (
                     <button type="button"
                       onClick={() => toast("Coming soon — we'll email approved community members as soon as it's open.")}
-                      className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#0037D2]"}`}>
+                      className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#003CD1]"}`}>
                       {tier.cta}
                     </button>
                   ) : (
-                    <a href={tier.href} className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#0037D2]"}`}>{tier.cta}</a>
+                    <a href={tier.href} className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold transition ${tier.highlight ? "bg-[#C1FF3B] text-[#111111] hover:bg-white" : "bg-[#111111] text-white hover:bg-[#003CD1]"}`}>{tier.cta}</a>
                   )}
                 </motion.div>
               ))}

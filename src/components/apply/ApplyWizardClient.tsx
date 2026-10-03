@@ -110,7 +110,7 @@ export function ApplyWizardClient({
         <NavBar activePage="Apply" ctaText="Home" ctaHref="/" />
         <main className="min-h-screen bg-[#F2ECDD] font-sans text-[#111111]">
           <section className="mx-auto max-w-xl px-6 pb-24 pt-40 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">
               {source === "COMMUNITY" ? "Welcome to the Community" : "Application Submitted"}
             </p>
             <h1 className="mt-4 text-4xl font-black tracking-tight">
@@ -119,7 +119,7 @@ export function ApplyWizardClient({
             <p className="mt-4 text-[#111111]/60">
               Your reference code is <strong>{submittedCode}</strong>. Our team will review it and follow up by email.
             </p>
-            <Link href="/" className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#111111] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#0037D2]">
+            <Link href="/" className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#111111] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#003CD1]">
               Back to Home
             </Link>
           </section>

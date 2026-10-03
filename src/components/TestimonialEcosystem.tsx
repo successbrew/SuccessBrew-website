@@ -4,7 +4,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useMotionTemplate } from "framer-motion";
 import { ExpandableQuote } from "@/components/ExpandableQuote";
-import { SectionWave } from "@/components/SectionWave";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import type { Testimonial } from "@/components/ServicesPageClient";
 
@@ -23,10 +22,8 @@ interface ThemeTokens {
   avatarBg: Record<string, string>;
   quoteMark: Record<string, string>;
   gridBg: string;
-  gridWave: string;
   emptyText: string;
   featuredBg: string;
-  featuredWave: string;
   featuredText: string;
   dotActive: string;
   dotInactive: string;
@@ -39,10 +36,8 @@ const THEMES: Record<Theme, ThemeTokens> = {
     avatarBg: { primary: "bg-primary text-white", accent: "bg-accent text-ink" },
     quoteMark: { sand: "text-primary/15", dark: "text-primary/15" },
     gridBg: "bg-background",
-    gridWave: "var(--background)",
     emptyText: "text-ink/40",
     featuredBg: "bg-primary",
-    featuredWave: "var(--primary)",
     featuredText: "text-primary-foreground",
     dotActive: "#C1FF3B",
     dotInactive: "rgba(255,255,255,0.25)",
@@ -50,13 +45,11 @@ const THEMES: Record<Theme, ThemeTokens> = {
   community: {
     cardBg: { sand: "bg-white text-[#111111]", dark: "bg-white text-[#111111]" },
     cardIsDark: { sand: false, dark: false },
-    avatarBg: { primary: "bg-[#0037D2] text-white", accent: "bg-[#C1FF3B] text-[#111111]" },
-    quoteMark: { sand: "text-[#0037D2]/15", dark: "text-[#0037D2]/15" },
+    avatarBg: { primary: "bg-[#003CD1] text-white", accent: "bg-[#C1FF3B] text-[#111111]" },
+    quoteMark: { sand: "text-[#003CD1]/15", dark: "text-[#003CD1]/15" },
     gridBg: "bg-[#F0EBD8]",
-    gridWave: "#F0EBD8",
     emptyText: "text-[#111111]/40",
-    featuredBg: "bg-[#0037D2]",
-    featuredWave: "#0037D2",
+    featuredBg: "bg-[#003CD1]",
     featuredText: "text-white",
     dotActive: "#C1FF3B",
     dotInactive: "rgba(255,255,255,0.25)",
@@ -233,7 +226,6 @@ export function TestimonialEcosystem({
       {testimonials.length > 0 && (
         <>
           <FeaturedTestimonial testimonials={testimonials} tokens={tokens} />
-          <SectionWave from={tokens.featuredWave} to={tokens.gridWave} />
         </>
       )}
 

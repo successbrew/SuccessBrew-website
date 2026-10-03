@@ -96,7 +96,7 @@ export function StepPersonal({
         {pendingHeadshot ? (
           <p className="text-sm text-[#111111]/50">{pendingHeadshot.name} selected — uploads when you continue.</p>
         ) : (
-          value.headshotUrl && <p className="text-sm text-[#0037D2]">Headshot uploaded ✓</p>
+          value.headshotUrl && <p className="text-sm text-[#003CD1]">Headshot uploaded ✓</p>
         )}
         {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
       </div>

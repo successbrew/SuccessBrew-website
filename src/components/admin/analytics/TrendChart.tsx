@@ -36,8 +36,8 @@ export function TrendChart({ points }: { points: { label: string; value: number 
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="w-full" role="img" aria-label="Applications per month">
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0037D2" stopOpacity="0.1" />
-          <stop offset="100%" stopColor="#0037D2" stopOpacity="0" />
+          <stop offset="0%" stopColor="#003CD1" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="#003CD1" stopOpacity="0" />
         </linearGradient>
       </defs>
 
@@ -45,10 +45,10 @@ export function TrendChart({ points }: { points: { label: string; value: number 
       <line x1={PAD_X} y1={PAD_TOP + plotHeight} x2={WIDTH - PAD_X} y2={PAD_TOP + plotHeight} stroke="currentColor" className="text-border" strokeWidth={1} />
 
       <path d={areaPath} fill={`url(#${gradientId})`} />
-      <path d={linePath} fill="none" stroke="#0037D2" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      <path d={linePath} fill="none" stroke="#003CD1" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
 
       {/* end marker + value label */}
-      <circle cx={last.x} cy={last.y} r={4} fill="#0037D2" stroke="var(--card)" strokeWidth={2} />
+      <circle cx={last.x} cy={last.y} r={4} fill="#003CD1" stroke="var(--card)" strokeWidth={2} />
       <text x={Math.min(last.x, WIDTH - 24)} y={last.y - 10} textAnchor="end" className="fill-foreground text-[11px] font-medium">
         {last.value}
       </text>

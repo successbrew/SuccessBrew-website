@@ -9,7 +9,6 @@ import NavBar from "@/components/NavBar";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { SectionWave } from "@/components/SectionWave";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const E = [0.22, 1, 0.36, 1] as const;
@@ -225,7 +224,6 @@ export function CaseStudyPageClient({
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--ink)" to="var(--background)" />
 
         {/* ══ CHALLENGE SECTION ═════════════════════════════════════════════ */}
         <section className="bg-background py-20 lg:py-32">
@@ -253,7 +251,6 @@ export function CaseStudyPageClient({
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--background)" to="var(--cream)" />
 
         {/* ══ BEFORE → AFTER SECTION ════════════════════════════════════════ */}
         {beforeAfter && beforeAfter.before && beforeAfter.after && (
@@ -306,7 +303,6 @@ export function CaseStudyPageClient({
                 </motion.div>
               </div>
             </section>
-            <SectionWave from="var(--cream)" to="var(--background)" />
           </>
         )}
 
@@ -360,7 +356,6 @@ export function CaseStudyPageClient({
                 </motion.div>
               </div>
             </section>
-            <SectionWave from="var(--background)" to="var(--sand)" />
           </>
         )}
 
@@ -392,7 +387,6 @@ export function CaseStudyPageClient({
                 </motion.div>
               </div>
             </section>
-            <SectionWave from="var(--sand)" to="var(--background)" />
           </>
         )}
 
@@ -434,7 +428,6 @@ export function CaseStudyPageClient({
                 </motion.div>
               </div>
             </section>
-            <SectionWave from="var(--background)" to="var(--cream)" />
           </>
         )}
 
@@ -491,7 +484,6 @@ export function CaseStudyPageClient({
                 </motion.div>
               </div>
             </section>
-            <SectionWave from="var(--cream)" to="var(--background)" />
           </>
         )}
 
@@ -544,7 +536,6 @@ export function CaseStudyPageClient({
                 </div>
               </div>
             </section>
-            <SectionWave from="var(--background)" to="var(--sand)" />
           </>
         )}
 
@@ -606,7 +597,6 @@ export function CaseStudyPageClient({
                 </motion.div>
               </div>
             </section>
-            <SectionWave from="var(--sand)" to="var(--primary)" />
           </>
         )}
 
@@ -648,7 +638,6 @@ export function CaseStudyPageClient({
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--primary)" to="var(--ink)" />
 
         <Footer siteSettings={siteSettings} />
       </main>

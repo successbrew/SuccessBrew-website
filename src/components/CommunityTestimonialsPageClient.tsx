@@ -8,7 +8,6 @@ import type { Testimonial } from "@/components/ServicesPageClient";
 import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { TestimonialEcosystem } from "@/components/TestimonialEcosystem";
-import { SectionWave } from "@/components/SectionWave";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = { hidden: { opacity: 0, y: 26 }, visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: E } } };
@@ -28,18 +27,18 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-20 lg:pt-44 lg:pb-28">
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#0037D2]/15 blur-3xl" />
+            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#003CD1]/15 blur-3xl" />
             <div className="absolute right-[-100px] bottom-0 h-[380px] w-[380px] rounded-full bg-[#C1FF3B]/30 blur-3xl" />
           </div>
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.a variants={fadeUp} href="/community"
-                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#0037D2]">
+                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#003CD1]">
                 ← Back to Community
               </motion.a>
               <motion.div variants={fadeUp}
                 className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
                 {testimonials.length} member{testimonials.length !== 1 ? "s" : ""} & counting
               </motion.div>
 
@@ -47,7 +46,7 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
                 <WordReveal text="Real people." mode="nested" staggerDelay={0.06} />
                 {" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#0037D2]"><WordReveal text="Real growth." mode="nested" staggerDelay={0.06} /></span>
+                  <span className="relative z-10 text-[#003CD1]"><WordReveal text="Real growth." mode="nested" staggerDelay={0.06} /></span>
                   <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
                 </span>
               </h1>
@@ -58,7 +57,6 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F2ECDD" to="#0037D2" />
 
         {/* ══ TESTIMONIALS ══════════════════════════════════════════════ */}
         <TestimonialEcosystem
@@ -66,10 +64,9 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
           theme="community"
           emptyMessage="No community stories yet — add them in /sbh-1111/testimonials."
         />
-        <SectionWave from="#F0EBD8" to="#0037D2" />
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
-        <section id="cta" className="bg-[#0037D2] py-24 text-white lg:py-32">
+        <section id="cta" className="bg-[#003CD1] py-24 text-white lg:py-32">
           <motion.div
             initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
@@ -87,7 +84,6 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
             </motion.div>
           </motion.div>
         </section>
-        <SectionWave from="#0037D2" to="var(--ink)" />
 
         <Footer siteSettings={siteSettings} />
 

@@ -7,7 +7,6 @@ import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { WordReveal } from "@/components/WordReveal";
-import { SectionWave } from "@/components/SectionWave";
 import { EVENT_CATEGORIES, eventCategoryLabel } from "@/lib/event-categories";
 import { getEventPillarByCategory, type EventPillar } from "@/lib/event-pillars";
 
@@ -56,22 +55,22 @@ function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past
       href={href}
       className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#111111]/5 bg-white shadow-[0_8px_24px_-16px_rgba(0,0,0,0.15)] transition-shadow hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.25)]"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2]/10">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#003CD1]/10">
         {event.imageUrl ? (
           <img src={event.imageUrl} alt={event.title} className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105" />
         ) : (
-          <div className="grid h-full w-full place-items-center text-[#0037D2]/25">
+          <div className="grid h-full w-full place-items-center text-[#003CD1]/25">
             <span className="text-4xl">📅</span>
           </div>
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0037D2]">
+        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#003CD1]">
           {eventCategoryLabel(event.category)}
         </span>
         {when === "upcoming" ? (
           <span className="absolute right-3 top-3 flex flex-col items-center rounded-lg bg-white px-2 py-1 leading-none shadow-sm">
             <span className="text-sm font-black text-[#111111]">{day}</span>
-            <span className="text-[9px] font-bold uppercase text-[#0037D2]">{month}</span>
+            <span className="text-[9px] font-bold uppercase text-[#003CD1]">{month}</span>
           </span>
         ) : (
           <span className="absolute right-3 top-3 rounded-full bg-[#111111]/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-white">
@@ -84,15 +83,15 @@ function EventTile({ event, when }: { event: EventItem; when: "upcoming" | "past
       </div>
       <div className="flex flex-1 flex-col justify-between p-5">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-wide text-[#0037D2]">{event.tag}</span>
+          <span className="text-[11px] font-bold uppercase tracking-wide text-[#003CD1]">{event.tag}</span>
           <h3 className="mt-1 text-lg font-black leading-snug text-[#111111]">{event.title}</h3>
           <p className="mt-2 text-xs text-[#111111]/50">📍 {event.location}{event.speaker ? ` · 👤 ${event.speaker}` : ""}</p>
         </div>
         <div className="mt-4 flex items-center justify-between gap-2">
           {when === "upcoming" && event.seatsNote ? (
-            <span className="text-xs font-bold text-[#0037D2]">{event.seatsNote}</span>
+            <span className="text-xs font-bold text-[#003CD1]">{event.seatsNote}</span>
           ) : <span />}
-          <span className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition ${when === "upcoming" ? "bg-[#111111] text-white group-hover:bg-[#0037D2]" : "border border-[#111111]/15 text-[#111111]/70"}`}>
+          <span className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition ${when === "upcoming" ? "bg-[#111111] text-white group-hover:bg-[#003CD1]" : "border border-[#111111]/15 text-[#111111]/70"}`}>
             {when === "past" ? "View recap" : pillar ? "View details" : "Register"}
           </span>
         </div>
@@ -116,7 +115,7 @@ function NextUpCard({ event }: { event: EventItem }) {
       className="overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-white shadow-[0_24px_60px_-32px_rgba(0,0,0,0.3)]"
     >
       <div className="grid lg:grid-cols-2">
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0037D2] lg:aspect-auto">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#003CD1] lg:aspect-auto">
           {event.imageUrl ? (
             <img src={event.imageUrl} alt={event.title} className="h-full w-full object-contain" />
           ) : (
@@ -124,7 +123,7 @@ function NextUpCard({ event }: { event: EventItem }) {
               <span className="text-5xl">📅</span>
             </div>
           )}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0037D2]/60 via-transparent to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#003CD1]/60 via-transparent to-transparent" />
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-[#C1FF3B] px-3 py-1 text-[10px] font-black uppercase tracking-wide text-[#111111]">Next Up</span>
             {event.isFeatured && (
@@ -150,7 +149,7 @@ function NextUpCard({ event }: { event: EventItem }) {
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Seats</p>
-              <p className="mt-1 truncate text-sm font-bold text-[#0037D2]">{event.seatsNote ?? "Open"}</p>
+              <p className="mt-1 truncate text-sm font-bold text-[#003CD1]">{event.seatsNote ?? "Open"}</p>
             </div>
           </div>
 
@@ -158,7 +157,7 @@ function NextUpCard({ event }: { event: EventItem }) {
             <ul className="mt-6 space-y-2">
               {bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-[#111111]/70">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0037D2]" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#003CD1]" />
                   {b}
                 </li>
               ))}
@@ -166,7 +165,7 @@ function NextUpCard({ event }: { event: EventItem }) {
           )}
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href={href} className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-6 py-3 text-sm font-bold text-white transition hover:translate-y-[-2px]">
+            <a href={href} className="inline-flex items-center gap-2 rounded-full bg-[#003CD1] px-6 py-3 text-sm font-bold text-white transition hover:translate-y-[-2px]">
               Save my seat →
             </a>
             {pillar && (
@@ -218,7 +217,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-[#0037D2] pt-32 pb-16 text-white lg:pt-44 lg:pb-24">
+        <section className="relative overflow-hidden bg-[#003CD1] pt-32 pb-16 text-white lg:pt-44 lg:pb-24">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -right-32 -top-32 h-[480px] w-[480px] rounded-full border border-white/10" />
             <div className="absolute right-[-140px] top-[-40px] h-[380px] w-[380px] rounded-full border border-white/10" />
@@ -275,7 +274,6 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
             ))}
           </div>
         </section>
-        <SectionWave from="#00269c" to="#F0EBD8" />
 
         {/* ══ CATEGORY FILTER (hidden on pillar-scoped pages — already single-category) ══ */}
         {!pillar && (
@@ -283,12 +281,12 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
             <div className="mx-auto max-w-7xl px-6 lg:px-10">
               <div className="flex flex-wrap gap-2">
                 <button onClick={() => setCategory("ALL")}
-                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === "ALL" ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === "ALL" ? "border-[#003CD1] bg-[#003CD1] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
                   All Events
                 </button>
                 {categoriesWithCounts.map((c) => (
                   <button key={c.value} onClick={() => setCategory(c.value)}
-                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === c.value ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === c.value ? "border-[#003CD1] bg-[#003CD1] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
                     {c.label} <span className="opacity-50">({c.count})</span>
                   </button>
                 ))}
@@ -302,7 +300,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
               className="mb-10">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Upcoming</p>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Upcoming</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">What&rsquo;s next</h2>
             </motion.div>
 
@@ -323,14 +321,13 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
             </AnimatePresence>
           </div>
         </section>
-        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         {/* ══ PAST ══════════════════════════════════════════════════════ */}
         <section className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
               className="mb-10">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Past Events</p>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Past Events</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">Everything we&rsquo;ve already brewed</h2>
             </motion.div>
 
@@ -348,8 +345,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
         </section>
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
-        <SectionWave from="#F2ECDD" to="#0037D2" />
-        <section id="cta" className="bg-[#0037D2] py-24 text-white lg:py-32">
+        <section id="cta" className="bg-[#003CD1] py-24 text-white lg:py-32">
           <motion.div
             initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
@@ -367,7 +363,6 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
             </motion.div>
           </motion.div>
         </section>
-        <SectionWave from="#0037D2" to="var(--ink)" />
 
         <Footer siteSettings={siteSettings} />
 

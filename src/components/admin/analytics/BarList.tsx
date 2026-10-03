@@ -15,7 +15,7 @@ export function BarList({ items }: { items: { label: string; value: number }[] }
             <p className="mb-1 truncate text-foreground">{item.label}</p>
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full rounded-full bg-[#0037D2]"
+                className="h-full rounded-full bg-[#003CD1]"
                 style={{ width: `${Math.max((item.value / max) * 100, 3)}%` }}
               />
             </div>

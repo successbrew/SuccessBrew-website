@@ -9,7 +9,6 @@ import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { TestimonialEcosystem } from "@/components/TestimonialEcosystem";
-import { SectionWave } from "@/components/SectionWave";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
@@ -58,7 +57,6 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--cream)" to="var(--primary)" />
 
         {/* ══ TESTIMONIALS ══════════════════════════════════════════════ */}
         <TestimonialEcosystem
@@ -66,7 +64,6 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
           theme="studio"
           emptyMessage="No testimonials yet — add them in the Studio."
         />
-        <SectionWave from="var(--background)" to="var(--cream)" />
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section className="bg-cream py-24 lg:py-32">
@@ -81,7 +78,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
               Book a 30-minute strategy call — no pitch, just clarity on what your next 90 days could look like.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="https://ntis.in/7oApLV" className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-white shadow-[0_10px_40px_-10px_oklch(0.45_0.22_264_/_0.55)] transition hover:translate-y-[-2px]">
+              <Link href="https://ntis.in/7oApLV" className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-white shadow-[0_10px_40px_-10px_rgb(0_60_209_/_0.55)] transition hover:translate-y-[-2px]">
                 Book a Strategy Call
               </Link>
               <Link href="/#work" className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-background px-8 py-4 text-base font-semibold text-ink transition hover:bg-sand">
@@ -90,7 +87,6 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
             </motion.div>
           </motion.div>
         </section>
-        <SectionWave from="var(--cream)" to="var(--ink)" />
 
         <Footer siteSettings={siteSettings} />
 

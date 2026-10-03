@@ -11,7 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { SectionWave } from "@/components/SectionWave";
 
 // ── Easing curve ─────────────────────────────────────────────────────────────
 const E = [0.22, 1, 0.36, 1] as const;
@@ -156,7 +155,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               transition={{ duration: 1, ease: E, delay: 0.2 }} className="relative">
               <div className="relative mx-auto max-w-[460px] lg:ml-auto">
                 {/* glow ring */}
-                <div className="absolute -inset-4 rounded-[2.5rem] bg-[#0037D2]/20 blur-2xl" />
+                <div className="absolute -inset-4 rounded-[2.5rem] bg-[#003CD1]/20 blur-2xl" />
                 <div className="relative aspect-[3/4] overflow-hidden rounded-[2.5rem] border border-white/10 shadow-2xl">
                   <Image src="/grid-images/sourabh-323.jpg" alt="Sourabh — Founder of Successbrew"
                     fill priority sizes="(max-width:1024px) 80vw, 40vw" className="object-cover object-top" />
@@ -187,7 +186,6 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             className="h-8 w-px bg-gradient-to-b from-white/30 to-transparent" />
         </motion.div>
       </section>
-      <SectionWave from="#111111" to="#0a0a0a" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 2 — THE BEGINNING  (dark editorial)
@@ -199,13 +197,13 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             {/* Image */}
             <motion.div initial={{ opacity: 0, x: -32 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.85, ease: E }} className="relative">
-              <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-[#0037D2]/30 to-transparent blur-xl" />
+              <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-[#003CD1]/30 to-transparent blur-xl" />
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl">
                 <Image src="/grid-images/Teach-5.jpg" alt="Early days of building"
                   fill sizes="(max-width:1024px) 100vw, 45vw" className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/50 to-transparent" />
               </div>
-              <div className="absolute -bottom-5 left-6 rounded-xl bg-[#0037D2] px-5 py-3 text-white shadow-xl shadow-[#0037D2]/30">
+              <div className="absolute -bottom-5 left-6 rounded-xl bg-[#003CD1] px-5 py-3 text-white shadow-xl shadow-[#003CD1]/30">
                 <div className="text-[11px] font-bold uppercase tracking-widest opacity-70">Started with a</div>
                 <div className="text-lg font-black">Simple Question.</div>
               </div>
@@ -219,7 +217,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">The Beginning</motion.p>
 
               <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5 } } }}
-                aria-hidden className="mt-4 select-none text-[clamp(6rem,14vw,11rem)] font-black leading-none text-[#0037D2]/20">
+                aria-hidden className="mt-4 select-none text-[clamp(6rem,14vw,11rem)] font-black leading-none text-[#003CD1]/20">
                 &quot;
               </motion.div>
 
@@ -247,7 +245,6 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
-      <SectionWave from="#0a0a0a" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 3 — THE JOURNEY  (dark, timeline)
@@ -269,7 +266,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               {/* animated progress line */}
               <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 1.6, ease: "easeInOut" }}
-                className="absolute top-[27px] left-7 right-7 h-px bg-[#0037D2] origin-left" />
+                className="absolute top-[27px] left-7 right-7 h-px bg-[#003CD1] origin-left" />
 
               <div className="grid grid-cols-6 gap-3">
                 {milestones.map((m, i) => (
@@ -316,12 +313,11 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
-      <SectionWave from="#111111" to="#0037D2" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 4 — THE MISSION  (Persian Blue, enormous type)
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#0037D2] py-32 lg:py-44">
+      <section className="bg-[#003CD1] py-32 lg:py-44">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }} transition={{ duration: 1, ease: E }}
           className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-10">
@@ -334,7 +330,6 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </p>
         </motion.div>
       </section>
-      <SectionWave from="#0037D2" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 5 — VALUES  (dark cards, dark bg — NOT white/cream)
@@ -358,7 +353,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
                 whileHover={{ y: -5 }} className="cursor-default">
                 <Card className="h-full rounded-[24px] border border-white/8 bg-white/[0.03] p-7 shadow-none transition-shadow hover:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.5)] hover:border-white/14">
                   <CardContent className="p-0">
-                    <div className="mb-5 grid h-11 w-11 place-items-center rounded-[14px] bg-[#0037D2]/25 text-[#C1FF3B]">
+                    <div className="mb-5 grid h-11 w-11 place-items-center rounded-[14px] bg-[#003CD1]/25 text-[#C1FF3B]">
                       <Icon className="h-5 w-5" />
                     </div>
                     <h3 className="mb-3 text-base font-black text-white">{title}</h3>
@@ -370,7 +365,6 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
-      <SectionWave from="#111111" to="#0a0a0a" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 6 — GALLERY  (dark, local images, masonry columns)
@@ -403,7 +397,6 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
-      <SectionWave from="#0a0a0a" to="#F2ECDD" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 7 — LETTER  (THE ONE LIGHT SECTION — cream by intent)
@@ -413,7 +406,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: E }}
             className="mb-10">
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#0037D2]">A Personal Note</p>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em] text-[#003CD1]">A Personal Note</p>
             <h2 className="text-[clamp(1.8rem,3.5vw,2.8rem)] font-black tracking-tight text-[#111111]">Letter from the Founder</h2>
           </motion.div>
 
@@ -422,7 +415,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             className="rounded-[2rem] border border-[#111111]/8 bg-white p-8 shadow-[0_24px_64px_-20px_rgba(0,0,0,0.14)] md:p-14">
             {/* author */}
             <div className="mb-10 flex items-center gap-4">
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#0037D2]/20">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#003CD1]/20">
                 <Image src="/grid-images/Sourabh-sir.jpg" alt="Sourabh" fill sizes="56px" className="object-cover object-top" />
               </div>
               <div>
@@ -433,7 +426,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
 
             {/* letter body */}
             <div className="space-y-6 font-serif text-[17px] italic leading-[1.95] text-[#333]">
-              <p className="text-xl font-bold not-italic text-[#0037D2] leading-8">
+              <p className="text-xl font-bold not-italic text-[#003CD1] leading-8">
                 &ldquo;If one person receives an opportunity because of this community, the mission is worth it.&rdquo;
               </p>
               <p>I didn&apos;t start SuccessBrew because I had it all figured out. I started it because I didn&apos;t — and I couldn&apos;t find anyone willing to help me figure it out either. The meetings I needed weren&apos;t happening. The introductions weren&apos;t being made. The rooms I needed to be in were closed to me.</p>
@@ -451,7 +444,6 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </motion.div>
         </div>
       </section>
-      <SectionWave from="#F2ECDD" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 8 — THE IMPACT  (dark, lime counters)
@@ -482,12 +474,11 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </div>
         </div>
       </section>
-      <SectionWave from="#111111" to="#0037D2" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 9 — PEOPLE OVER PRODUCTS  (blue, full-viewport reveal)
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="flex min-h-screen items-center bg-[#0037D2] py-24 px-4">
+      <section className="flex min-h-screen items-center bg-[#003CD1] py-24 px-4">
         <div className="mx-auto max-w-5xl w-full text-center">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.16 } } }}>
@@ -514,7 +505,6 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           </motion.p>
         </div>
       </section>
-      <SectionWave from="#0037D2" to="#111111" />
 
       {/* ══════════════════════════════════════════════════════════════════
           SECTION 10 — WHAT COMES NEXT  (dark, horizontal scroll on mobile)
@@ -557,7 +547,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
       <section id="join" className="relative overflow-hidden bg-[#111111] py-36 text-center border-t border-white/6">
         {/* glow */}
         <div aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
-          <div className="h-[700px] w-[700px] rounded-full bg-[#0037D2]/28 blur-[130px]" />
+          <div className="h-[700px] w-[700px] rounded-full bg-[#003CD1]/28 blur-[130px]" />
         </div>
 
         <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-10">

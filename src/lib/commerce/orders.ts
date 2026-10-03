@@ -1,6 +1,6 @@
 import type { OrderStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getProductByKey } from "./product";
+import { PRODUCTS, getProductByKey } from "./product";
 import { createRazorpayOrder } from "./razorpay";
 import { upsertLead, syncLeadToBrevo } from "./leads";
 
@@ -75,6 +75,7 @@ export async function markOrderPaidFromWebhook(params: {
   razorpayPaymentId: string;
   amount: number;
   currency: string;
+  paymentStatus: string;
 }) {
   const order = await prisma.order.findUnique({
     where: { provider_providerOrderId: { provider: "razorpay", providerOrderId: params.razorpayOrderId } },
@@ -83,9 +84,24 @@ export async function markOrderPaidFromWebhook(params: {
     throw new Error(`Order not found for razorpayOrderId=${params.razorpayOrderId}`);
   }
 
+  if (params.paymentStatus !== "captured" || !params.razorpayPaymentId ||
+      !Number.isSafeInteger(params.amount) || params.amount !== order.amount ||
+      params.currency !== order.currency) {
+    throw new Error(`Payment settlement mismatch for order ${order.id}`);
+  }
+  const existingPayment = await prisma.payment.findUnique({
+    where: { provider_providerPaymentId: { provider: "razorpay", providerPaymentId: params.razorpayPaymentId } },
+  });
+  if (existingPayment && existingPayment.orderId !== order.id) throw new Error("Payment belongs to another order");
+
   // Fast-path idempotency checks — the authoritative check is the conditional
   // update inside the transaction below.
-  if (order.status === "PAID") return order;
+  if (order.status === "PAID") {
+    if (!existingPayment || existingPayment.amount !== params.amount || existingPayment.currency !== params.currency) {
+      throw new Error(`Payment identity mismatch for paid order ${order.id}`);
+    }
+    return order;
+  }
   if (order.status === "REFUNDED" || order.status === "CANCELLED") {
     console.warn(
       `payment.captured for razorpayOrderId=${params.razorpayOrderId} ignored — order ${order.id} is already ${order.status}.`
@@ -108,9 +124,8 @@ export async function markOrderPaidFromWebhook(params: {
     // between our read above and this transaction — do not grant/re-grant access.
     if (claim.count === 0) return false;
 
-    await tx.payment.upsert({
-      where: { provider_providerPaymentId: { provider: "razorpay", providerPaymentId: params.razorpayPaymentId } },
-      create: {
+    await tx.payment.create({
+      data: {
         orderId: order.id,
         provider: "razorpay",
         providerPaymentId: params.razorpayPaymentId,
@@ -119,7 +134,6 @@ export async function markOrderPaidFromWebhook(params: {
         status: "PAID",
         verifiedAt: new Date(),
       },
-      update: { status: "PAID", verifiedAt: new Date() },
     });
 
     await tx.entitlement.upsert({
@@ -150,7 +164,7 @@ export async function markOrderPaidFromWebhook(params: {
     }
 
     return true;
-  });
+  }, { isolationLevel: "Serializable" });
 
   if (settled && order.leadId) {
     await syncLeadToBrevo(order.leadId).catch(() => {});
@@ -181,15 +195,14 @@ export async function markOrderFailed(params: { razorpayOrderId: string }) {
  * access per the PDF's refund/revocation policy (§9E). Guarded so a retried
  * refund webhook (or one for a payment that was never captured) can't
  * re-apply revocation side effects or overwrite a differently-settled order. */
-export async function markOrderRefunded(params: { razorpayPaymentId: string }) {
+export async function markOrderRefunded(params: { razorpayPaymentId: string; refundId: string; amount: number }) {
   const payment = await prisma.payment.findUnique({
     where: { provider_providerPaymentId: { provider: "razorpay", providerPaymentId: params.razorpayPaymentId } },
     include: { order: true },
   });
   if (!payment) throw new Error(`Payment not found for razorpayPaymentId=${params.razorpayPaymentId}`);
 
-  // Idempotent no-op: already processed this refund.
-  if (payment.status === "REFUNDED") return payment.order;
+  if (!params.refundId || !Number.isSafeInteger(params.amount) || params.amount <= 0) throw new Error("Invalid refund");
 
   const order = payment.order;
   const product = getProductByKey(order.productKey);
@@ -198,6 +211,17 @@ export async function markOrderRefunded(params: { razorpayPaymentId: string }) {
     : null;
 
   const settled = await prisma.$transaction(async (tx) => {
+    const existing = await tx.refund.findUnique({ where: { providerRefundId: params.refundId } });
+    if (existing) {
+      if (existing.paymentId !== payment.id || existing.amount !== params.amount) throw new Error("Refund mismatch");
+      return false;
+    }
+    await tx.refund.create({ data: { providerRefundId: params.refundId, paymentId: payment.id, amount: params.amount } });
+    const total = await tx.refund.aggregate({ where: { paymentId: payment.id }, _sum: { amount: true } });
+    const refunded = total._sum.amount ?? 0;
+    if (refunded > payment.amount) throw new Error("Refund exceeds payment");
+    // Partial refunds retain access until cumulative refunds reach the purchase amount.
+    if (refunded < payment.amount) return false;
     const claimedPayment = await tx.payment.updateMany({
       where: { id: payment.id, status: { not: "REFUNDED" } },
       data: { status: "REFUNDED" },
@@ -216,12 +240,21 @@ export async function markOrderRefunded(params: { razorpayPaymentId: string }) {
       return false;
     }
 
+    const otherPurchase = await tx.order.findFirst({ where: {
+      customerEmail: order.customerEmail, productKey: order.productKey, status: "PAID",
+    } });
+    if (otherPurchase) return true;
+
     await tx.entitlement.updateMany({
       where: { customerEmail: order.customerEmail, productKey: order.productKey },
       data: { status: "REVOKED", revokedAt: new Date() },
     });
 
-    if (resource) {
+    const sharedResourcePurchase = resource && await tx.order.findFirst({ where: {
+      customerEmail: order.customerEmail, status: "PAID",
+      productKey: { in: Object.values(PRODUCTS).filter(p => p.resourceSlug === resource.slug).map(p => p.key) },
+    } });
+    if (resource && !sharedResourcePurchase) {
       await tx.resourceAccess.updateMany({
         where: { customerEmail: order.customerEmail, resourceId: resource.id },
         data: { revokedAt: new Date() },
@@ -233,7 +266,7 @@ export async function markOrderRefunded(params: { razorpayPaymentId: string }) {
     }
 
     return true;
-  });
+  }, { isolationLevel: "Serializable" });
 
   if (settled && order.leadId) {
     await syncLeadToBrevo(order.leadId).catch(() => {});

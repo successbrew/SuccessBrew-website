@@ -6,7 +6,6 @@ import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { WordReveal } from "@/components/WordReveal";
-import { SectionWave } from "@/components/SectionWave";
 import type { PodcastEpisode } from "@/components/CommunityPageClient";
 
 const E = [0.22, 1, 0.36, 1] as const;
@@ -28,18 +27,18 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-16 lg:pt-44 lg:pb-24">
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#0037D2]/15 blur-3xl" />
+            <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#003CD1]/15 blur-3xl" />
             <div className="absolute right-[-100px] bottom-0 h-[380px] w-[380px] rounded-full bg-[#C1FF3B]/30 blur-3xl" />
           </div>
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.a variants={fadeUp} href="/community"
-                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#0037D2]">
+                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/50 hover:text-[#003CD1]">
                 ← Back to Community
               </motion.a>
               <motion.div variants={fadeUp}
                 className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
                 {episodes.length} episode{episodes.length !== 1 ? "s" : ""} and counting
               </motion.div>
 
@@ -47,7 +46,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                 <WordReveal text="Real talk." mode="nested" staggerDelay={0.06} />
                 {" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#0037D2]"><WordReveal text="Real founders." mode="nested" staggerDelay={0.06} /></span>
+                  <span className="relative z-10 text-[#003CD1]"><WordReveal text="Real founders." mode="nested" staggerDelay={0.06} /></span>
                   <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C1FF3B] md:h-6" />
                 </span>
               </h1>
@@ -58,7 +57,6 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F2ECDD" to="#F0EBD8" />
 
         {/* ══ EPISODES GRID ═════════════════════════════════════════════ */}
         <section className="bg-[#F0EBD8] py-16 lg:py-20">
@@ -87,11 +85,11 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
                     <div className="flex flex-1 flex-col justify-between p-5">
                       <div>
                         <a href={ep.listenUrl ?? "#"}>
-                          <h3 className="text-lg font-black leading-snug text-[#111111] group-hover:text-[#0037D2]">{ep.title}</h3>
+                          <h3 className="text-lg font-black leading-snug text-[#111111] group-hover:text-[#003CD1]">{ep.title}</h3>
                         </a>
                         <p className="mt-1.5 text-xs text-[#111111]/50">{ep.guest}</p>
                       </div>
-                      <a href={ep.listenUrl ?? "#"} className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
+                      <a href={ep.listenUrl ?? "#"} className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#003CD1]">
                         Listen now →
                       </a>
                     </div>
@@ -105,8 +103,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
         </section>
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
-        <SectionWave from="#F0EBD8" to="#0037D2" />
-        <section id="cta" className="bg-[#0037D2] py-24 text-white lg:py-32">
+        <section id="cta" className="bg-[#003CD1] py-24 text-white lg:py-32">
           <motion.div
             initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
@@ -124,7 +121,6 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
             </motion.div>
           </motion.div>
         </section>
-        <SectionWave from="#0037D2" to="var(--ink)" />
 
         <Footer siteSettings={siteSettings} />
 

@@ -36,7 +36,7 @@ export function WizardShell({
         </div>
         <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#111111]/8">
           <div
-            className="h-full rounded-full bg-[#0037D2] transition-all duration-300"
+            className="h-full rounded-full bg-[#003CD1] transition-all duration-300"
             style={{ width: `${((stepIndex + 1) / total) * 100}%` }}
           />
         </div>

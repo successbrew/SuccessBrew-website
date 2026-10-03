@@ -92,7 +92,7 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
         <motion.div
           animate={{ x: [0, 40, 0], y: [0, 25, 0] }}
           transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -left-16 top-0 h-[340px] w-[340px] rounded-full bg-[#0037D2]/10 blur-3xl"
+          className="absolute -left-16 top-0 h-[340px] w-[340px] rounded-full bg-[#003CD1]/10 blur-3xl"
         />
         <motion.div
           animate={{ x: [0, -35, 0], y: [0, -20, 0] }}
@@ -125,11 +125,11 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
             viewport={{ once: true, margin: "-60px" }}
             className="flex flex-col items-center justify-center gap-3 border border-[#111111]/10 bg-[#F0EBD8] p-6 text-center [grid-column:var(--feat-col-base)] [grid-row:var(--feat-row-base)] sm:[grid-column:var(--feat-col-sm)] sm:[grid-row:var(--feat-row-sm)] lg:[grid-column:var(--feat-col-lg)] lg:[grid-row:var(--feat-row-lg)]"
           >
-            <span className="rounded-full bg-[#0037D2]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#0037D2]">
+            <span className="rounded-full bg-[#003CD1]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#003CD1]">
               Community Network
             </span>
             <h3 className="text-balance text-xl font-black leading-tight tracking-tight text-[#111111] sm:text-2xl lg:text-3xl">
-              50+ brands trust our <em className="not-italic text-[#0037D2]">8,000+ founder</em> community.
+              50+ brands trust our <em className="not-italic text-[#003CD1]">8,000+ founder</em> community.
             </h3>
             <p className="max-w-xs text-sm text-[#111111]/60">
               Get in front of the builders, operators and investors already inside.

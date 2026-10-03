@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { verifyAdminSession } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
+import { PERMISSIONS } from "@/lib/auth/permissions";
 
 export async function updateEventPartners(eventId: string, formData: FormData) {
-  await verifyAdminSession();
+  await requirePermission(PERMISSIONS.COMMUNITY_MANAGE);
   const partnerIds = formData.getAll("partnerIds").map(String);
 
   await prisma.communityEvent.update({

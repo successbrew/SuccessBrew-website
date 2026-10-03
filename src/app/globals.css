@@ -16,7 +16,7 @@
   --font-weight-extrabold: 600;
   --font-weight-black: 600;
 
-  --color-brand: oklch(45% 0.22 264);
+  --color-brand: #003CD1;
   --color-lime: oklch(93% 0.22 124);
   --color-cream: oklch(97% 0.04 95);
   --color-sand: oklch(94% 0.025 90);
@@ -88,7 +88,7 @@
 @layer base {
   :root {
     --radius: 1.25rem;
-    --brand: oklch(45% .22 264);
+    --brand: #003CD1;
     --lime: oklch(93% .22 124);
     --cream: oklch(97% .04 95);
     --sand: oklch(94% .025 90);
@@ -275,13 +275,6 @@
 .blob-a { animation: blob-float-a 18s ease-in-out infinite; }
 .blob-b { animation: blob-float-b 22s ease-in-out infinite; }
 
-/* ── Wave section dividers: seamless looping horizontal drift ── */
-@keyframes wave-flow {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.wave-flow { animation: wave-flow 26s linear infinite; }
-
 .noise-overlay {
   position: absolute;
   inset: 0;
@@ -297,6 +290,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blob-a, .blob-b, .animate-marquee, .wave-flow, .animate-word-bob { animation: none; }
+  .blob-a, .blob-b, .animate-marquee, .animate-word-bob { animation: none; }
 }
 

@@ -16,6 +16,16 @@ function getCredentials() {
   return { keyId, keySecret };
 }
 
+export async function fetchRazorpay<T>(path: string): Promise<T> {
+  const { keyId, keySecret } = getCredentials();
+  const response = await fetch(`https://api.razorpay.com/v1/${path}`, {
+    headers: { Authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString("base64")}` },
+    cache: "no-store", redirect: "error", signal: AbortSignal.timeout(15_000),
+  });
+  if (!response.ok) throw new Error(`Razorpay reconciliation failed (${response.status})`);
+  return response.json() as Promise<T>;
+}
+
 export type RazorpayOrder = {
   id: string;
   amount: number;

@@ -26,23 +26,17 @@ export function FileUploadField({
     }
     setIsUploading(true);
     try {
+      const form = new FormData();
+      form.set("file", file);
       const presignRes = await fetch("/api/admin/upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName: file.name, fileType: file.type, fileSize: file.size }),
+        body: form,
       });
       if (!presignRes.ok) {
         const body = await presignRes.json().catch(() => ({}));
         throw new Error(body.error ?? "Failed to get upload URL");
       }
-      const { uploadUrl, publicUrl } = await presignRes.json();
-
-      const putRes = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
-      if (!putRes.ok) throw new Error("Upload to storage failed");
+      const { publicUrl } = await presignRes.json();
 
       onChange(publicUrl);
     } catch (e) {

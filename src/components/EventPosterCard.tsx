@@ -18,7 +18,7 @@ const POSTER_STYLES: Record<string, PosterStyle> = {
   "revenue-room": {
     code: "01/04",
     eyebrow: "Investors",
-    bg: "bg-[#0037D2]",
+    bg: "bg-[#003CD1]",
     text: "light",
     pattern: (
       <>
@@ -37,7 +37,7 @@ const POSTER_STYLES: Record<string, PosterStyle> = {
       <>
         <div aria-hidden className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#111111]/10" />
         <div aria-hidden className="absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#111111]/10" />
-        <div aria-hidden className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0037D2]/8" />
+        <div aria-hidden className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#003CD1]/8" />
       </>
     ),
   },
@@ -69,7 +69,7 @@ const POSTER_STYLES: Record<string, PosterStyle> = {
     pattern: (
       <>
         <div aria-hidden className="absolute right-6 top-10 h-28 w-28 rounded-full bg-white/40 blur-2xl" />
-        <div aria-hidden className="absolute -left-6 bottom-16 h-36 w-36 rounded-full bg-[#0037D2]/10 blur-2xl" />
+        <div aria-hidden className="absolute -left-6 bottom-16 h-36 w-36 rounded-full bg-[#003CD1]/10 blur-2xl" />
       </>
     ),
   },

@@ -13,8 +13,8 @@ export function buildDailyDigestEmail(params: { email: string; dateLabel: string
     ${heading("Today's update is ready.")}
     ${paragraph(`Covering: ${topicsLine}.`)}
     ${ctaButton("Read today's brief (PDF)", params.pdfUrl)}
-    <p style="margin:24px 0 0; text-align:center;"><a href="${preferencesUrl}" style="font-size:13px; color:#0037D2;">Manage your topics &rarr;</a></p>
+    <p style="margin:24px 0 0; text-align:center;"><a href="${preferencesUrl}" style="font-size:13px; color:#003CD1;">Manage your topics &rarr;</a></p>
   `;
 
-  return { subject, html: renderEmailShell({ headerBg: "#0037D2", bodyHtml }) };
+  return { subject, html: renderEmailShell({ headerBg: "#003CD1", bodyHtml }) };
 }

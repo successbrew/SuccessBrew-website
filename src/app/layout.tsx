@@ -7,6 +7,8 @@ import { BookingClickTracker } from "@/components/BookingClickTracker";
 import { Providers } from "./providers";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",

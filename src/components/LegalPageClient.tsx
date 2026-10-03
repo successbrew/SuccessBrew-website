@@ -28,7 +28,7 @@ export function LegalPageClient({
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
         <section className="bg-[#F2ECDD] pt-32 pb-16 lg:pt-44 lg:pb-20">
           <div className="mx-auto max-w-3xl px-6 lg:px-10">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Legal</p>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Legal</p>
             <h1 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl">{title}</h1>
             <p className="mt-4 text-sm font-semibold text-[#111111]/50">Last updated: {lastUpdated}</p>
             {intro && <p className="mt-6 text-base leading-relaxed text-[#111111]/70">{intro}</p>}

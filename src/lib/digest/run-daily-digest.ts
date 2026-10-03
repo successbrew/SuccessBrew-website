@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { prisma } from "@/lib/prisma";
-import { s3, S3_BUCKET, getSignedDownloadUrl } from "@/lib/s3";
+import { s3, assertPrivateStorage, getSignedDownloadUrl } from "@/lib/s3";
 import { generateTopicBrief, AnthropicNotConfiguredError } from "./anthropic";
 import { DigestPdfDocument, type DigestTopicSection } from "./DigestPdfDocument";
 import { sendDailyDigestEmail } from "@/lib/services/email/notify-digest";
@@ -66,7 +66,7 @@ async function renderAndUploadPdf(params: {
 
   await s3.send(
     new PutObjectCommand({
-      Bucket: S3_BUCKET,
+      Bucket: await assertPrivateStorage(),
       Key: key,
       Body: buffer,
       ContentType: "application/pdf",

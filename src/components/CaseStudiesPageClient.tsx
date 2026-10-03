@@ -10,7 +10,6 @@ import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { SectionWave } from "@/components/SectionWave";
 
 export type { CaseStudy };
 
@@ -113,7 +112,7 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudy; index: number }) {
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          style={{ boxShadow: "inset 0 0 0 1px oklch(0.45 0.22 264 / 0.2)" }}
+          style={{ boxShadow: "inset 0 0 0 1px rgb(0 60 209 / 0.2)" }}
         />
       </motion.article>
     </Link>
@@ -167,7 +166,6 @@ export function CaseStudiesPageClient({
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--ink)" to="var(--background)" />
 
         {/* ══ CASE STUDIES GRID ═════════════════════════════════════════ */}
         <section className="bg-background py-20 lg:py-32">
@@ -228,7 +226,6 @@ export function CaseStudiesPageClient({
             )}
           </div>
         </section>
-        <SectionWave from="var(--background)" to="var(--cream)" />
 
         {/* ══ STATS SECTION ═════════════════════════════════════════════ */}
         {caseStudies.length > 0 && (
@@ -271,7 +268,6 @@ export function CaseStudiesPageClient({
                 </motion.div>
               </div>
             </section>
-            <SectionWave from="var(--cream)" to="var(--primary)" />
           </>
         )}
 
@@ -310,7 +306,6 @@ export function CaseStudiesPageClient({
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--primary)" to="var(--ink)" />
 
         <Footer siteSettings={siteSettings} />
 

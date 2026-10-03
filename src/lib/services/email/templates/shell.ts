@@ -60,7 +60,7 @@ export function renderEmailShell(params: { headerBg: string; bodyHtml: string })
 }
 
 export function eyebrow(text: string) {
-  return `<p style="margin:0 0 4px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#0037D2;">${text}</p>`;
+  return `<p style="margin:0 0 4px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#003CD1;">${text}</p>`;
 }
 
 export function heading(text: string) {
@@ -77,7 +77,7 @@ export function codeBox(label: string, value: string) {
       <tr>
         <td style="background-color:#F0EBD8; border-radius:14px; padding:20px 24px; text-align:center;">
           <p style="margin:0 0 4px; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#111111; opacity:0.5;">${label}</p>
-          <p style="margin:0; font-size:22px; font-weight:800; color:#0037D2; letter-spacing:0.02em;">${value}</p>
+          <p style="margin:0; font-size:22px; font-weight:800; color:#003CD1; letter-spacing:0.02em;">${value}</p>
         </td>
       </tr>
     </table>`;
@@ -106,7 +106,7 @@ export function ctaButton(label: string, href: string) {
   return `
     <table role="presentation" cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:999px; background-color:#0037D2;">
+        <td style="border-radius:999px; background-color:#003CD1;">
           <a href="${href}" style="display:inline-block; padding:14px 28px; font-size:14px; font-weight:700; color:#ffffff; text-decoration:none;">${label}</a>
         </td>
       </tr>

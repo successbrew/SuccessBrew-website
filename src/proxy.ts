@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { contentSecurityPolicy } from "@/lib/csp";
 import { auth } from "@/lib/auth/server";
 
 /**
@@ -12,7 +13,7 @@ const ADMIN_HOST_PREFIX = "sbh-1111.";
 
 const requireAdminSession = auth.middleware({ loginUrl: "/auth/sign-in" });
 
-export default async function proxy(request: NextRequest) {
+async function routeRequest(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
   const isAdminHost = host.startsWith(ADMIN_HOST_PREFIX);
   const { pathname } = request.nextUrl;
@@ -58,6 +59,30 @@ export default async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   url.pathname = pathname === "/" ? "/sbh-1111" : `/sbh-1111${pathname}`;
   return NextResponse.rewrite(url);
+}
+
+export default async function proxy(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const csp = contentSecurityPolicy(nonce);
+  request.headers.set("x-nonce", nonce);
+  request.headers.set("Content-Security-Policy", csp);
+  const response = await routeRequest(request);
+  // Preserve any auth middleware request overrides and add the render nonce.
+  const overrides = new Set((response.headers.get("x-middleware-override-headers") ?? "").split(",").filter(Boolean));
+  if (!overrides.size) {
+    request.headers.forEach((value, name) => {
+      overrides.add(name);
+      response.headers.set(`x-middleware-request-${name}`, value);
+    });
+  }
+  for (const [name, value] of [["x-nonce", nonce], ["content-security-policy", csp]]) {
+    overrides.add(name);
+    response.headers.set(`x-middleware-request-${name}`, value);
+  }
+  response.headers.set("x-middleware-override-headers", [...overrides].join(","));
+  response.headers.set("Content-Security-Policy", csp);
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
 
 export const config = {

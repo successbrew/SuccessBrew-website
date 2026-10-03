@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowDown } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
-import { SectionWave } from "@/components/SectionWave";
 import { WordReveal } from "@/components/WordReveal";
 import { ScrollAutoplayYouTube } from "@/components/ScrollAutoplayYouTube";
 import type { SiteSettings } from "@/components/SocialLinks";
@@ -249,7 +248,7 @@ function HeroSpeakerSlideshow({ people }: { people: HeroPerson[] }) {
           {person.photoUrl ? (
             <img src={person.photoUrl} alt={person.name} className="h-full w-full object-cover object-top" />
           ) : (
-            <div className="grid h-full w-full place-items-center bg-[#0037D2]/50 text-6xl font-black text-white/40">
+            <div className="grid h-full w-full place-items-center bg-[#003CD1]/50 text-6xl font-black text-white/40">
               {person.name.charAt(0)}
             </div>
           )}
@@ -411,7 +410,7 @@ export function EventLandingPageClient({
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO — cinematic, bottom-anchored ═══════════════════════════ */}
-        <section className="relative flex min-h-[86vh] flex-col justify-end overflow-hidden bg-[#0037D2] pb-16 pt-32 text-white lg:min-h-[92vh] lg:pb-20 lg:pt-40">
+        <section className="relative flex min-h-[86vh] flex-col justify-end overflow-hidden bg-[#003CD1] pb-16 pt-32 text-white lg:min-h-[92vh] lg:pb-20 lg:pt-40">
           {event.imageUrl ? (
             <>
               {/* Cover images here are typically pre-designed banners with their own
@@ -425,7 +424,7 @@ export function EventLandingPageClient({
               />
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0037D2] via-[#0037D2]/45 to-[#0037D2]/80"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#003CD1] via-[#003CD1]/45 to-[#003CD1]/80"
               />
             </>
           ) : (
@@ -530,7 +529,7 @@ export function EventLandingPageClient({
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#111111]/40">Seats</p>
-                <p className="mt-1 truncate text-sm font-bold text-[#0037D2]">
+                <p className="mt-1 truncate text-sm font-bold text-[#003CD1]">
                   {seatsSummary(event, { totalSuffix: "seats", fallback: "Open seating" })}
                 </p>
               </div>
@@ -549,7 +548,7 @@ export function EventLandingPageClient({
         <section id="overview" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
           <div className="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[1.3fr_1fr] lg:gap-16 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}>
-              <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">
+              <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">
                 {pillar.icon} About {pillar.title}
               </motion.p>
               <motion.h2 variants={fadeUp} className="mt-4 text-balance text-3xl font-black leading-tight tracking-tight md:text-4xl lg:text-[2.75rem]">
@@ -580,14 +579,14 @@ export function EventLandingPageClient({
           <section id="highlights" className="scroll-mt-36 bg-[#F2ECDD] pb-16 lg:pb-24">
             <div className="mx-auto max-w-6xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">The Experience</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">The Experience</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">What you walk away with.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
                 className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {benefitItems.map((b, i) => (
                   <motion.div key={i} variants={fadeUp} className="rounded-2xl bg-white p-6 transition hover:-translate-y-1">
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-[#0037D2] text-xs font-black text-white">
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-[#003CD1] text-xs font-black text-white">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <h3 className="mt-4 text-lg font-black leading-snug text-[#111111]">{b.title}</h3>
@@ -604,7 +603,7 @@ export function EventLandingPageClient({
           <section className="bg-[#F2ECDD] pb-16 lg:pb-24">
             <div className="mx-auto max-w-6xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-8 max-w-xl">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">The Recap</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">The Recap</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Watch how it went down.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
@@ -620,7 +619,7 @@ export function EventLandingPageClient({
           <section id="gallery" className="scroll-mt-36 bg-white py-16 lg:py-24">
             <div className="mx-auto max-w-6xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">The Room</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">The Room</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">What it actually feels like.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.06)}
@@ -642,19 +641,19 @@ export function EventLandingPageClient({
           <section id="speakers" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
             <div className="mx-auto max-w-6xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">On the Mic</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">On the Mic</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Who you&rsquo;ll hear from.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
                 className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {event.speakers.map((s) => (
                   <motion.div key={s.id} variants={fadeUp}>
-                    <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#0037D2]/10">
+                    <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#003CD1]/10">
                       {s.photoUrl ? (
                         <img src={s.photoUrl} alt={s.name} loading="lazy"
                           className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105" />
                       ) : (
-                        <div className="grid h-full w-full place-items-center text-4xl font-black text-[#0037D2]/25">
+                        <div className="grid h-full w-full place-items-center text-4xl font-black text-[#003CD1]/25">
                           {s.name.charAt(0)}
                         </div>
                       )}
@@ -672,17 +671,17 @@ export function EventLandingPageClient({
                 ))}
                 {event.hostName && (
                   <motion.div variants={fadeUp}>
-                    <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#0037D2]/10">
+                    <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#003CD1]/10">
                       {event.hostPhotoUrl ? (
                         <img src={event.hostPhotoUrl} alt={event.hostName} loading="lazy"
                           className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105" />
                       ) : (
-                        <div className="grid h-full w-full place-items-center text-4xl font-black text-[#0037D2]/25">
+                        <div className="grid h-full w-full place-items-center text-4xl font-black text-[#003CD1]/25">
                           {event.hostName.charAt(0)}
                         </div>
                       )}
                       <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
-                      <span className="absolute left-4 top-4 rounded-full bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#0037D2]">
+                      <span className="absolute left-4 top-4 rounded-full bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#003CD1]">
                         Host
                       </span>
                       <div className="absolute inset-x-0 bottom-0 p-4">
@@ -703,16 +702,16 @@ export function EventLandingPageClient({
           <section id="schedule" className="scroll-mt-36 bg-white py-16 lg:py-24">
             <div className="mx-auto max-w-4xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Run of Show</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Run of Show</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">The agenda.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.06)}
                 className="relative border-l-2 border-[#111111]/10 pl-7 sm:pl-9">
                 {agendaItems.map((item, i) => (
                   <motion.div key={i} variants={fadeUp} className="relative pb-10 last:pb-0">
-                    <span aria-hidden className="absolute -left-[33px] top-1.5 grid h-4 w-4 place-items-center rounded-full bg-[#0037D2] ring-4 ring-white sm:-left-[37px]" />
+                    <span aria-hidden className="absolute -left-[33px] top-1.5 grid h-4 w-4 place-items-center rounded-full bg-[#003CD1] ring-4 ring-white sm:-left-[37px]" />
                     {hasTimedAgenda && item.time && (
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#0037D2]">{item.time}</p>
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#003CD1]">{item.time}</p>
                     )}
                     <h3 className="mt-1 text-lg font-black text-[#111111] sm:text-xl">{item.title}</h3>
                     {item.description && <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-[#111111]/60">{item.description}</p>}
@@ -753,13 +752,13 @@ export function EventLandingPageClient({
                   className="mt-10 flex flex-wrap items-center justify-center gap-10">
                   {event.totalSeats && (
                     <div>
-                      <p className="text-3xl font-black text-[#0037D2]">{event.totalSeats}</p>
+                      <p className="text-3xl font-black text-[#003CD1]">{event.totalSeats}</p>
                       <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#111111]/50">Seats</p>
                     </div>
                   )}
                   {event.highlightStatValue && (
                     <div>
-                      <p className="text-3xl font-black text-[#0037D2]">{event.highlightStatValue}</p>
+                      <p className="text-3xl font-black text-[#003CD1]">{event.highlightStatValue}</p>
                       <p className="mt-1 max-w-[10rem] text-[10px] font-bold uppercase tracking-[0.12em] text-[#111111]/50">{event.highlightStatLabel}</p>
                     </div>
                   )}
@@ -774,7 +773,7 @@ export function EventLandingPageClient({
           <section id="location" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
             <div className="mx-auto max-w-6xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Getting There</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Getting There</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Find the room.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
@@ -798,7 +797,7 @@ export function EventLandingPageClient({
                   </div>
                   <div className="mt-5 flex gap-3">
                     <a href={googleCalendarUrl(event)} target="_blank" rel="noreferrer noopener"
-                      className="flex-1 rounded-full bg-[#111111] px-4 py-2.5 text-center text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#0037D2]">
+                      className="flex-1 rounded-full bg-[#111111] px-4 py-2.5 text-center text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#003CD1]">
                       Add to calendar
                     </a>
                     <ShareButton title={event.title} />
@@ -814,7 +813,7 @@ export function EventLandingPageClient({
           <section id="voices" className="scroll-mt-36 bg-white py-16 lg:py-24">
             <div className="mx-auto max-w-6xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Community Voices</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Community Voices</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">People who&rsquo;ve been in the room.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
@@ -826,7 +825,7 @@ export function EventLandingPageClient({
                       {t.avatarUrl ? (
                         <img src={t.avatarUrl} alt={t.name} className="h-10 w-10 rounded-full object-cover" />
                       ) : (
-                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#0037D2] text-sm font-black text-white">
+                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#003CD1] text-sm font-black text-white">
                           {t.initial}
                         </span>
                       )}
@@ -847,7 +846,7 @@ export function EventLandingPageClient({
           <section id="faq" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
             <div className="mx-auto max-w-3xl px-6 lg:px-10">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-8">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Good to Know</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Good to Know</p>
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Frequently asked.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
@@ -892,7 +891,7 @@ export function EventLandingPageClient({
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
                 className="mb-8 flex items-end justify-between gap-4">
                 <h2 className="text-2xl font-black tracking-tight md:text-3xl">Can&rsquo;t make this one?</h2>
-                <a href={`/community/events/${pillar.slug}`} className="shrink-0 text-xs font-bold uppercase tracking-wide text-[#0037D2] hover:underline">
+                <a href={`/community/events/${pillar.slug}`} className="shrink-0 text-xs font-bold uppercase tracking-wide text-[#003CD1] hover:underline">
                   All events →
                 </a>
               </motion.div>
@@ -901,9 +900,9 @@ export function EventLandingPageClient({
                 {relatedEvents.map((r) => (
                   <motion.a key={r.id} variants={fadeUp} href={`/community/events/${pillar.slug}/${r.id}`}
                     className="group block rounded-2xl bg-white p-6 transition hover:-translate-y-1">
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-[#0037D2]">{r.tag} · {r.date}</p>
-                    <p className="mt-2 text-base font-black text-[#111111] group-hover:text-[#0037D2]">{r.title}</p>
-                    <span className="mt-3 inline-block text-xs font-semibold text-[#111111]/40 group-hover:text-[#0037D2]">View event →</span>
+                    <p className="text-[10px] font-bold uppercase tracking-wide text-[#003CD1]">{r.tag} · {r.date}</p>
+                    <p className="mt-2 text-base font-black text-[#111111] group-hover:text-[#003CD1]">{r.title}</p>
+                    <span className="mt-3 inline-block text-xs font-semibold text-[#111111]/40 group-hover:text-[#003CD1]">View event →</span>
                   </motion.a>
                 ))}
               </motion.div>
@@ -914,8 +913,7 @@ export function EventLandingPageClient({
         {/* ══ BECOME A PARTNER ═════════════════════════════════════════ */}
         {event.becomePartnerUrl && (
           <>
-            <SectionWave from="#F2ECDD" to="#0037D2" />
-            <section className="bg-[#0037D2] py-20 text-white lg:py-28">
+            <section className="bg-[#003CD1] py-20 text-white lg:py-28">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
                 className="mx-auto max-w-2xl px-6 text-center lg:px-10">
                 <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-[#C1FF3B]">Sponsor this room</motion.p>
@@ -928,7 +926,6 @@ export function EventLandingPageClient({
                 </motion.div>
               </motion.div>
             </section>
-            <SectionWave from="#0037D2" to="#F2ECDD" />
           </>
         )}
 

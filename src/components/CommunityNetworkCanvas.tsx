@@ -141,7 +141,7 @@ export function CommunityNetworkCanvas() {
 
       // Atmosphere halo
       const atmo = ctx.createRadialGradient(cx, cy, R * 0.88, cx, cy, R * 1.18);
-      atmo.addColorStop(0, "rgba(0,55,210,0.06)");
+      atmo.addColorStop(0, "rgba(0, 60, 209,0.06)");
       atmo.addColorStop(1, "rgba(242,236,221,0)");
       ctx.beginPath(); ctx.arc(cx, cy, R * 1.18, 0, TAU);
       ctx.fillStyle = atmo; ctx.fill();
@@ -159,7 +159,7 @@ export function CommunityNetworkCanvas() {
       ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.clip();
 
       // Graticule
-      ctx.strokeStyle = "rgba(0,55,210,0.08)";
+      ctx.strokeStyle = "rgba(0, 60, 209,0.08)";
       ctx.lineWidth = 0.7;
       for (const latDeg of [-60, -30, 0, 30, 60]) {
         const lat = latDeg * Math.PI / 180;
@@ -267,7 +267,7 @@ export function CommunityNetworkCanvas() {
 
       // Globe rim stroke
       ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU);
-      ctx.strokeStyle = "rgba(0,55,210,0.13)"; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.strokeStyle = "rgba(0, 60, 209,0.13)"; ctx.lineWidth = 1.2; ctx.stroke();
 
       // ── Cream edge blends ─────────────────────────────────────────────────
       const CR = "242,236,221";

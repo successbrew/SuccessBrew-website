@@ -6,17 +6,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
 import { CommunityPartnerGrid } from "@/components/CommunityPartnerGrid";
-import { CommunityMapBackground } from "@/components/CommunityMapBackground";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { SectionWave } from "@/components/SectionWave";
 import { ExpandableQuote } from "@/components/ExpandableQuote";
 import type { Testimonial } from "@/components/ServicesPageClient";
 import { EVENT_PILLARS } from "@/lib/event-pillars";
 import { EventPosterCard } from "@/components/EventPosterCard";
-import { ScrollAutoplayYouTube } from "@/components/ScrollAutoplayYouTube";
+import { YouTubeEmbed } from "@/components/YouTubeEmbed";
 // NetworkCanvas visualization temporarily removed from this page — component
 // file kept intact at @/components/CommunityNetworkCanvas for re-adding later.
 
@@ -90,17 +88,17 @@ const stagger = (d = 0.1) => ({ hidden: {}, visible: { transition: { staggerChil
 // ── Color maps ────────────────────────────────────────────────────────────────
 const winCardBg: Record<string, string> = {
   sand: "bg-[#F0EBD8] text-[#111111]",
-  blue: "bg-[#0037D2] text-white",
+  blue: "bg-[#003CD1] text-white",
   dark: "bg-[#111111] text-white",
 };
 const winAvatarBg: Record<string, string> = {
-  blue: "bg-[#0037D2] text-white",
+  blue: "bg-[#003CD1] text-white",
   lime: "bg-[#C1FF3B] text-[#111111]",
-  primary: "bg-[#0037D2] text-white",
+  primary: "bg-[#003CD1] text-white",
   accent: "bg-[#C1FF3B] text-[#111111]",
 };
 const postAvatarBg: Record<string, string> = {
-  blue: "bg-[#0037D2] text-white",
+  blue: "bg-[#003CD1] text-white",
   dark: "bg-[#111111] text-white",
 };
 const postTagBg: Record<string, string> = {
@@ -120,10 +118,10 @@ const pillars = [
 ];
 
 const resources = [
-  { type: "Blogs",     count: "120+", desc: "Tactical articles on growth, fundraising and product-market fit.",    icon: "📝", bg: "bg-[#0037D2] text-white",    countColor: "text-[#C1FF3B]" },
-  { type: "Playbooks", count: "35+",  desc: "Step-by-step frameworks for go-to-market, hiring and content.",       icon: "📖", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#0037D2]" },
-  { type: "Templates", count: "80+",  desc: "Investor decks, SOPs, content calendars — grab and go.",              icon: "📄", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#0037D2]" },
-  { type: "Ebooks",    count: "18+",  desc: "Deep dives from founders who did it and documented it.",               icon: "📘", bg: "bg-[#C1FF3B] text-[#111111]", countColor: "text-[#0037D2]" },
+  { type: "Blogs",     count: "120+", desc: "Tactical articles on growth, fundraising and product-market fit.",    icon: "📝", bg: "bg-[#003CD1] text-white",    countColor: "text-[#C1FF3B]" },
+  { type: "Playbooks", count: "35+",  desc: "Step-by-step frameworks for go-to-market, hiring and content.",       icon: "📖", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#003CD1]" },
+  { type: "Templates", count: "80+",  desc: "Investor decks, SOPs, content calendars — grab and go.",              icon: "📄", bg: "bg-[#F0EBD8] text-[#111111]", countColor: "text-[#003CD1]" },
+  { type: "Ebooks",    count: "18+",  desc: "Deep dives from founders who did it and documented it.",               icon: "📘", bg: "bg-[#C1FF3B] text-[#111111]", countColor: "text-[#003CD1]" },
   { type: "Webinars",  count: "60+",  desc: "Recorded sessions with operators, VCs and brand builders.",           icon: "🎥", bg: "bg-[#111111] text-white",      countColor: "text-[#C1FF3B]" },
 ];
 
@@ -154,7 +152,6 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-16 lg:pt-40 lg:pb-20">
-          <CommunityMapBackground />
           <AmbientBackground tone="light" noise={false} />
 
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
@@ -164,7 +161,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
                 <motion.div variants={fadeUp}
                   className="mb-10 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]/70 backdrop-blur">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
                   Successbrew · India's Most Loved Startup Ecosystem
                 </motion.div>
 
@@ -175,13 +172,13 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   {["Brew", "Your"].map((word, i) => (
                     <span key={i}>
                       <span className="inline-block overflow-hidden leading-[1.2]">
-                        <motion.span className="inline-block" variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
+                        <motion.span className={`inline-block ${word === "Brew" ? "text-[#003CD1]" : ""}`} variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
                       </span>
                       {i === 0 ? " " : ""}
                     </span>
                   ))}
                   {" "}<span className="relative inline-block">
-                    <span className="relative z-10 text-[#0037D2]">
+                    <span className="relative z-10 text-[#111111]">
                       {["Own", "Success."].map((word, i) => (
                         <span key={i}>
                           <span className="inline-block overflow-hidden leading-[1.2]">
@@ -200,7 +197,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 </motion.p>
 
                 <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
-                  <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#0037D2] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,55,210,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
+                  <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#003CD1] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0, 60, 209,0.5)] transition hover:translate-y-[-2px]">Join Community</a>
                   <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#F0EBD8]">Explore Ecosystem</a>
                 </motion.div>
               </motion.div>
@@ -208,7 +205,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               {/* RIGHT: community video */}
               <motion.div initial={{ opacity: 0, scale: 0.97, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.85, ease: E }}
                 className="relative aspect-video w-full overflow-hidden rounded-[1.75rem] border border-[#111111]/5 bg-[#111111] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
-                <ScrollAutoplayYouTube
+                <YouTubeEmbed
                   videoId="rFocbWfZe5E"
                   title="See the Successbrew community in action"
                   className="h-full w-full"
@@ -220,11 +217,11 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}
               className="mt-12 flex flex-wrap justify-center gap-4">
               {([
-                { num: "8000+",  label: "Members",         sub: "Founders · Creators · Investors", bg: "bg-[#0037D2] text-white",     subColor: "text-white/70",     floatDelay: 0   },
+                { num: "8000+",  label: "Members",         sub: "Founders · Creators · Investors", bg: "bg-[#003CD1] text-white",     subColor: "text-white/70",     floatDelay: 0   },
                 { num: "200K+",  label: "Followers",       sub: "Across social platforms",          bg: "bg-[#F0EBD8] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 0.6 },
                 { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[#C1FF3B] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
                 { num: "50+",    label: "Brand Partners",  sub: "Collaborations & partnerships",   bg: "bg-[#F0EBD8] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.8 },
-                { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[#0037D2] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
+                { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[#003CD1] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
               ] as const).map(({ num, label, sub, bg, subColor, floatDelay }) => (
                 <motion.div key={label}
                   variants={{ hidden: { opacity: 0, y: 18, scale: 0.94 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: E } } }}
@@ -244,7 +241,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
 
         {/* ══ TICKER ════════════════════════════════════════════════════ */}
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="overflow-hidden bg-[#0037D2] py-3.5 text-white">
+          className="overflow-hidden bg-[#003CD1] py-3.5 text-white">
           <div className="flex w-max whitespace-nowrap animate-marquee">
             {Array.from({ length: 2 }).map((_, g) => (
               <div key={g} className="flex">
@@ -264,7 +261,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">The Ecosystem</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">The Ecosystem</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="6 Pillars of Successbrew Ecosystem" /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -275,11 +272,11 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {pillars.map((p) => (
                 <motion.article key={p.num} variants={cardUp} whileHover={{ y: -6, transition: { duration: 0.3, ease: E } }}
-                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#111111]/5 bg-white p-8 hover:border-[#0037D2]/30 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.2)] md:p-10">
+                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#111111]/5 bg-white p-8 hover:border-[#003CD1]/30 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.2)] md:p-10">
                   <div>
                     <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/40">
                       <span>{p.num}</span>
-                      <span aria-hidden className="h-2 w-2 rounded-full bg-[#C1FF3B] transition group-hover:bg-[#0037D2]" />
+                      <span aria-hidden className="h-2 w-2 rounded-full bg-[#C1FF3B] transition group-hover:bg-[#003CD1]" />
                     </div>
                     <div className="mt-6 text-3xl">{p.icon}</div>
                     <h3 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">{p.title}</h3>
@@ -289,17 +286,15 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                     <div className="flex flex-wrap gap-2">
                       {p.tags.map(t => <span key={t} className="rounded-full bg-[#F0EBD8] px-3 py-1 text-xs font-semibold text-[#111111]/70">{t}</span>)}
                     </div>
-                    <span className="rounded-full bg-[#0037D2]/8 px-3 py-1 text-[11px] font-bold text-[#0037D2]">{p.badge}</span>
+                    <span className="rounded-full bg-[#003CD1]/8 px-3 py-1 text-[11px] font-bold text-[#003CD1]">{p.badge}</span>
                   </div>
                 </motion.article>
               ))}
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         <CommunityPartnerGrid partners={communityPartners} />
-        <SectionWave from="#F2ECDD" to="#F0EBD8" />
         <LogoShowcase
           brandPartners={communityMembers}
           eyebrow="Who's Inside"
@@ -307,10 +302,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
           alwaysColor
           sectionBg="bg-[#F0EBD8]"
         />
-        <SectionWave from="#F0EBD8" to="#0037D2" />
 
         {/* ══ OUR WHY ═══════════════════════════════════════════════════ */}
-        <section className="bg-[#0037D2] py-16 text-white lg:py-20">
+        <section className="bg-[#003CD1] py-16 text-white lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
@@ -341,7 +335,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 <div aria-hidden className="absolute left-0 right-0 top-[18px] h-px bg-white/20 sm:top-6" />
                 {[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1L 🎯"]].map(([yr, lbl], i) => (
                   <li key={yr} className="relative text-center">
-                    <div className={`relative z-10 mx-auto grid h-9 w-9 place-items-center rounded-full border text-xs font-bold sm:h-12 sm:w-12 sm:text-sm ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#0037D2] text-white"}`}>{yr}</div>
+                    <div className={`relative z-10 mx-auto grid h-9 w-9 place-items-center rounded-full border text-xs font-bold sm:h-12 sm:w-12 sm:text-sm ${i === 4 ? "border-[#C1FF3B] bg-[#C1FF3B] text-[#111111]" : "border-white/30 bg-[#003CD1] text-white"}`}>{yr}</div>
                     <div className={`mt-2 text-[9px] font-bold leading-tight sm:mt-3 sm:text-xs ${i === 4 ? "text-[#C1FF3B]" : "text-white/60"}`}>{lbl}</div>
                   </li>
                 ))}
@@ -364,7 +358,6 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#0037D2" to="#F2ECDD" />
 
         {/* ══ WINS (CMS) ════════════════════════════════════════════════ */}
         <section id="wins" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -372,7 +365,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Community Wins</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Community Wins</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Success stories brewed here." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/community/testimonials" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -414,7 +407,6 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             )}
           </div>
         </section>
-        <SectionWave from="#F2ECDD" to="#F0EBD8" />
 
         {/* ══ EVENTS (CMS) ══════════════════════════════════════════════ */}
         <section id="events" className="bg-[#F0EBD8] py-16 lg:py-20">
@@ -422,7 +414,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Four Rooms, One Ecosystem</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Four Rooms, One Ecosystem</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Be in the room where it happens." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/community/events" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -437,13 +429,12 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               ))}
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
-              className="mt-6 rounded-2xl border border-dashed border-[#0037D2]/30 bg-[#0037D2]/5 p-6 text-center">
-              <p className="text-sm font-bold text-[#0037D2]">200+ events hosted across India</p>
+              className="mt-6 rounded-2xl border border-dashed border-[#003CD1]/30 bg-[#003CD1]/5 p-6 text-center">
+              <p className="text-sm font-bold text-[#003CD1]">200+ events hosted across India</p>
               <p className="mt-1 text-xs text-[#111111]/50">Mumbai · Delhi · Bengaluru · Hyderabad · Pune</p>
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F0EBD8" to="#F2ECDD" />
 
         {/* ══ PODCAST (CMS) ═════════════════════════════════════════════ */}
         <section id="podcast" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -451,7 +442,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Successbrew Podcast</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Successbrew Podcast</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Real talk. Real founders." /></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/community/podcast" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#111111] underline-offset-4 hover:underline">
@@ -482,11 +473,11 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   <div className="flex flex-1 flex-col justify-between p-5">
                     <div>
                       <a href={ep.listenUrl ?? "#"}>
-                        <h3 className="text-lg font-black leading-snug text-[#111111] group-hover:text-[#0037D2]">{ep.title}</h3>
+                        <h3 className="text-lg font-black leading-snug text-[#111111] group-hover:text-[#003CD1]">{ep.title}</h3>
                       </a>
                       <p className="mt-1.5 text-xs text-[#111111]/50">{ep.guest}</p>
                     </div>
-                    <a href={ep.listenUrl ?? "#"} className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#0037D2]">
+                    <a href={ep.listenUrl ?? "#"} className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-bold text-[#111111] group-hover:text-[#003CD1]">
                       Listen now →
                     </a>
                   </div>
@@ -496,11 +487,10 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
               className="mt-6 rounded-2xl border border-[#111111]/5 bg-white p-6 text-center">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#111111]/45">100+ Episodes · 60+ Guests</p>
-              <a href="/community/podcast" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#0037D2] hover:underline">All Episodes →</a>
+              <a href="/community/podcast" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#003CD1] hover:underline">All Episodes →</a>
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F2ECDD" to="#F0EBD8" />
 
         {/* ══ LEARNING HUB ══════════════════════════════════════════════ */}
         <section id="learning-hub" className="bg-[#F2ECDD] py-16 lg:py-20">
@@ -508,13 +498,13 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#0037D2]">Learning Hub</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#003CD1]">Learning Hub</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="200+ resources built for builders." /></h2>
               </motion.div>
               <motion.div variants={fadeUp} className="flex flex-wrap gap-2">
                 {resources.map(r => (
                   <button key={r.type} onClick={() => setActiveResource(r.type)}
-                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeResource === r.type ? "border-[#0037D2] bg-[#0037D2] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30 hover:text-[#111111]"}`}>
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeResource === r.type ? "border-[#003CD1] bg-[#003CD1] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30 hover:text-[#111111]"}`}>
                     {r.type}
                   </button>
                 ))}
@@ -524,7 +514,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {resources.map((r) => (
                 <motion.div key={r.type} variants={cardUp} whileHover={{ y: -5, transition: { duration: 0.25, ease: E } }} onClick={() => setActiveResource(r.type)}
-                  className={`flex cursor-pointer flex-col justify-between rounded-3xl p-7 transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.14)] ${r.bg} ${activeResource === r.type ? "ring-2 ring-offset-2 ring-[#0037D2]" : ""}`}>
+                  className={`flex cursor-pointer flex-col justify-between rounded-3xl p-7 transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.14)] ${r.bg} ${activeResource === r.type ? "ring-2 ring-offset-2 ring-[#003CD1]" : ""}`}>
                   <div>
                     <div className="text-3xl">{r.icon}</div>
                     <h3 className="mt-4 text-lg font-black">{r.type}</h3>
@@ -543,7 +533,6 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             </motion.div>
           </div>
         </section>
-        <SectionWave from="#F2ECDD" to="#111111" />
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section id="cta" className="relative overflow-hidden bg-[#111111] text-white">
@@ -552,7 +541,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
             <motion.p variants={fadeUp} className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">8,000+ already inside</motion.p>
             <motion.h2 variants={fadeUp} className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
-              Ready to <span className="text-[#C1FF3B]">Brew Yours?</span>
+              Ready to <span className="text-[#003CD1]">Brew</span> <span className="text-[#C1FF3B]">Yours?</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-lg text-white/60">
               Join a community of founders, creators and students building India's next decade — together.

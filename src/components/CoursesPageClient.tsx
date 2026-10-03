@@ -7,7 +7,6 @@ import NavBar from "@/components/NavBar";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { SectionWave } from "@/components/SectionWave";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
@@ -108,7 +107,6 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--ink)" to="var(--background)" />
 
         {/* ══ SECTIONS PREVIEW ═══════════════════════════════════════════ */}
         <section className="bg-background py-20 lg:py-28">
@@ -127,7 +125,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
                 <motion.div
                   key={s.label}
                   variants={fadeUp}
-                  whileHover={{ y: -6, boxShadow: "0 20px 40px -12px rgba(0,55,210,0.12)", transition: { duration: 0.25, ease: E } }}
+                  whileHover={{ y: -6, boxShadow: "0 20px 40px -12px rgba(0, 60, 209,0.12)", transition: { duration: 0.25, ease: E } }}
                   className={`group relative flex flex-col justify-center gap-3 overflow-hidden rounded-3xl border border-dashed border-ink/10 bg-sand px-7 py-8 cursor-default ${bentoSpan(i, sections.length)}`}>
                   <span className="absolute right-5 top-5 rounded-full bg-ink/5 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-ink/30">
                     Coming Soon
@@ -144,7 +142,6 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--background)" to="var(--sand)" />
 
         {/* ══ NOTIFY CTA ════════════════════════════════════════════════ */}
         <section className="bg-sand py-20 lg:py-24">
@@ -163,7 +160,6 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
             </motion.div>
           </div>
         </section>
-        <SectionWave from="var(--sand)" to="var(--ink)" />
 
         <Footer siteSettings={siteSettings} />
 

@@ -66,7 +66,7 @@ const NAV: NavEntry[] = [
         { icon: MessageCircle, title: "Client Voices", desc: "What our founders say",               href: "/#voices"   },
       ],
       featured: {
-        bg: "bg-[#0037D2]",
+        bg: "bg-[#003CD1]",
         textColor: "white",
         eyebrow: "Studio · Podcast · Growth",
         stat: "50+",
@@ -139,7 +139,7 @@ const NAV: NavEntry[] = [
         { icon: Rocket, title: "Join the Mission",  desc: "Be part of something bigger",         href: "/about#join"  },
       ],
       featured: {
-        bg: "bg-[#0037D2]",
+        bg: "bg-[#003CD1]",
         textColor: "white",
         eyebrow: "The Successbrew Story",
         stat: "2018",
@@ -243,7 +243,7 @@ export default function NavBar({
   const logoBlend  = isDark ? undefined : ("multiply" as const);
   const navTextColor = isDark ? "text-white/65 hover:text-white" : "text-[#111111]/65 hover:text-[#111111]";
   const activeColor  = isDark ? "text-white"   : "text-[#111111]";
-  const ctaBg        = isDark ? "bg-white text-[#111111] hover:bg-[#C1FF3B]" : "bg-[#111111] text-white hover:bg-[#0037D2]";
+  const ctaBg        = isDark ? "bg-white text-[#111111] hover:bg-[#C1FF3B]" : "bg-[#111111] text-white hover:bg-[#003CD1]";
   const chevronColor = isDark ? "text-white/40" : "text-[#111111]/30";
 
   return (
@@ -306,7 +306,7 @@ export default function NavBar({
                       style={{ transformOrigin: "top center" }}
                     >
                       {/* Gradient accent top bar */}
-                      <div className="h-[2.5px] bg-gradient-to-r from-[#0037D2] via-[#0037D2] to-[#C1FF3B]" />
+                      <div className="h-[2.5px] bg-gradient-to-r from-[#003CD1] via-[#003CD1] to-[#C1FF3B]" />
 
                       <div className="grid grid-cols-[1fr_164px]">
                         {/* Items */}
@@ -327,14 +327,14 @@ export default function NavBar({
                                     onClick={() => setOpen(null)}
                                     className="group flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F3]"
                                   >
-                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0037D2]/8">
-                                      <item.icon className="h-[18px] w-[18px] text-[#0037D2]" strokeWidth={2} />
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#003CD1]/8">
+                                      <item.icon className="h-[18px] w-[18px] text-[#003CD1]" strokeWidth={2} />
                                     </span>
                                     <div>
-                                      <div className="text-[13px] font-semibold text-[#111111] group-hover:text-[#0037D2] transition-colors">{item.title}</div>
+                                      <div className="text-[13px] font-semibold text-[#111111] group-hover:text-[#003CD1] transition-colors">{item.title}</div>
                                       {isHere ? (
-                                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0037D2]">
-                                          <span className="h-1.5 w-1.5 rounded-full bg-[#0037D2]" />
+                                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#003CD1]">
+                                          <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
                                           You&apos;re here
                                         </div>
                                       ) : (
@@ -384,7 +384,7 @@ export default function NavBar({
                           {entry.dropdown.footerLeft}
                         </Link>
                         <Link href={entry.dropdown.footerRightHref} onClick={() => setOpen(null)}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-[#0037D2] px-3.5 py-1.5 text-[11px] font-bold text-white transition hover:bg-[#0028a8]">
+                          className="inline-flex items-center gap-1.5 rounded-full bg-[#003CD1] px-3.5 py-1.5 text-[11px] font-bold text-white transition hover:bg-[#0028a8]">
                           {entry.dropdown.footerRight}
                         </Link>
                       </div>
@@ -447,8 +447,8 @@ export default function NavBar({
                           <Link key={item.title} href={item.href}
                             onClick={() => setMobileOpen(false)}
                             className="flex items-center gap-2.5 rounded-xl bg-[#F5F5F3] p-2.5 transition hover:bg-[#EEEDE9]">
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0037D2]/8">
-                              <item.icon className="h-4 w-4 text-[#0037D2]" strokeWidth={2} />
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#003CD1]/8">
+                              <item.icon className="h-4 w-4 text-[#003CD1]" strokeWidth={2} />
                             </span>
                             <span className="text-[12px] font-semibold text-[#111111]">{item.title}</span>
                           </Link>
@@ -459,7 +459,7 @@ export default function NavBar({
                 ))}
                 <div className="py-4">
                   <Link href={ctaHref} onClick={() => setMobileOpen(false)}
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111111] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0037D2]">
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111111] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#003CD1]">
                     {ctaText}
                   </Link>
                 </div>

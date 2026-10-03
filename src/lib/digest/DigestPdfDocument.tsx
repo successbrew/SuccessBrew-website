@@ -6,7 +6,7 @@ import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
  * visual "format" later is a template change here, not a pipeline rewrite.
  */
 
-const BLUE = "#0037D2";
+const BLUE = "#003CD1";
 const CREAM = "#F2ECDD";
 const INK = "#111111";
 

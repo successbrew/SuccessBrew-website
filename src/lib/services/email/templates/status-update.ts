@@ -76,5 +76,5 @@ export function buildStatusUpdateEmail(params: {
     }
   `;
 
-  return { subject, html: renderEmailShell({ headerBg: "#0037D2", bodyHtml }) };
+  return { subject, html: renderEmailShell({ headerBg: "#003CD1", bodyHtml }) };
 }

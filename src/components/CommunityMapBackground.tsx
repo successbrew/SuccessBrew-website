@@ -122,7 +122,7 @@ export function CommunityMapBackground() {
           const begin = (i * 0.6).toFixed(2);
           return (
             <g key={i}>
-              <path d={path} fill="none" stroke="#0037D2" strokeWidth={1} strokeOpacity={0.16} />
+              <path d={path} fill="none" stroke="#003CD1" strokeWidth={1} strokeOpacity={0.16} />
               <circle r={2.4} fill="#C1FF3B" opacity={0.9}>
                 <animateMotion dur={`${dur}s`} begin={`${begin}s`} repeatCount="indefinite" path={path} />
                 <animate
@@ -140,7 +140,7 @@ export function CommunityMapBackground() {
 
         {Object.entries(HUBS).map(([key, p], i) => (
           <g key={key}>
-            <circle cx={p.x} cy={p.y} r={6} fill="#0037D2" opacity={0.22}>
+            <circle cx={p.x} cy={p.y} r={6} fill="#003CD1" opacity={0.22}>
               <animate
                 attributeName="r"
                 values="6;13;6"
@@ -156,7 +156,7 @@ export function CommunityMapBackground() {
                 repeatCount="indefinite"
               />
             </circle>
-            <circle cx={p.x} cy={p.y} r={3} fill="#0037D2" opacity={0.55} />
+            <circle cx={p.x} cy={p.y} r={3} fill="#003CD1" opacity={0.55} />
           </g>
         ))}
       </svg>
