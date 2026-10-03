@@ -568,7 +568,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
             <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: E } } }}
               className="mt-12 flex flex-wrap items-center justify-center gap-4">
               <Button asChild className="rounded-full bg-[#C6FF3A] px-9 py-7 text-base font-bold text-[#111111] shadow-none hover:bg-[#B5EB2A]">
-                <Link href="/apply?source=community">Join Community <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <Link href="/apply?source=community">Apply to Join Community <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button asChild variant="outline" className="rounded-full border-white/22 bg-transparent px-9 py-7 text-base font-bold text-white shadow-none hover:bg-white/8 hover:text-white">
                 <Link href="/community">Attend an Event</Link>

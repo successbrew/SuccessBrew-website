@@ -111,10 +111,10 @@ export function ApplyWizardClient({
         <main className="min-h-screen bg-[#F2ECDD] font-sans text-[#111111]">
           <section className="mx-auto max-w-xl px-6 pb-24 pt-40 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">
-              {source === "COMMUNITY" ? "Welcome to the Community" : "Application Submitted"}
+              {source === "COMMUNITY" ? "Community Application Received" : "Application Submitted"}
             </p>
             <h1 className="mt-4 text-4xl font-black tracking-tight">
-              {source === "COMMUNITY" ? <>You&rsquo;re in.</> : <>You&rsquo;re in the queue.</>}
+              {source === "COMMUNITY" ? <>Thanks for applying.</> : <>You&rsquo;re in the queue.</>}
             </h1>
             <p className="mt-4 text-[#111111]/60">
               Your reference code is <strong>{submittedCode}</strong>. Our team will review it and follow up by email.

@@ -71,7 +71,7 @@ export function OfferSuccessClient({
 
   return (
     <>
-      <NavBar ctaText="Join Community" ctaHref="/apply?source=community" />
+      <NavBar ctaText="Apply to Join" ctaHref="/apply?source=community" />
       <main className="flex min-h-screen flex-col bg-ink font-sans text-white">
         <section className="relative flex flex-1 items-center justify-center overflow-hidden px-6 py-32">
           <AmbientBackground tone="dark" />

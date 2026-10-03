@@ -71,7 +71,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
 
   return (
     <>
-      <NavBar activePage="Courses" ctaText="Join Community" ctaHref="/apply?source=community" />
+      <NavBar activePage="Courses" ctaText="Apply to Join" ctaHref="/apply?source=community" />
       <main className="min-h-screen bg-cream font-sans text-ink">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -102,7 +102,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
               </motion.p>
               <motion.a variants={fadeUp} href="/community#cta"
                 className="mt-10 inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink transition hover:translate-y-[-2px]">
-                Join the Community in the meantime
+                Apply to join the Community in the meantime
               </motion.a>
             </motion.div>
           </div>
@@ -155,7 +155,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
               </motion.p>
               <motion.a variants={fadeUp} href="/community#cta"
                 className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-white transition hover:translate-y-[-2px]">
-                Join Successbrew Community
+                Apply to Join Successbrew Community
               </motion.a>
             </motion.div>
           </div>

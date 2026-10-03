@@ -114,7 +114,7 @@ export function OfferPageClient({
   return (
     <>
       <Toaster position="top-center" />
-      <NavBar ctaText="Join Community" ctaHref="/apply?source=community" />
+      <NavBar ctaText="Apply to Join" ctaHref="/apply?source=community" />
       <main className="min-h-screen bg-cream font-sans text-ink">
         <section className="relative overflow-hidden bg-ink pb-20 pt-32 lg:pb-28 lg:pt-40">
           <AmbientBackground tone="dark" />

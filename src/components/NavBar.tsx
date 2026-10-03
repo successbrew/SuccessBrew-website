@@ -98,11 +98,11 @@ const NAV: NavEntry[] = [
         stat: "8K+",
         statLabel: "Members",
         sub: "Free to join · Always",
-        ctaText: "Join Free",
+        ctaText: "Apply Free",
         ctaHref: "/community#cta",
       },
       footerLeft: "Browse Community",  footerLeftHref: "/community",
-      footerRight: "Join Now",       footerRightHref: "/community#cta",
+      footerRight: "Apply to Join", footerRightHref: "/community#cta",
     },
   },
   {
@@ -127,7 +127,7 @@ const NAV: NavEntry[] = [
         ctaHref: "/courses",
       },
       footerLeft: "Learn more",         footerLeftHref: "/courses",
-      footerRight: "Join Community",  footerRightHref: "/apply?source=community",
+      footerRight: "Apply to Join",   footerRightHref: "/apply?source=community",
     },
   },
   {
@@ -185,7 +185,7 @@ interface NavBarProps {
 
 export default function NavBar({
   variant = "light",
-  ctaText = "Join Community",
+  ctaText = "Apply to Join",
   ctaHref = "/apply?source=community",
   activePage,
 }: NavBarProps) {

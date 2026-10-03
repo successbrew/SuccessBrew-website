@@ -22,7 +22,7 @@ interface Props {
 export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply?source=community" />
+      <NavBar activePage="Community" ctaText="Apply to Join" ctaHref="/apply?source=community" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -112,10 +112,10 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
             variants={stagger(0.12)}
             className="mx-auto max-w-3xl px-6 text-center lg:px-10">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Never miss an episode</motion.p>
-            <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Join the community.</motion.h2>
+            <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Apply to join the community.</motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
-                Join Community
+                Apply to Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">
                 Explore Ecosystem

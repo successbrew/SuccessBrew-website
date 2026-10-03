@@ -36,8 +36,14 @@ export function renderEmailShell(params: { headerBg: string; bodyHtml: string })
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px; background-color:#ffffff; border-radius:20px; overflow:hidden;">
             <tr>
-              <td style="background-color:${params.headerBg}; padding:32px 40px; text-align:center;">
-                <img src="${SITE_URL}/SB-logo.png" alt="Successbrew" height="28" style="height:28px; width:auto; filter:brightness(0) invert(1);" />
+              <td style="background-color:${params.headerBg}; height:6px; line-height:6px; font-size:0;">&nbsp;</td>
+            </tr>
+            <tr>
+              <!-- Logo shown in its real colours on white, as on the website. Email
+                   clients (Gmail, Outlook) ignore CSS filters, so it can't be
+                   recoloured to sit on a dark/blue band. -->
+              <td style="background-color:#ffffff; padding:32px 40px 8px; text-align:center;">
+                <img src="${SITE_URL}/SB-logo.png" alt="Successbrew" width="206" height="36" style="display:inline-block; height:36px; width:206px; border:0;" />
               </td>
             </tr>
             <tr>

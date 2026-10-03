@@ -16,15 +16,15 @@ export function buildApplicationReceivedEmail(params: {
   const isCommunity = source === "COMMUNITY";
 
   const subject = isCommunity
-    ? `Welcome to the community, ${firstName} — ${applicationCode}`
+    ? `We've received your community application, ${firstName} — ${applicationCode}`
     : `We've got your application, ${firstName} — ${applicationCode}`;
 
   const bodyHtml = `
-    ${eyebrow(isCommunity ? "Welcome" : "Application Received")}
-    ${heading(isCommunity ? `You're in, ${safeFirstName}.` : `You're in the queue, ${safeFirstName}.`)}
+    ${eyebrow(isCommunity ? "Community Application Received" : "Application Received")}
+    ${heading(isCommunity ? `Thanks for applying, ${safeFirstName}.` : `You're in the queue, ${safeFirstName}.`)}
     ${paragraph(
       isCommunity
-        ? "Thanks for joining the Successbrew community. Our team reviews every submission by hand — here's your reference number for anything you need to follow up on:"
+        ? "Thanks for applying to join the Successbrew community. Our team reviews every application by hand, and you'll become a member once it's approved. Here's your reference number for anything you need to follow up on:"
         : "Thanks for applying to speak with Successbrew. Our team reviews every application by hand — here's your reference number for anything you need to follow up on:"
     )}
     ${codeBox("Application Code", applicationCode)}
@@ -45,7 +45,7 @@ export function buildApplicationReceivedEmail(params: {
     <p style="margin:0; font-size:14px; line-height:1.7; color:#444444;">
       ${
         isCommunity
-          ? "Our team reviews your submission &rarr; we may reach out with next steps &rarr; you'll be welcomed into the community."
+          ? "Our team reviews your application &rarr; we may reach out with a few questions &rarr; once you're approved, we'll email you a welcome and you'll officially be part of the community."
           : "Our team reviews your application &rarr; we may reach out for a short interview &rarr; if it's a fit, you'll be onboarded as a Successbrew speaker."
       }
       We'll email you at every step, so no need to follow up in the meantime.

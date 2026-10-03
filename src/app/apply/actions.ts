@@ -73,9 +73,9 @@ export async function submitApplicationAction(raw: unknown): Promise<SubmitAppli
       }),
       notifyAdmins({
         type: isCommunity ? "new_community_member" : "new_application",
-        title: isCommunity ? "New community member joined! 🎉" : "New speaker application",
+        title: isCommunity ? "New community application" : "New speaker application",
         message: isCommunity
-          ? `${applicantName} just joined the community (${categoryLabel} / ${subCategoryLabel}).`
+          ? `${applicantName} applied to join the community (${categoryLabel} / ${subCategoryLabel}).`
           : `${applicantName} applied (${categoryLabel} / ${subCategoryLabel}).`,
         link: `/sbh-1111/applications/${application.id}`,
       }).catch(() => {}),

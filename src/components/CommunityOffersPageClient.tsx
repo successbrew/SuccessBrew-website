@@ -19,7 +19,7 @@ const membershipTiers = [
     name: "Free",
     price: "₹0",
     period: "",
-    desc: "Everything you need to join the community and start showing up.",
+    desc: "Everything you get once you're approved into the community.",
     features: [
       "Access to 8,000+ member network",
       "Citywise WhatsApp groups",
@@ -27,7 +27,7 @@ const membershipTiers = [
       "Free events & open meetups",
       "Community feed & announcements",
     ],
-    cta: "Join Free",
+    cta: "Apply Free",
     href: "/apply?source=community",
     comingSoon: false,
     highlight: false,
@@ -74,7 +74,7 @@ const membershipTiers = [
 export function CommunityOffersPageClient({ siteSettings }: { siteSettings: SiteSettings }) {
   return (
     <>
-      <NavBar activePage="Community" ctaText="Join Community" ctaHref="/apply?source=community" />
+      <NavBar activePage="Community" ctaText="Apply to Join" ctaHref="/apply?source=community" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
@@ -123,7 +123,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                     <span className="h-1.5 w-1.5 rounded-full bg-[#C6FF3A]" /> Free · Always
                   </span>
                   <h3 className="mt-6 text-3xl font-black tracking-tight md:text-5xl">Free Community<br />Membership</h3>
-                  <p className="mt-4 max-w-md text-base text-white/70">No cost to join. Get immediate access to India's largest startup and creator community — network, learn, and grow from day one.</p>
+                  <p className="mt-4 max-w-md text-base text-white/70">No cost to apply. Once our team approves you, you get access to India's largest startup and creator community — network, learn, and grow from day one.</p>
                   <ul className="mt-8 grid gap-3 sm:grid-cols-2">
                     {["Access to 8,000+ member network", "Weekly community digest & newsletter", "Free events & open meetups", "Select learning resources", "Community feed & announcements", "Peer accountability groups"].map(item => (
                       <li key={item} className="flex items-center gap-2.5 text-sm text-white/80">
@@ -132,7 +132,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                       </li>
                     ))}
                   </ul>
-                  <a href="/apply?source=community" className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-7 py-3.5 text-sm font-bold text-[#111111] transition hover:bg-white">Join Free</a>
+                  <a href="/apply?source=community" className="mt-10 inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-7 py-3.5 text-sm font-bold text-[#111111] transition hover:bg-white">Apply Free</a>
                 </div>
                 <div className="relative hidden overflow-hidden lg:block">
                   <img src="/grid-images/IMG_9736.JPG" alt="Community members" className="h-full w-full object-cover" />
