@@ -64,6 +64,7 @@ const NAV: NavEntry[] = [
         { icon: Settings,     title: "Our Process",   desc: "How we collaborate with you",         href: "/#process"  },
         { icon: Sparkles,     title: "Selected Work", desc: "Case studies & brand results",        href: "/#work"        },
         { icon: MessageCircle, title: "Client Voices", desc: "What our founders say",               href: "/#voices"   },
+        { icon: User,          title: "Founder Led Growth", desc: "Personal branding for founders", href: "/personal-branding" },
       ],
       featured: {
         bg: "bg-[#003CD1]",
@@ -135,8 +136,9 @@ const NAV: NavEntry[] = [
     href: "/about",
     dropdown: {
       items: [
-        { icon: User,   title: "Our Story",         desc: "How Successbrew began in 2018",       href: "/about#story" },
-        { icon: Rocket, title: "Join the Mission",  desc: "Be part of something bigger",         href: "/about#join"  },
+        { icon: BookOpen, title: "Our Story",       desc: "How Successbrew began in 2018",       href: "/about" },
+        { icon: User,     title: "Sourabh Goyal",   desc: "Meet the founder",                    href: "/about/sourabh-goyal" },
+        { icon: Rocket,   title: "Join the Mission", desc: "Be part of something bigger",        href: "/about#join"  },
       ],
       featured: {
         bg: "bg-[#003CD1]",
@@ -146,9 +148,9 @@ const NAV: NavEntry[] = [
         statLabel: "Founded",
         sub: "Building India's startup future",
         ctaText: "Meet the Founder",
-        ctaHref: "/about",
+        ctaHref: "/about/sourabh-goyal",
       },
-      footerLeft: "Our Story",            footerLeftHref: "/about#story",
+      footerLeft: "Our Story",            footerLeftHref: "/about",
       footerRight: "Join the Mission",  footerRightHref: "/about#join",
     },
   },
@@ -250,7 +252,7 @@ export default function NavBar({
   return (
     <>
       <header className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${headerBg}`}>
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-10">
+        <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-10">
 
           {/* Logo */}
           <Link href="/" className="inline-flex shrink-0 items-center">
@@ -261,8 +263,9 @@ export default function NavBar({
             />
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden items-center gap-2 md:flex" onMouseLeave={handleLeave}>
+          {/* Desktop nav — on large screens it's pinned to the true centre of the
+              bar, so the logo and CTA widths on either side can't push it off-centre. */}
+          <nav className="hidden items-center gap-2 md:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2" onMouseLeave={handleLeave}>
             {NAV.map((entry) => (
               <div key={entry.label} className="relative" onMouseEnter={() => handleEnter(entry.label)}>
                 <Link

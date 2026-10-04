@@ -31,6 +31,7 @@ export function LegalPageClient({
           <div className="mx-auto max-w-3xl px-6 lg:px-10">
             <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Legal</p>
             <h1 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl">{title}</h1>
+            <span aria-hidden="true" className="mt-6 block h-1 w-20 rounded-full bg-gradient-to-r from-[#003CD1] to-[#C6FF3A]" />
             <p className="mt-4 text-sm font-semibold text-[#111111]/50">Last updated: {lastUpdated}</p>
             {intro && <p className="mt-6 text-base leading-relaxed text-[#111111]/70">{intro}</p>}
           </div>

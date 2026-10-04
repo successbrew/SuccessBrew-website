@@ -132,7 +132,7 @@ export function CommunityJoinClient({
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
               <motion.div variants={fadeUp}
                 className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-primary to-accent" />
                 Approved members only
               </motion.div>
 
@@ -160,7 +160,7 @@ export function CommunityJoinClient({
               <div className="flex items-end gap-3">
                 <span className="text-4xl font-black text-white">{formatInr(product.amount)}</span>
               </div>
-              <p className="mt-1 text-xs uppercase tracking-[0.1em]st text-accent">One-time payment</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.1em] text-accent">One-time payment</p>
 
               {!enabled ? (
                 <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
@@ -168,14 +168,14 @@ export function CommunityJoinClient({
                   <p className="mt-2 text-sm text-white/60">
                     Paid membership isn&rsquo;t open yet — we&rsquo;ll email approved members as soon as it is.
                   </p>
-                  <Button asChild size="lg" className="mt-6 w-full bg-accent text-ink hover:bg-accent/90">
+                  <Button asChild size="lg" className="glow-lime mt-6 w-full bg-accent text-ink hover:bg-accent/90">
                     <a href="/community">Back to Community</a>
                   </Button>
                 </div>
               ) : notEligible ? (
                 <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
                   <p className="text-sm text-white/70">{notEligible}</p>
-                  <Button asChild size="lg" className="mt-6 w-full bg-accent text-ink hover:bg-accent/90">
+                  <Button asChild size="lg" className="glow-lime mt-6 w-full bg-accent text-ink hover:bg-accent/90">
                     <a href="/apply?source=community">Apply to join free →</a>
                   </Button>
                 </div>
@@ -206,7 +206,7 @@ export function CommunityJoinClient({
                     type="submit"
                     disabled={loading}
                     size="lg"
-                    className="w-full bg-accent text-ink hover:bg-accent/90"
+                    className="glow-lime w-full bg-accent text-ink hover:bg-accent/90"
                   >
                     {loading ? "Starting checkout…" : `Pay ${formatInr(product.amount)}`}
                   </Button>

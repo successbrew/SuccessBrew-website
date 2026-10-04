@@ -90,10 +90,10 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
                 Coming
                 <br />
                 <span className="relative inline-block">
-                  <span className="relative z-10">
+                  <span className="text-gradient-lime relative z-10">
                     <ScrambleText text="Soon." trigger={heroInView} />
                   </span>
-                  <span aria-hidden="true" className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-accent md:h-6" />
+                  <span aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-0 h-1 rounded-full bg-gradient-to-r from-primary to-accent md:h-[5px]" />
                 </span>
               </motion.h1>
 
@@ -101,7 +101,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
                 We're building something big — courses, mentors, and a full learning ecosystem for ambitious founders. Stay tuned.
               </motion.p>
               <motion.a variants={fadeUp} href="/community#cta"
-                className="mt-10 inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink transition hover:translate-y-[-2px]">
+                className="glow-lime mt-10 inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink transition hover:translate-y-[-2px]">
                 Apply to join the Community in the meantime
               </motion.a>
             </motion.div>
@@ -154,7 +154,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
                 Join our community — you'll be the first to know when courses launch.
               </motion.p>
               <motion.a variants={fadeUp} href="/community#cta"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-white transition hover:translate-y-[-2px]">
+                className="glow-blue mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[#1F55E8] px-8 py-4 text-base font-semibold text-white transition hover:translate-y-[-2px]">
                 Apply to Join Successbrew Community
               </motion.a>
             </motion.div>

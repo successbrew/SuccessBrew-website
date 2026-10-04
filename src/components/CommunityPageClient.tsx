@@ -88,7 +88,7 @@ const stagger = (d = 0.1) => ({ hidden: {}, visible: { transition: { staggerChil
 // ── Color maps ────────────────────────────────────────────────────────────────
 const winCardBg: Record<string, string> = {
   sand: "bg-[#FFF3D0] text-[#111111]",
-  blue: "bg-[#003CD1] text-white",
+  blue: "bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] text-white",
   dark: "bg-[#111111] text-white",
 };
 const winAvatarBg: Record<string, string> = {
@@ -161,7 +161,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
                 <motion.div variants={fadeUp}
                   className="mb-10 inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/70 backdrop-blur">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
+                  <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-primary to-accent" />
                   Successbrew · India's Most Loved Startup Ecosystem
                 </motion.div>
 
@@ -172,7 +172,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                   {["Brew", "Your"].map((word, i) => (
                     <span key={i}>
                       <span className="inline-block overflow-hidden align-top py-[0.2em] -my-[0.2em]">
-                        <motion.span className={`inline-block ${word === "Brew" ? "text-[#003CD1]" : ""}`} variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
+                        <motion.span className={`inline-block ${word === "Brew" ? "mark-gradient text-[#003CD1]" : ""}`} variants={{ hidden: { y: "110%", opacity: 0 }, visible: { y: "0%", opacity: 1, transition: { duration: 0.65, ease: E } } }}>{word}</motion.span>
                       </span>
                       {i === 0 ? " " : ""}
                     </span>
@@ -188,7 +188,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                         </span>
                       ))}
                     </span>
-                    <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C6FF3A] md:h-6" />
+                    <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 rounded-[2px] bg-gradient-to-r from-accent via-accent to-[#E4FFA8] md:h-6" />
                   </span>
                 </motion.h1>
 
@@ -197,7 +197,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 </motion.p>
 
                 <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
-                  <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#003CD1] px-7 py-4 text-base font-semibold text-white shadow-[0_10px_40px_-10px_rgba(0,60,209,0.5)] transition hover:translate-y-[-2px]">Apply to Join Community</a>
+                  <a href="/apply?source=community" className="glow-blue inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[#1F55E8] px-7 py-4 text-base font-semibold text-white transition hover:translate-y-[-2px]">Apply to Join Community</a>
                   <a href="#ecosystem" className="inline-flex items-center gap-2 rounded-full border border-[#111111]/15 bg-white px-7 py-4 text-base font-semibold text-[#111111] transition hover:bg-[#FFF3D0]">Explore Ecosystem</a>
                 </motion.div>
               </motion.div>
@@ -217,11 +217,11 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}
               className="mt-12 flex flex-wrap justify-center gap-4">
               {([
-                { num: "8000+",  label: "Members",         sub: "Founders · Creators · Investors", bg: "bg-[#003CD1] text-white",     subColor: "text-white/70",     floatDelay: 0   },
+                { num: "8000+",  label: "Members",         sub: "Founders · Creators · Investors", bg: "bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] text-white",     subColor: "text-white/70",     floatDelay: 0   },
                 { num: "200K+",  label: "Followers",       sub: "Across social platforms",          bg: "bg-[#FFF3D0] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 0.6 },
-                { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[#C6FF3A] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
+                { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[linear-gradient(150deg,#C6FF3A_0%,#DDFF8A_100%)] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
                 { num: "50+",    label: "Brand Partners",  sub: "Collaborations & partnerships",   bg: "bg-[#FFF3D0] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.8 },
-                { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[#003CD1] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
+                { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
               ] as const).map(({ num, label, sub, bg, subColor }) => (
                 <motion.div key={label}
                   variants={{ hidden: { opacity: 0, y: 18, scale: 0.94 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: E } } }}
@@ -239,13 +239,13 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
 
         {/* ══ TICKER ════════════════════════════════════════════════════ */}
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="overflow-hidden bg-[#003CD1] py-3.5 text-white">
+          className="overflow-hidden bg-[linear-gradient(90deg,#003CD1,#0030A8_50%,#003CD1)] py-3.5 text-white">
           <div className="flex w-max whitespace-nowrap animate-marquee">
             {Array.from({ length: 2 }).map((_, g) => (
               <div key={g} className="flex">
                 {["Community", "Content Studio", "Podcast", "Events", "Learning Hub", "Mentor Network", "Visibility", "Momentum", "Belonging", "1M by 2030"].map(item => (
                   <span key={item} className="inline-flex items-center gap-8 px-6 text-[12px] font-semibold uppercase tracking-[0.1em]">
-                    {item}<span className="opacity-40">·</span>
+                    {item}<span className="text-accent">✦</span>
                   </span>
                 ))}
               </div>
@@ -303,14 +303,15 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
         />
 
         {/* ══ OUR WHY ═══════════════════════════════════════════════════ */}
-        <section className="bg-[#003CD1] py-16 text-white lg:py-20">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-16 text-white lg:py-20">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[460px] w-[460px] rounded-full bg-accent/20 blur-[130px]" />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
                 <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-white/55">Our Why</motion.p>
                 <h2 className="mt-3 text-balance text-[clamp(2.6rem,5vw,5rem)] font-black leading-[0.95] tracking-tight">
                   <WordReveal text="Talent is everywhere." />{" "}<br />
-                  <span className="text-[#C6FF3A]"><WordReveal text="Opportunity is not." /></span>
+                  <span className="text-gradient-lime"><WordReveal text="Opportunity is not." /></span>
                 </h2>
                 <motion.p variants={fadeUp} className="mt-6 max-w-xl text-balance text-lg text-white/75">
                   Most ambitious Indians never get the room, the mentor, or the mic. Successbrew exists to close that gap — not by replacing hard work, but by amplifying it with access, visibility and a community that actually shows up.
@@ -322,7 +323,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 </div>
                 <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
                   className="absolute -bottom-5 left-6 rounded-2xl bg-[#C6FF3A] px-6 py-4 text-[#111111] shadow-lg">
-                  <div className="text-2xl font-black">1 Lakh</div>
+                  <div className="text-2xl font-black">1M</div>
                   <div className="text-xs font-medium text-black/60">Entrepreneurs · Vision 2030</div>
                 </motion.div>
               </motion.div>
@@ -331,7 +332,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             {/* Timeline — full section width, below the text/picture row */}
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mt-20">
               <ol className="relative grid grid-cols-5 gap-0">
-                <div aria-hidden className="absolute left-0 right-0 top-[18px] h-px bg-white/20 sm:top-6" />
+                <div aria-hidden className="absolute left-0 right-0 top-[18px] h-px bg-gradient-to-r from-white/25 via-white/40 to-accent sm:top-6" />
                 {[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1M 🎯"]].map(([yr, lbl], i) => (
                   <li key={yr} className="relative text-center">
                     <div className={`relative z-10 mx-auto grid h-9 w-9 place-items-center rounded-full border text-xs font-bold sm:h-12 sm:w-12 sm:text-sm ${i === 4 ? "border-[#C6FF3A] bg-[#C6FF3A] text-[#111111]" : "border-white/30 bg-[#003CD1] text-white"}`}>{yr}</div>
@@ -348,7 +349,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
                 { label: "Visibility", value: "150K eyes. Every month.",        desc: "Studio, podcast and community put your story in front of the right people at the right moment." },
                 { label: "Momentum",   value: "From idea to traction.",         desc: "Playbooks, cohorts and accountability structures that compress years of learning into months." },
               ].map(({ label, value, desc }) => (
-                <motion.div key={label} variants={cardUp} className="rounded-2xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
+                <motion.div key={label} variants={cardUp} className="edge-gradient overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">{label}</p>
                   <p className="mt-2 text-lg font-black text-white">{value}</p>
                   <p className="mt-3 text-sm leading-7 text-white/60">{desc}</p>
@@ -504,7 +505,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
               <motion.div variants={fadeUp} className="flex flex-wrap gap-2">
                 {resources.map(r => (
                   <button key={r.type} onClick={() => setActiveResource(r.type)}
-                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeResource === r.type ? "border-[#003CD1] bg-[#003CD1] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30 hover:text-[#111111]"}`}>
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeResource === r.type ? "border-transparent bg-gradient-to-r from-primary to-[#1F55E8] text-white glow-blue" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30 hover:text-[#111111]"}`}>
                     {r.type}
                   </button>
                 ))}
@@ -541,13 +542,13 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, p
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">8,000+ already inside</motion.p>
             <motion.h2 variants={fadeUp} className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
-              Ready to <span className="text-[#003CD1]">Brew</span> <span className="text-[#C6FF3A]">Yours?</span>
+              Ready to <span className="mark-gradient">Brew</span> <span className="text-gradient-lime">Yours?</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-lg text-white/60">
               Join a community of founders, creators and students building India's next decade — together.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#B5EB2A]">Apply to Join Community</a>
+              <a href="/apply?source=community" className="glow-lime inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px] hover:bg-[#B5EB2A]">Apply to Join Community</a>
               <a href="/about" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">Our Story</a>
             </motion.div>
           </motion.div>

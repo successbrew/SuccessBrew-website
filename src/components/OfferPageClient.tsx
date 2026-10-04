@@ -122,7 +122,7 @@ export function OfferPageClient({
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
               <motion.div variants={fadeUp}
                 className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-primary to-accent" />
                 Limited-time offer
               </motion.div>
 
@@ -146,12 +146,12 @@ export function OfferPageClient({
 
             <motion.div
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7, ease: E }}
-              className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur">
+              className="border-gradient rounded-3xl bg-white/5 p-8 backdrop-blur">
               <div className="flex items-end gap-3">
-                <span className="text-4xl font-black text-white">{formatInr(offer.amount)}</span>
+                <span className="text-gradient-lime text-4xl font-black">{formatInr(offer.amount)}</span>
                 <span className="mb-1 text-lg text-white/40 line-through">{formatInr(offer.mrpAmount)}</span>
               </div>
-              <p className="mt-1 text-xs uppercase tracking-[0.1em]st text-accent">One-time payment</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.1em] text-accent">One-time payment</p>
 
               <form onSubmit={handleCheckout} className="mt-8 space-y-4">
                 <div>
@@ -179,7 +179,7 @@ export function OfferPageClient({
                   type="submit"
                   disabled={loading}
                   size="lg"
-                  className="w-full bg-accent text-ink hover:bg-accent/90"
+                  className="glow-lime w-full bg-accent text-ink hover:bg-accent/90"
                 >
                   {loading ? "Starting checkout…" : `Pay ${formatInr(offer.amount)}`}
                 </Button>

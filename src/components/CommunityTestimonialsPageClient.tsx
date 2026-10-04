@@ -38,7 +38,7 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
               </motion.a>
               <motion.div variants={fadeUp}
                 className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
+                <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-[#003CD1] to-[#C6FF3A]" />
                 {testimonials.length} member{testimonials.length !== 1 ? "s" : ""} & counting
               </motion.div>
 
@@ -47,7 +47,7 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
                 {" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-[#003CD1]"><WordReveal text="Real growth." mode="nested" staggerDelay={0.06} /></span>
-                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C6FF3A] md:h-6" />
+                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 rounded-[2px] bg-gradient-to-r from-[#C6FF3A] via-[#C6FF3A] to-[#E4FFA8] md:h-6" />
                 </span>
               </h1>
 
@@ -66,16 +66,17 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
         />
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
-        <section id="cta" className="bg-[#003CD1] py-24 text-white lg:py-32">
+        <section id="cta" className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-24 text-white lg:py-32">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-[#C6FF3A]/20 blur-[130px]" />
           <motion.div
             initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.12)}
-            className="mx-auto max-w-3xl px-6 text-center lg:px-10">
+            className="relative mx-auto max-w-3xl px-6 text-center lg:px-10">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Ready to join them?</motion.p>
-            <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Your story could be next.</motion.h2>
+            <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Your story could be <span className="text-gradient-lime">next.</span></motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+              <a href="/apply?source=community" className="glow-lime inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Apply to Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">

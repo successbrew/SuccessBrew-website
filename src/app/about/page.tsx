@@ -6,8 +6,8 @@ import { AboutPageClient } from "@/components/AboutPageClient";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "About | Successbrew",
-  description: "The story behind Successbrew — our mission, our journey, and the people building India's startup ecosystem.",
+  title: "Our Story | Successbrew",
+  description: "The Successbrew story — why it started, how it grew from 30 people to 8,000+, and where it is going next.",
 };
 
 export default async function AboutPage() {

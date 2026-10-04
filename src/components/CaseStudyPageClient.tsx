@@ -148,7 +148,7 @@ export function CaseStudyPageClient({
                       Key Result
                     </p>
                     <div className="mt-6 break-words text-[clamp(2.75rem,10vw,6rem)] font-black leading-[1.05] tracking-tight text-white md:text-7xl lg:text-8xl">
-                      <span className="text-accent">{primaryMetric.value}</span>
+                      <span className="text-gradient-lime">{primaryMetric.value}</span>
                     </div>
                     <p className="mt-4 text-xl md:text-2xl text-white/80">
                       {primaryMetric.label}
@@ -157,8 +157,7 @@ export function CaseStudyPageClient({
                   <motion.h1 variants={fadeUp} className="max-w-4xl text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white">
                     How Successbrew transformed {caseStudy.clientName || "the client"}'s{" "}
                     <span className="relative inline-block">
-                      <span className="relative z-10">{caseStudy.title}</span>
-                      <span aria-hidden="true" className="absolute inset-x-0 bottom-2 -z-0 h-3 bg-accent md:h-5" />
+                      <span className="relative z-10 mark-gradient">{caseStudy.title}</span>
                     </span>
                   </motion.h1>
                 </>
@@ -215,7 +214,7 @@ export function CaseStudyPageClient({
                     href={caseStudy.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
+                    className="glow-lime inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink transition hover:translate-y-[-2px]"
                   >
                     📄 View Full Case Study PDF
                   </a>
@@ -293,7 +292,7 @@ export function CaseStudyPageClient({
                     {/* After */}
                     <motion.div
                       variants={fadeUp}
-                      className="flex flex-col gap-6 rounded-3xl border border-primary/20 bg-primary/5 p-8 md:p-10 md:col-start-2 md:row-start-1"
+                      className="border-gradient flex flex-col gap-6 rounded-3xl bg-primary/5 p-8 md:p-10 md:col-start-2 md:row-start-1"
                     >
                       <h3 className="text-2xl font-bold text-primary">After</h3>
                       <p className="text-base leading-relaxed text-ink/70">
@@ -469,7 +468,7 @@ export function CaseStudyPageClient({
                               {idx + 1}
                             </div>
                             {idx < timelineSteps.length - 1 && (
-                              <div className="h-12 w-1 bg-primary/20" />
+                              <div className="h-12 w-1 rounded-full bg-gradient-to-b from-primary/40 to-accent/60" />
                             )}
                           </div>
                           <div className="flex-1 pt-2">
@@ -515,7 +514,7 @@ export function CaseStudyPageClient({
                         href={caseStudy.pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
+                        className="glow-blue inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[#1F55E8] px-8 py-4 text-base font-bold text-white transition hover:translate-y-[-2px]"
                       >
                         📄 View Full Case Study
                       </a>
@@ -603,8 +602,9 @@ export function CaseStudyPageClient({
         )}
 
         {/* ══ FINAL CTA ═════════════════════════════════════════════════════ */}
-        <section className="bg-primary py-20 lg:py-32">
-          <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-20 lg:py-32">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-accent/20 blur-[130px]" />
+          <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -626,7 +626,7 @@ export function CaseStudyPageClient({
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
                 <a
                   href="https://ntis.in/7oApLV"
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
+                  className="glow-lime inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink transition hover:translate-y-[-2px]"
                 >
                   Book a Strategy Call
                 </a>

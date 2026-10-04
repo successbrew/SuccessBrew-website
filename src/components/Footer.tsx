@@ -25,7 +25,8 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Company",
     links: [
-      { label: "About", href: "/about" },
+      { label: "Our Story", href: "/about" },
+      { label: "Our Founder", href: "/about/sourabh-goyal" },
       { label: "Join the Mission", href: "/about#join" },
     ],
   },
@@ -41,7 +42,9 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
 
 export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
   return (
-    <footer className="bg-ink text-background">
+    <footer className="relative bg-ink text-background">
+      {/* Brand signature: a blue→lime hairline across the top of every page's footer */}
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-accent" />
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr] lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] lg:px-10">
         <div>
           <Link href="/" className="mb-5 inline-block">

@@ -36,7 +36,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
               <motion.div variants={fadeUp}
                 className="mb-8 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-background/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-ink/60 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-primary to-accent" />
                 {testimonials.length} founder{testimonials.length !== 1 ? "s" : ""} & counting
               </motion.div>
 
@@ -48,7 +48,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
                 {" "}
                 <span className="relative inline-block">
                   <span className="relative z-10"><WordReveal text="Real Words." mode="nested" /></span>
-                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-accent md:h-5" />
+                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 rounded-[2px] bg-gradient-to-r from-accent via-accent to-[#E4FFA8] md:h-5" />
                 </span>
               </motion.h1>
 
@@ -80,7 +80,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
               Book a 30-minute strategy call — no pitch, just clarity on what your next 90 days could look like.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="https://ntis.in/7oApLV" className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-white shadow-[0_10px_40px_-10px_rgb(0_60_209_/_0.55)] transition hover:translate-y-[-2px]">
+              <Link href="https://ntis.in/7oApLV" className="glow-blue inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[#1F55E8] px-8 py-4 text-base font-bold text-white transition hover:translate-y-[-2px]">
                 Book a Strategy Call
               </Link>
               <Link href="/#work" className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-background px-8 py-4 text-base font-semibold text-ink transition hover:bg-sand">

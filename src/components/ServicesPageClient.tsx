@@ -3,16 +3,18 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useInView, useMotionValue, useAnimationFrame, useScroll, useMotionValueEvent } from "framer-motion";
+import Link from "next/link";
 import NavBar from "@/components/NavBar";
 import { Carousel, type CarouselHandle } from "@/components/ui/carousel";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
 import type { SiteSettings } from "@/components/SocialLinks";
-import { ExpandableQuote } from "@/components/ExpandableQuote";
+import { ExpandableQuote, extractMainLine } from "@/components/ExpandableQuote";
 import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { StatsProofBento } from "@/components/StatsProofBento";
 
 // â"€â"€ Types â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 export interface Service {
@@ -83,15 +85,13 @@ const stagger = (delay = 0.1) => ({
 });
 
 // â"€â"€ Color maps â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-const statBg: Record<string, string> = {
-  default: "bg-sand text-ink",
-  primary: "bg-primary text-primary-foreground",
-  accent:  "bg-accent text-ink",
-};
 const cardBg: Record<string, string> = {
   sand: "bg-sand text-ink",
   dark: "bg-cream text-ink",
 };
+// How much of each testimonial its card shows before "Read more".
+const QUOTE_PREVIEW = 230;
+
 const avatarBg: Record<string, string> = {
   primary: "bg-primary text-primary-foreground",
   accent:  "bg-accent text-ink",
@@ -151,34 +151,12 @@ function Typewriter({ text, delay = 300, speed = 42, highlight, highlightClassNa
 }
 
 // â"€â"€ Animated stat counter â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-function AnimatedNumber({ value, inView }: { value: string; inView: boolean }) {
-  const match = value.match(/^([\d,]+)([KMkm]?)(\+?)$/);
-  const target = match ? parseInt(match[1].replace(/,/g, ""), 10) : 0;
-  const [count, setCount] = useState(0);
-  const started = useRef(false);
-
-  useEffect(() => {
-    if (!match || !inView || started.current) return;
-    started.current = true;
-    const duration = 1400;
-    const startTime = Date.now();
-    const tick = () => {
-      const elapsed = Date.now() - startTime;
-      const p = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setCount(Math.round(target * eased));
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [inView, target, match]);
-
-  if (!match) return <>{value}</>;
-  const [, , suffix, plus] = match;
-  const formatted = target >= 1000 ? count.toLocaleString("en-IN") : count;
-  return <>{formatted}{suffix}{plus}</>;
-}
 
 // â"€â"€ Magnetic button â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// Spelled-out step counts for the process headline ("A five-step process.");
+// falls back to the digit if the admin ever adds more steps than listed here.
+const STEP_COUNT_WORDS: Record<number, string> = { 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight" };
+
 // Hover button — scales up slightly so the cursor's position over it reads clearly, no cursor-chasing wobble
 function MagneticButton({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
   return (
@@ -263,7 +241,7 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
       whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, delay: (i % 3) * 0.08, ease: E } }}
       viewport={{ once: true, margin: "-60px" }}
       whileHover={{ y: -2, transition: { duration: 0.25, ease: E } }}
-      className="group block overflow-hidden rounded-2xl border border-ink/5 bg-background transition-shadow duration-300 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.18)]">
+      className="edge-gradient group block overflow-hidden rounded-2xl border border-ink/5 bg-background transition-shadow duration-300 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.18)]">
       <div className="relative h-52 overflow-hidden">
         <img src={cs.imageUrl ?? "/grid-images/IMG_9736.JPG"} alt={cs.title} draggable={false}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -324,7 +302,7 @@ function CaseStudyGrid({ caseStudies }: { caseStudies: CaseStudy[] }) {
               {activeIndex === i && (
                 <motion.span
                   layoutId="case-study-page-indicator"
-                  className="absolute inset-0 rounded-full bg-primary"
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
                 />
               )}
@@ -337,20 +315,33 @@ function CaseStudyGrid({ caseStudies }: { caseStudies: CaseStudy[] }) {
 }
 
 // ── ServiceCard — click-to-expand card, wired to open the details modal ──────
+/** Services with their own landing page, keyed by normalised title. Clicking
+ * one of these cards goes to that page instead of opening the details modal. */
+const SERVICE_PAGES: Record<string, string> = {
+  "founder led growth": "/personal-branding",
+};
+
+function servicePageFor(title: string): string | undefined {
+  return SERVICE_PAGES[title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()];
+}
+
 function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
-  return (
+  const href = servicePageFor(svc.title);
+  const card = (
     <motion.article
       variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } }}
       whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
-      role="button"
-      tabIndex={0}
-      onClick={onOpen}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onOpen();
-        }
-      }}
+      {...(href ? {} : {
+        role: "button",
+        tabIndex: 0,
+        onClick: onOpen,
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onOpen();
+          }
+        },
+      })}
       className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border border-ink/5 bg-background p-8 hover:border-primary/30 hover:shadow-[0_30px_60px_-30px_oklch(0.16_0.02_260_/_0.35)] md:p-10">
       <div>
         <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-ink/40">
@@ -371,13 +362,17 @@ function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
         ))}
       </div>
       <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        View details <span aria-hidden="true">→</span>
+        {href ? "Explore" : "View details"} <span aria-hidden="true">→</span>
       </span>
-      {/* shimmer border on hover */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ boxShadow: "inset 0 0 0 1px rgb(0 60 209 / 0.2)" }} />
+      {/* blue→lime edge on hover */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
     </motion.article>
   );
+  return href ? (
+    <Link href={href} className="block h-full rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+      {card}
+    </Link>
+  ) : card;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -406,13 +401,13 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div variants={fadeUp}
                 className="mb-10 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-background/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-ink/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-primary to-accent" />
                 Successbrew · Content Marketing Company
               </motion.div>
 
               {/* Typewriter headline */}
               <h1 className="text-[clamp(2.75rem,7vw,6.5rem)] font-black leading-[0.95] tracking-tight text-ink">
-                <Typewriter text="We Brew Brand's Growth Via Content and Community" delay={400} speed={40} highlight="Brew" highlightClassName="text-primary" />
+                <Typewriter text="We Brew Brand's Growth Via Content and Community" delay={400} speed={40} highlight="Brew" highlightClassName="text-primary mark-gradient" />
               </h1>
 
               <motion.div variants={fadeUp} className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-end">
@@ -421,7 +416,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                 </p>
                 <div className="flex flex-wrap items-center gap-3 lg:justify-end">
                   <MagneticButton href="https://ntis.in/7oApLV"
-                    className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-primary-foreground shadow-[0_10px_40px_-10px_rgb(0_60_209_/_0.6)]">
+                    className="glow-blue inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[#1F55E8] px-7 py-4 text-base font-semibold text-primary-foreground">
                     Book Discovery Call
                   </MagneticButton>
                   <MagneticButton href="#work"
@@ -451,29 +446,17 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
         <section className="bg-background py-24 lg:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
-              variants={stagger(0.12)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <motion.div variants={fadeUp}>
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">By the numbers</p>
-                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Not just a content marketing system, but a global Ecosystem that your brand needs." /></h2>
-              </motion.div>
+              variants={stagger(0.12)} className="mb-14 lg:mb-16">
+              <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">By the numbers</motion.p>
+              <h2 className="mt-3 max-w-4xl text-balance text-4xl font-black tracking-tight md:text-6xl">
+                <WordReveal text="Not just a content marketing system, but a global" />{" "}
+                <span className="mark-gradient text-primary"><WordReveal text="Ecosystem" /></span>{" "}
+                <WordReveal text="that your brand needs." />
+              </h2>
             </motion.div>
 
-            <div ref={statsRef} className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {stats.map((s, i) => (
-                <motion.div key={s._id}
-                  initial={{ opacity: 0, y: 20, scale: 0.96 }}
-                  animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                  transition={{ duration: 0.65, ease: E, delay: i * 0.1 }}
-                  whileHover={{ y: -2, boxShadow: "0 24px 60px -10px rgba(0,0,0,0.18)", transition: { duration: 0.25, ease: E } }}
-                  className={`group relative overflow-hidden rounded-3xl border border-ink/5 p-8 md:p-10 cursor-default ${statBg[s.colorScheme] ?? statBg.default}`}>
-                  <div className="text-[clamp(1.15rem,4.5vw,2.75rem)] font-black tracking-tight">
-                    <AnimatedNumber value={s.number} inView={statsInView} />
-                  </div>
-                  <div className="mt-6 text-base font-medium opacity-60">{s.label}</div>
-                  {/* Hover glow */}
-                  <div aria-hidden="true" className="absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-background/25 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                </motion.div>
-              ))}
+            <div ref={statsRef}>
+              <StatsProofBento stats={stats} brandPartners={brandPartners} testimonials={testimonials} caseStudies={caseStudies} inView={statsInView} />
             </div>
           </div>
         </section>
@@ -550,44 +533,65 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           })()}
         </AnimatePresence>
         {/* â•â• PROCESS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-        <section id="process" className="bg-background py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section id="process" className="relative overflow-hidden bg-[#111111] py-24 text-white lg:py-32">
+          <AmbientBackground tone="dark" noise={false} />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
+            {/* Header: headline left, short promise + CTA right */}
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
-              variants={stagger(0.1)} className="mb-20 max-w-3xl">
-              <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">How we work</motion.p>
-              <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="A five-step process." /></h2>
+              variants={stagger(0.1)} className="mb-14 grid gap-8 lg:mb-20 lg:grid-cols-[1.25fr_1fr] lg:items-end">
+              <div>
+                <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-accent">How we work</motion.p>
+                <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl">
+                  <WordReveal text={`A ${STEP_COUNT_WORDS[processSteps.length] ?? processSteps.length}-step process.`} />
+                </h2>
+              </div>
+              <motion.div variants={fadeUp} className="lg:max-w-md lg:justify-self-end">
+                <p className="text-lg text-white/60">
+                  Every engagement follows the same path — from understanding where you stand to building an audience that keeps paying off.
+                </p>
+                <MagneticButton href="https://ntis.in/7oApLV"
+                  className="glow-lime mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-ink">
+                  Book a Discovery Call
+                </MagneticButton>
+              </motion.div>
             </motion.div>
+
             <motion.ol ref={processRef} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
-              variants={stagger(0.14)} className="relative grid gap-6 md:grid-cols-5">
-              <div aria-hidden="true" className="absolute left-0 right-0 top-6 hidden h-px bg-ink/10 md:block" />
+              variants={stagger(0.12)} className="relative grid gap-4 md:grid-cols-5 md:gap-5">
+              {/* Progress rail — horizontal through the step markers on desktop,
+                  vertical down the left on mobile. Fills lime as you scroll. */}
+              <div aria-hidden="true" className="absolute left-0 right-0 top-5 hidden h-px bg-white/10 md:block" />
               <motion.div aria-hidden="true" style={{ scaleX: processProgress }}
-                className="absolute left-0 right-0 top-6 hidden h-px origin-left bg-primary md:block" />
+                className="absolute left-0 right-0 top-5 hidden h-px origin-left bg-gradient-to-r from-primary to-accent md:block" />
+              <div aria-hidden="true" className="absolute bottom-0 left-5 top-0 w-px bg-white/10 md:hidden" />
+              <motion.div aria-hidden="true" style={{ scaleY: processProgress }}
+                className="absolute bottom-0 left-5 top-0 w-px origin-top bg-gradient-to-b from-primary to-accent md:hidden" />
+
               {processSteps.map((step, i) => {
                 const isActive = i <= activeStep;
+                const isLast = i === processSteps.length - 1;
                 return (
-                <motion.li key={step._id}
-                  variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: E } } }}
-                  className="relative">
-                  <motion.div
-                    animate={{
-                      backgroundColor: isActive ? "#003CD1" : "oklch(1 0 0)",
-                      color: isActive ? "#fff" : "#111111",
-                      scale: isActive ? 1.08 : 1,
-                    }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    whileHover={{ scale: 1.02, backgroundColor: "#003CD1", color: "#fff" }}
-                    className="relative z-10 grid h-12 w-12 place-items-center rounded-full border border-ink/10 text-sm font-bold tracking-tight cursor-default">
-                    {step.stepNumber}
-                  </motion.div>
-                  <h3 className={`mt-6 text-xl font-extrabold tracking-tight transition-colors duration-300 ${isActive ? "text-primary" : "text-ink"}`}>{step.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-ink/60">{step.description}</p>
-                  {i === processSteps.length - 1 && (
-                    <motion.span
-                      initial={{ scale: 0 }} whileInView={{ scale: 1 }}
-                      transition={{ delay: 0.6, type: "spring", stiffness: 400 }}
-                      className="absolute -top-1 right-0 hidden h-4 w-4 rounded-full bg-accent md:block" />
-                  )}
-                </motion.li>
+                  <motion.li key={step._id}
+                    variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: E } } }}
+                    className="relative pl-14 md:flex md:flex-col md:pl-0">
+                    <span className={`absolute left-0 top-0 z-10 grid h-10 w-10 place-items-center rounded-full border text-xs font-semibold transition-colors duration-300 md:relative
+                      ${isActive ? "border-accent bg-accent text-ink" : "border-white/15 bg-[#111111] text-white/50"}`}>
+                      {step.stepNumber}
+                    </span>
+                    <div className={`flex flex-1 flex-col rounded-xl border p-6 transition-colors duration-300 md:mt-6
+                      ${isLast
+                        ? "border-primary bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)]"
+                        : isActive ? "border-white/15 bg-white/[0.06]" : "border-white/10 bg-white/[0.02]"}`}>
+                      <h3 className="text-xl font-extrabold tracking-tight">{step.title}</h3>
+                      <p className={`mt-3 text-sm ${isLast ? "text-white/80" : "text-white/55"}`}>{step.description}</p>
+                      {isLast && (
+                        <p className="mt-auto inline-flex items-center gap-1.5 pt-6 text-xs font-semibold uppercase tracking-[0.1em] text-accent">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M7 7h10v10" /></svg>
+                          Compounds from here
+                        </p>
+                      )}
+                    </div>
+                  </motion.li>
                 );
               })}
             </motion.ol>
@@ -602,7 +606,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Selected work</p>
-                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Results that compound." /></h2>
+                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Results that" />{" "}<span className="mark-gradient"><WordReveal text="compound." /></span></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/case-studies" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-ink underline-offset-4 hover:underline">
                 See all case studies
@@ -619,7 +623,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Founder voices</p>
-                <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Trusted by the operators we are built for." /></h2>
+                <h2 className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Trusted by the operators we are" />{" "}<span className="mark-gradient"><WordReveal text="built for." /></span></h2>
               </motion.div>
               <motion.a variants={fadeUp} href="/testimonials" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-ink underline-offset-4 hover:underline">
                 Read all testimonials
@@ -630,12 +634,24 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                 viewport={{ once: true, margin: "-60px" }}
                 className="-mx-6 lg:-mx-10">
                 <DraggableMarquee trackClassName="items-stretch gap-5 px-6 lg:px-10">
-                  {[...testimonials, ...testimonials].map((t, i) => (
+                  {[...testimonials, ...testimonials].map((t, i) => {
+                    // Short quotes get larger type so every card reads as full;
+                    // long ones show a few complete sentences, then "Read more".
+                    const preview = extractMainLine(t.quote, QUOTE_PREVIEW);
+                    const size = preview.length < 90
+                      ? "text-2xl leading-tight md:text-[1.7rem]"
+                      : preview.length < 160 ? "text-xl leading-snug md:text-2xl" : "text-lg leading-snug md:text-xl";
+                    return (
                     <figure key={`${t._id}-${i}`}
-                      className={`flex w-[320px] shrink-0 flex-col justify-between rounded-3xl border border-ink/5 p-8 md:w-[380px] md:p-10 ${cardBg[t.cardStyle] ?? cardBg.sand}`}>
-                      <blockquote className="text-balance text-lg font-medium leading-snug md:text-xl">
+                      className={`flex min-h-[380px] w-[320px] shrink-0 flex-col rounded-xl border border-ink/5 p-8 md:min-h-[420px] md:w-[380px] md:p-10 ${cardBg[t.cardStyle] ?? cardBg.sand}`}>
+                      <svg className="h-7 w-7 shrink-0 text-primary" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M9.5 6C6.5 7.2 4.5 9.8 4.5 13v5h6v-6H7.6c.2-2 1.4-3.5 3.3-4.3L9.5 6zm9 0c-3 1.2-5 3.8-5 7v5h6v-6h-2.9c.2-2 1.4-3.5 3.3-4.3L18.5 6z" />
+                      </svg>
+                      <blockquote className={`mt-6 flex-1 text-pretty font-medium ${size}`}>
                         <ExpandableQuote
                           quote={t.quote}
+                          previewLength={QUOTE_PREVIEW}
+                          withQuoteMarks={false}
                           name={t.name}
                           role={t.role}
                           initial={t.initial}
@@ -643,7 +659,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                           readMoreClassName="mt-3 block text-sm font-semibold underline underline-offset-2 opacity-70 transition hover:opacity-100"
                         />
                       </blockquote>
-                      <figcaption className="mt-10 flex items-center gap-4">
+                      <figcaption className="mt-8 flex items-center gap-4 border-t border-ink/10 pt-6">
                         {t.avatarUrl ? (
                           <img src={t.avatarUrl} alt={t.name} className="h-11 w-11 shrink-0 rounded-full object-cover" />
                         ) : (
@@ -655,7 +671,8 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                         </div>
                       </figcaption>
                     </figure>
-                  ))}
+                    );
+                  })}
                 </DraggableMarquee>
               </motion.div>
             )}
@@ -663,7 +680,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
         </section>
 
         {/* â•â• CTA â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-        <section id="cta" className="relative overflow-hidden bg-primary text-primary-foreground">
+        <section id="cta" className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] text-primary-foreground">
           <AmbientBackground tone="dark" />
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.14)}
@@ -671,14 +688,14 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary-foreground/70">Let's build</motion.p>
             <motion.h2 variants={fadeUp}
               className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
-              Ready To Build <br /><span className="text-accent">Momentum?</span>
+              Ready To Build <br /><span className="text-gradient-lime">Momentum?</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-lg text-primary-foreground/70">
               A 30-minute call with our strategy team. No pitch deck. Just clarity on what your next 90 days could look like.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
               <MagneticButton href="https://ntis.in/7oApLV"
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink">
+                className="glow-lime inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink">
                 Book A Strategy Call
               </MagneticButton>
               <MagneticButton href="#work"

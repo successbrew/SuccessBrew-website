@@ -91,7 +91,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
               </motion.a>
               <motion.div variants={fadeUp}
                 className="mb-8 flex w-fit items-center gap-2 rounded-full border border-[#111111]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/70 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#003CD1]" />
+                <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-[#003CD1] to-[#C6FF3A]" />
                 Community Offers
               </motion.div>
 
@@ -100,7 +100,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                 {" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-[#003CD1]"><WordReveal text="access." mode="nested" staggerDelay={0.06} /></span>
-                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 bg-[#C6FF3A] md:h-6" />
+                  <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 rounded-[2px] bg-gradient-to-r from-[#C6FF3A] via-[#C6FF3A] to-[#E4FFA8] md:h-6" />
                 </span>
               </h1>
 
@@ -116,7 +116,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.75, ease: E }}
-              className="mb-5 overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-[#003CD1] text-white">
+              className="mb-5 overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] text-white">
               <div className="grid gap-0 lg:grid-cols-[1.2fr_1fr]">
                 <div className="p-10 lg:p-14">
                   <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.1em]">
@@ -150,9 +150,9 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
               className="grid gap-6 lg:grid-cols-3">
               {membershipTiers.map((tier) => (
                 <motion.div key={tier.name} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
-                  className={`relative flex flex-col rounded-3xl border p-8 md:p-10 ${tier.highlight ? "border-[#003CD1] bg-[#003CD1] text-white shadow-[0_30px_60px_-30px_rgba(0,60,209,0.4)]" : "border-[#111111]/5 bg-[#FFF3D0]"}`}>
+                  className={`relative flex flex-col rounded-3xl border p-8 md:p-10 ${tier.highlight ? "border-[#003CD1] bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] text-white shadow-[0_30px_60px_-30px_rgba(0,60,209,0.4)]" : "border-[#111111]/5 bg-[#FFF3D0]"}`}>
                   {tier.highlight && (
-                    <span className="absolute -top-3 left-8 rounded-full bg-[#C6FF3A] px-3 py-1 text-[11px] font-black text-[#111111]">Most Popular</span>
+                    <span className="glow-lime absolute -top-3 left-8 rounded-full bg-[#C6FF3A] px-3 py-1 text-[11px] font-black text-[#111111]">Most Popular</span>
                   )}
                   <p className={`text-xs font-semibold uppercase tracking-[0.1em] ${tier.highlight ? "text-white/60" : "text-[#003CD1]"}`}>{tier.name}</p>
                   <div className="mt-4 flex items-baseline gap-2">

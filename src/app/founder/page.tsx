@@ -1,5 +1,5 @@
 import { permanentRedirect } from "next/navigation";
 
 export default function FounderPage() {
-  permanentRedirect("/about");
+  permanentRedirect("/about/sourabh-goyal");
 }

@@ -3,13 +3,33 @@
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-/** First line/sentence of a quote, capped so cards stay a consistent size regardless of how long the full testimonial is. */
+/** Quote text with line breaks and repeated spaces collapsed to single spaces. */
+function flatten(quote: string): string {
+  return quote.trim().replace(/\s+/g, " ");
+}
+
+/** Preview of a quote: as many whole sentences as fit in `maxLen`, so long
+ * testimonials still fill their card instead of collapsing to one short opening
+ * sentence. Falls back to a hard cut with "…" if even the first sentence is too long. */
 export function extractMainLine(quote: string, maxLen = 150): string {
-  const firstBlock = quote.trim().split(/\n+/)[0].trim();
-  if (firstBlock.length <= maxLen) return firstBlock;
-  const sentenceMatch = firstBlock.slice(0, maxLen + 60).match(/^.*?[.!?](?=\s|$)/);
-  if (sentenceMatch) return sentenceMatch[0].trim();
-  return firstBlock.slice(0, maxLen).trimEnd() + "…";
+  const text = flatten(quote);
+  if (text.length <= maxLen) return text;
+  const sentences = text.match(/[^.!?]+[.!?]+["”’)]*(?:\s|$)|[^.!?]+$/g) ?? [text];
+  let preview = "";
+  let used = 0;
+  for (const s of sentences) {
+    if ((preview + s).trim().length > maxLen) break;
+    preview += s;
+    used++;
+  }
+  // If whole sentences only filled a little of the space (a short opener
+  // followed by a long sentence), run into the next one and cut at a word.
+  if (preview.trim().length < maxLen * 0.6 && used < sentences.length) {
+    const cut = (preview + sentences[used]).slice(0, maxLen);
+    preview = cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:\s]+$/, "") + "…";
+  }
+  preview = preview.trim();
+  return preview || text.slice(0, maxLen).trimEnd() + "…";
 }
 
 export function ExpandableQuote({
@@ -22,6 +42,7 @@ export function ExpandableQuote({
   readMoreClassName,
   onOpenChange,
   withQuoteMarks = true,
+  previewLength,
 }: {
   quote: string;
   name: string;
@@ -32,9 +53,11 @@ export function ExpandableQuote({
   readMoreClassName?: string;
   onOpenChange?: (open: boolean) => void;
   withQuoteMarks?: boolean;
+  /** Max characters shown before "Read more" (default 150). */
+  previewLength?: number;
 }) {
-  const mainLine = extractMainLine(quote);
-  const isTruncated = mainLine !== quote.trim();
+  const mainLine = extractMainLine(quote, previewLength);
+  const isTruncated = mainLine !== flatten(quote);
 
   return (
     <>

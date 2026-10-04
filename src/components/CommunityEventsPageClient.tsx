@@ -126,7 +126,7 @@ function NextUpCard({ event }: { event: EventItem }) {
           )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#003CD1]/60 via-transparent to-transparent" />
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-            <span className="rounded-full bg-[#C6FF3A] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]">Next Up</span>
+            <span className="glow-lime rounded-full bg-[#C6FF3A] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]">Next Up</span>
             {event.isFeatured && (
               <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-white backdrop-blur">Featured</span>
             )}
@@ -166,7 +166,7 @@ function NextUpCard({ event }: { event: EventItem }) {
           )}
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href={href} className="inline-flex items-center gap-2 rounded-full bg-[#003CD1] px-6 py-3 text-sm font-bold text-white transition hover:translate-y-[-2px]">
+            <a href={href} className="glow-blue inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#003CD1] to-[#1F55E8] px-6 py-3 text-sm font-bold text-white transition hover:translate-y-[-2px]">
               Save my seat →
             </a>
             {pillar && (
@@ -218,11 +218,11 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-[#003CD1] pt-32 pb-16 text-white lg:pt-44 lg:pb-24">
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] pt-32 pb-16 text-white lg:pt-44 lg:pb-24">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -right-32 -top-32 h-[480px] w-[480px] rounded-full border border-white/10" />
             <div className="absolute right-[-140px] top-[-40px] h-[380px] w-[380px] rounded-full border border-white/10" />
-            <div className="absolute left-[-100px] bottom-[-120px] h-[340px] w-[340px] rounded-full bg-[#C6FF3A]/10 blur-3xl" />
+            <div className="absolute left-[-100px] bottom-[-120px] h-[380px] w-[380px] rounded-full bg-[#C6FF3A]/20 blur-[120px]" />
           </div>
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.11)}>
@@ -243,7 +243,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
                   <WordReveal text="Rooms where founders" mode="nested" staggerDelay={0.06} />
                   {" "}
                   <span className="relative inline-block">
-                    <span className="relative z-10 text-[#C6FF3A]"><WordReveal text="get found." mode="nested" staggerDelay={0.06} /></span>
+                    <span className="text-gradient-lime relative z-10"><WordReveal text="get found." mode="nested" staggerDelay={0.06} /></span>
                   </span>
                 </h1>
               )}
@@ -253,7 +253,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
               </motion.p>
 
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-4">
-                <a href="#upcoming" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+                <a href="#upcoming" className="glow-lime inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                   See what&rsquo;s next →
                 </a>
                 <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">
@@ -265,11 +265,11 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
         </section>
 
         {/* ══ STATS BAR ═════════════════════════════════════════════════ */}
-        <section className="bg-[#00269c]">
+        <section className="relative border-t border-white/10 bg-[linear-gradient(90deg,#0B1640,#00269c_50%,#0B1640)]">
           <div className="mx-auto grid max-w-7xl grid-cols-2 gap-y-6 px-6 py-8 lg:grid-cols-4 lg:px-10">
             {stats.map((s) => (
               <div key={s.label}>
-                <p className="text-2xl font-black text-[#C6FF3A] md:text-3xl">{s.value}</p>
+                <p className="text-gradient-lime text-2xl font-black md:text-3xl">{s.value}</p>
                 <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-white/60">{s.label}</p>
               </div>
             ))}
@@ -283,12 +283,12 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
             <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
               <div className="flex flex-wrap gap-2">
                 <button onClick={() => setCategory("ALL")}
-                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === "ALL" ? "border-[#003CD1] bg-[#003CD1] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === "ALL" ? "border-transparent bg-gradient-to-r from-[#003CD1] to-[#1F55E8] text-white glow-blue" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
                   All Events
                 </button>
                 {categoriesWithCounts.map((c) => (
                   <button key={c.value} onClick={() => setCategory(c.value)}
-                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === c.value ? "border-[#003CD1] bg-[#003CD1] text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${category === c.value ? "border-transparent bg-gradient-to-r from-[#003CD1] to-[#1F55E8] text-white glow-blue" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30"}`}>
                     {c.label} <span className="opacity-50">({c.count})</span>
                   </button>
                 ))}
@@ -348,16 +348,20 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
         </section>
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
-        <section id="cta" className="bg-[#003CD1] py-24 text-white lg:py-32">
+        <section id="cta" className="relative overflow-hidden bg-[#111111] py-24 text-white lg:py-32">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+            <div className="absolute left-1/2 top-1/2 h-[460px] w-[680px] -translate-x-[65%] -translate-y-1/2 rounded-full bg-[#003CD1]/40 blur-[140px]" />
+            <div className="absolute left-1/2 top-1/2 h-[320px] w-[420px] -translate-x-[5%] -translate-y-[30%] rounded-full bg-[#C6FF3A]/15 blur-[130px]" />
+          </div>
           <motion.div
             initial="hidden" whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger(0.12)}
-            className="mx-auto max-w-3xl px-6 text-center lg:px-10">
+            className="relative mx-auto max-w-3xl px-6 text-center lg:px-10">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Don&rsquo;t miss the next one</motion.p>
-            <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Be in the room next time.</motion.h2>
+            <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Be in the room <span className="text-gradient-lime">next time.</span></motion.h2>
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a href="/apply?source=community" className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+              <a href="/apply?source=community" className="glow-lime inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Apply to Join Community
               </a>
               <a href="/community" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10">

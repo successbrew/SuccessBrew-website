@@ -92,11 +92,11 @@ export function CommunityJoinSuccessClient({
 
             {status === "PAID" && (
               <>
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-ink">✓</div>
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#E4FFA8] text-2xl text-ink shadow-[0_0_0_8px_rgba(0,60,209,0.25)]">✓</div>
                 <h1 className="text-3xl font-black">You&rsquo;re in!</h1>
                 <p className="mt-3 text-white/50">Payment confirmed. Your access is ready.</p>
                 {redirectUrl ? (
-                  <Button asChild size="lg" className="mt-8 bg-accent text-ink hover:bg-accent/90">
+                  <Button asChild size="lg" className="glow-lime mt-8 bg-accent text-ink hover:bg-accent/90">
                     <a href={redirectUrl}>Get your WhatsApp invite →</a>
                   </Button>
                 ) : (
@@ -124,7 +124,7 @@ export function CommunityJoinSuccessClient({
               <>
                 <h1 className="text-2xl font-bold">Payment didn&rsquo;t go through</h1>
                 <p className="mt-3 text-white/50">No worries — you haven&rsquo;t been charged. You can try again.</p>
-                <Button asChild size="lg" className="mt-8 bg-accent text-ink hover:bg-accent/90">
+                <Button asChild size="lg" className="glow-lime mt-8 bg-accent text-ink hover:bg-accent/90">
                   <a href={joinHref}>Try again</a>
                 </Button>
               </>

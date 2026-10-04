@@ -47,7 +47,7 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudy; index: number }) {
           </div>
 
           {/* Result Badge (Top Right) */}
-          <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-primary/90 px-3 py-1.5 text-xs font-bold text-primary-foreground backdrop-blur">
+          <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-[#1F55E8] px-3 py-1.5 text-xs font-bold text-primary-foreground backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             Key Result
           </div>
@@ -153,10 +153,10 @@ export function CaseStudiesPageClient({
                 <WordReveal text="Results that" mode="nested" staggerDelay={0.07} />
                 {" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10">
+                  <span className="text-gradient-lime relative z-10">
                     <WordReveal text="compound." mode="nested" staggerDelay={0.07} />
                   </span>
-                  <span aria-hidden="true" className="absolute inset-x-0 bottom-1 -z-0 h-3 bg-accent md:h-5" />
+                  <span aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-0 h-1 rounded-full bg-gradient-to-r from-primary to-accent md:h-[5px]" />
                 </span>
               </motion.h1>
 
@@ -273,8 +273,9 @@ export function CaseStudiesPageClient({
         )}
 
         {/* ══ CTA SECTION ═══════════════════════════════════════════════ */}
-        <section className="bg-primary py-20 lg:py-28">
-          <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-20 lg:py-28">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-accent/20 blur-[130px]" />
+          <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -293,7 +294,7 @@ export function CaseStudiesPageClient({
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-4">
                 <a
                   href="https://ntis.in/7oApLV"
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink shadow-[0_10px_40px_-10px_rgba(198,255,58,0.5)] transition hover:translate-y-[-2px]"
+                  className="glow-lime inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink transition hover:translate-y-[-2px]"
                 >
                   Book a Strategy Call
                 </a>

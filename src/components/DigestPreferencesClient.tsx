@@ -81,7 +81,7 @@ export function DigestPreferencesClient({
           <AmbientBackground tone="dark" />
           <div className="relative mx-auto max-w-2xl px-6 lg:px-10">
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              <span className="h-1.5 w-3 rounded-full bg-gradient-to-r from-primary to-accent" />
               Daily Brief
             </div>
             <h1 className="text-[clamp(2rem,4.5vw,3.2rem)] font-black leading-[0.98] tracking-tight text-white">
@@ -143,7 +143,7 @@ export function DigestPreferencesClient({
                       </li>
                     ))}
                   </ul>
-                  <Button onClick={handleSave} disabled={isPending} size="lg" className="w-full bg-accent text-ink hover:bg-accent/90">
+                  <Button onClick={handleSave} disabled={isPending} size="lg" className="glow-lime w-full bg-accent text-ink hover:bg-accent/90">
                     {isPending ? "Saving…" : "Save my topics"}
                   </Button>
                   {status === "saved" && <p className="text-center text-sm text-accent">Saved — see you in tomorrow&rsquo;s brief.</p>}

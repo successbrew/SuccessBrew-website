@@ -411,7 +411,7 @@ export function EventLandingPageClient({
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO — cinematic, bottom-anchored ═══════════════════════════ */}
-        <section className="relative flex min-h-[86vh] flex-col justify-end overflow-hidden bg-[#003CD1] pb-16 pt-32 text-white lg:min-h-[92vh] lg:pb-20 lg:pt-40">
+        <section className="relative flex min-h-[86vh] flex-col justify-end overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] pb-16 pt-32 text-white lg:min-h-[92vh] lg:pb-20 lg:pt-40">
           {event.imageUrl ? (
             <>
               {/* Cover images here are typically pre-designed banners with their own
@@ -425,13 +425,13 @@ export function EventLandingPageClient({
               />
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#003CD1] via-[#003CD1]/45 to-[#003CD1]/80"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1640] via-[#003CD1]/55 to-[#003CD1]/85"
               />
             </>
           ) : (
             <div aria-hidden className="pointer-events-none absolute inset-0">
               <div className="absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full border border-white/10" />
-              <div className="absolute left-[-100px] bottom-[-120px] h-[300px] w-[300px] rounded-full bg-[#C6FF3A]/10 blur-3xl" />
+              <div className="absolute left-[-100px] bottom-[-120px] h-[360px] w-[360px] rounded-full bg-[#C6FF3A]/20 blur-[120px]" />
             </div>
           )}
 
@@ -494,7 +494,7 @@ export function EventLandingPageClient({
                   duplication. */}
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-4">
                 <a href={registerHref} target={event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-sm font-bold text-[#111111] transition hover:translate-y-[-2px]">
+                  className="glow-lime inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-sm font-bold text-[#111111] transition hover:translate-y-[-2px]">
                   Save my seat <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
                 </a>
                 {navItems.length > 0 && (
@@ -563,7 +563,7 @@ export function EventLandingPageClient({
             {event.subtitle && (
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
                 className="relative rounded-2xl bg-white p-8 lg:mt-2">
-                <span aria-hidden className="absolute left-0 top-8 h-10 w-1 rounded-full bg-[#C6FF3A]" />
+                <span aria-hidden className="absolute left-0 top-8 h-10 w-1 rounded-full bg-gradient-to-b from-[#003CD1] to-[#C6FF3A]" />
                 <p className="pl-5 text-lg font-bold leading-snug text-[#111111] sm:text-xl">
                   {event.subtitle}
                 </p>
@@ -707,7 +707,7 @@ export function EventLandingPageClient({
                 <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">The agenda.</h2>
               </motion.div>
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.06)}
-                className="relative border-l-2 border-[#111111]/10 pl-7 sm:pl-9">
+                className="relative border-l-2 border-transparent pl-7 [border-image:linear-gradient(to_bottom,#003CD1,#C6FF3A)_1] sm:pl-9">
                 {agendaItems.map((item, i) => (
                   <motion.div key={i} variants={fadeUp} className="relative pb-10 last:pb-0">
                     <span aria-hidden className="absolute -left-[33px] top-1.5 grid h-4 w-4 place-items-center rounded-full bg-[#003CD1] ring-4 ring-white sm:-left-[37px]" />
@@ -862,21 +862,25 @@ export function EventLandingPageClient({
         )}
 
         {/* ══ FINAL CTA ═══════════════════════════════════════════════════ */}
-        <section id="registration" className="scroll-mt-24 bg-[#111111] py-20 text-white lg:py-28">
+        <section id="registration" className="relative scroll-mt-24 overflow-hidden bg-[#111111] py-20 text-white lg:py-28">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+            <div className="absolute left-1/2 top-1/2 h-[420px] w-[620px] -translate-x-[65%] -translate-y-1/2 rounded-full bg-[#003CD1]/40 blur-[140px]" />
+            <div className="absolute left-1/2 top-1/2 h-[300px] w-[400px] -translate-x-[5%] -translate-y-[30%] rounded-full bg-[#C6FF3A]/15 blur-[130px]" />
+          </div>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
-            className="mx-auto max-w-2xl px-6 text-center lg:px-10">
+            className="relative mx-auto max-w-2xl px-6 text-center lg:px-10">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">
               {event.priceNote ?? "Reserve your seat"}
             </motion.p>
             <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-5xl">
-              Ready to be in the room?
+              Ready to be <span className="text-gradient-lime">in the room?</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="mt-4 text-white/60">
               {seatsSummary(event, { totalSuffix: "seats total", fallback: "Limited seating" })}
             </motion.p>
             <motion.div variants={fadeUp} className="mt-8">
               <a href={registerHref} target={event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
-                className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+                className="inline-flex items-center gap-2 glow-lime rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                 Save my seat <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
               </a>
               {!event.registerUrl && (
@@ -915,14 +919,15 @@ export function EventLandingPageClient({
         {/* ══ BECOME A PARTNER ═════════════════════════════════════════ */}
         {event.becomePartnerUrl && (
           <>
-            <section className="bg-[#003CD1] py-20 text-white lg:py-28">
+            <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-20 text-white lg:py-28">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[400px] w-[400px] rounded-full bg-[#C6FF3A]/20 blur-[130px]" />
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
-                className="mx-auto max-w-2xl px-6 text-center lg:px-10">
+                className="relative mx-auto max-w-2xl px-6 text-center lg:px-10">
                 <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Sponsor this room</motion.p>
                 <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-5xl">Become a Partner.</motion.h2>
                 <motion.div variants={fadeUp} className="mt-8">
                   <a href={event.becomePartnerUrl} target="_blank" rel="noreferrer noopener"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
+                    className="inline-flex items-center gap-2 glow-lime rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
                     Become a Partner
                   </a>
                 </motion.div>
