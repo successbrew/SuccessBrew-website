@@ -66,25 +66,37 @@ function checkRateLimitInMemory(key: string, limit: number, windowMs: number): b
   return true;
 }
 
-/** Production requests are denied when shared storage is missing or unavailable. */
-export async function checkRateLimit(key: string, limit: number, windowMs: number): Promise<boolean> {
+export type RateLimitResult = "ok" | "limited" | "unavailable";
+
+/** Like checkRateLimit(), but distinguishes a genuine "too many requests" from
+ * production refusing because shared storage is missing or failing — callers
+ * that show the reason to users shouldn't blame their network for an outage. */
+export async function checkRateLimitDetailed(key: string, limit: number, windowMs: number): Promise<RateLimitResult> {
+  const inMemory = (): RateLimitResult => (checkRateLimitInMemory(key, limit, windowMs) ? "ok" : "limited");
+
   if (!redis) {
     if (process.env.NODE_ENV === "production") {
       console.error("SECURITY: shared rate limit storage is missing");
-      return false;
+      return "unavailable";
     }
-    return checkRateLimitInMemory(key, limit, windowMs);
+    return inMemory();
   }
 
   try {
     const { success, reason } = await getLimiter(limit, windowMs).limit(key);
-    return success && reason !== "timeout";
+    if (reason === "timeout") return "unavailable";
+    return success ? "ok" : "limited";
   } catch (err) {
     // Production fails closed (see SECURITY-ROLLOUT.md); only development
     // falls back to the in-memory limiter.
     console.error("Upstash rate limit check failed, falling back to in-memory limiter", err);
-    return process.env.NODE_ENV !== "production" && checkRateLimitInMemory(key, limit, windowMs);
+    return process.env.NODE_ENV === "production" ? "unavailable" : inMemory();
   }
+}
+
+/** Production requests are denied when shared storage is missing or unavailable. */
+export async function checkRateLimit(key: string, limit: number, windowMs: number): Promise<boolean> {
+  return (await checkRateLimitDetailed(key, limit, windowMs)) === "ok";
 }
 
 export function clientIp(request: Request): string {

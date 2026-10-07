@@ -7,7 +7,7 @@ import { notifyTeamOfSubmission } from "@/lib/services/email/notify-team";
 import { sendApplicationConfirmationEmail } from "@/lib/services/email/notify-applicant";
 import { notifyAdmins } from "@/lib/services/notifications/create";
 import { applicationSubmitSchema, documentUploadSchema } from "@/lib/validators/application";
-import { checkRateLimit, clientIpFromHeaders } from "@/lib/rate-limit";
+import { checkRateLimitDetailed, clientIpFromHeaders } from "@/lib/rate-limit";
 import { z } from "zod";
 
 const payloadSchema = applicationSubmitSchema.extend({
@@ -22,20 +22,27 @@ export async function submitApplicationAction(raw: unknown): Promise<SubmitAppli
   // application to that account; otherwise it's submitted anonymously.
   const { data: session } = await auth.getSession();
 
+  // Validate first: a submission rejected for a typo never reaches the
+  // database or sends email, so it shouldn't use up one of the applicant's
+  // rate-limited attempts — otherwise fixing a few field errors locks them out.
+  const parsed = payloadSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { error: [...new Set(parsed.error.issues.map((i) => i.message))].join(". ") };
+  }
+
   // Now that login is never required to apply, this is the main unauthenticated
   // write path in the app — rate-limit per IP so it can't be used to spam
   // fake applications (and the emails/notifications each one triggers).
   // Signed-in admins skip it so the team can test the form repeatedly.
   if (session?.user?.role !== ADMIN_ROLES.ADMIN) {
     const ip = await clientIpFromHeaders();
-    if (!(await checkRateLimit(`apply-submit:${ip}`, 5, 15 * 60 * 1000))) {
+    const limit = await checkRateLimitDetailed(`apply-submit:${ip}`, 5, 15 * 60 * 1000);
+    if (limit === "unavailable") {
+      return { error: "We couldn't submit your application right now. Please try again in a few minutes — your progress is saved." };
+    }
+    if (limit === "limited") {
       return { error: "Too many applications submitted from this network. Please try again in a while." };
     }
-  }
-
-  const parsed = payloadSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { error: parsed.error.issues.map((i) => i.message).join(", ") };
   }
 
   try {

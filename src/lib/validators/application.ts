@@ -37,22 +37,35 @@ export async function assertCategoryPairValid(categoryId: string, subCategoryId:
 }
 
 // ── Steps 3-4: Professional Information + Online Presence ───────────────────
+/** Applicants paste links however they have them: trim, treat a cleared field
+ * as not provided, and add the https:// most people leave off ("linkedin.com/in/me"). */
+export function normalizeUrl(value: unknown) {
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  return /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+const webUrl = (label: string) =>
+  z.url({ protocol: /^https?$/, hostname: z.regexes.domain, error: `Enter a valid ${label} link` }).max(2048);
+const requiredUrl = (label: string) => z.preprocess(normalizeUrl, webUrl(label));
+const optionalUrl = (label: string) => z.preprocess(normalizeUrl, webUrl(label).optional());
+
 const socialsSchema = z.object({
-  linkedin: z.string().url("Enter a valid LinkedIn URL").max(2048),
-  instagram: z.string().url().max(2048).optional(),
-  twitter: z.string().url().max(2048).optional(),
-  youtube: z.string().url().max(2048).optional(),
-  website: z.string().url().max(2048).optional(),
-  portfolio: z.string().url().max(2048).optional(),
-  podcastLinks: z.array(z.string().url().max(2048)).max(20).optional(),
-  articles: z.array(z.string().url().max(2048)).max(20).optional(),
+  linkedin: requiredUrl("LinkedIn"),
+  instagram: optionalUrl("Instagram"),
+  twitter: optionalUrl("Twitter / X"),
+  youtube: optionalUrl("YouTube"),
+  website: optionalUrl("website"),
+  portfolio: optionalUrl("portfolio"),
+  podcastLinks: z.array(requiredUrl("podcast")).max(20).optional(),
+  articles: z.array(requiredUrl("article")).max(20).optional(),
 });
 
 export const professionalInfoSchema = z.object({
   companyName: z.string().min(1, "Required").max(150),
   currentRole: z.string().min(1, "Required").max(150),
   yearsExperience: z.coerce.number().int().min(0).max(100),
-  companyWebsite: z.string().url().max(2048).optional(),
+  companyWebsite: optionalUrl("company website"),
   industry: z.string().min(1, "Required").max(100),
   revenue: z.string().max(100).optional(),
   fundingStage: z.string().max(100).optional(),
