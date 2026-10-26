@@ -406,22 +406,18 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               </motion.div>
 
               {/* Typewriter headline */}
-              <h1 className="text-[clamp(2.75rem,7vw,6.5rem)] font-black leading-[0.95] tracking-tight text-ink">
-                <Typewriter text="We Brew Brand's Growth Via Content and Community" delay={400} speed={40} highlight="Brew" highlightClassName="text-primary mark-gradient" />
+              <h1 className="max-w-6xl text-[clamp(2.5rem,6vw,5.5rem)] font-black leading-[0.95] tracking-tight text-ink">
+                <Typewriter text="Launch Your SaaS or AI Product Through Creator-Led Distribution." delay={400} speed={32} highlight="Creator-Led" highlightClassName="text-primary mark-gradient" />
               </h1>
 
               <motion.div variants={fadeUp} className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-end">
                 <p className="max-w-xl text-balance text-lg text-ink/70 md:text-xl">
-                  Content, community, and visibility for ambitious brands.
+                  We help AI startups turn product launches into creator-led campaigns that drive awareness, product trials and early adoption — combining launch strategy, creator partnerships and performance tracking.
                 </p>
                 <div className="flex flex-wrap items-center gap-3 lg:justify-end">
                   <MagneticButton href="https://ntis.in/7oApLV"
                     className="glow-blue inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-[#1F55E8] px-7 py-4 text-base font-semibold text-primary-foreground">
-                    Book Discovery Call
-                  </MagneticButton>
-                  <MagneticButton href="#work"
-                    className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-background px-7 py-4 text-base font-semibold text-ink hover:bg-sand">
-                    Explore Case Studies
+                    Plan Your Product Launch
                   </MagneticButton>
                 </div>
               </motion.div>
@@ -435,6 +431,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                 videoId="LPjwAuFAil0"
                 title="Successbrew studio in action"
                 className="h-full w-full"
+                poster
               />
             </motion.div>
           </div>
@@ -448,7 +445,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
               variants={stagger(0.12)} className="mb-14 lg:mb-16">
               <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">By the numbers</motion.p>
-              <h2 className="mt-3 max-w-4xl text-balance text-4xl font-black tracking-tight md:text-6xl">
+              <h2 className="mt-3 max-w-2xl text-balance text-xl font-black tracking-tight md:text-3xl">
                 <WordReveal text="Not just a content marketing system, but a global" />{" "}
                 <span className="mark-gradient text-primary"><WordReveal text="Ecosystem" /></span>{" "}
                 <WordReveal text="that your brand needs." />
@@ -456,7 +453,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.div>
 
             <div ref={statsRef}>
-              <StatsProofBento stats={stats} brandPartners={brandPartners} testimonials={testimonials} caseStudies={caseStudies} inView={statsInView} />
+              <StatsProofBento stats={stats} brandPartners={brandPartners} caseStudies={caseStudies} inView={statsInView} />
             </div>
           </div>
         </section>
@@ -688,21 +685,27 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary-foreground/70">Let's build</motion.p>
             <motion.h2 variants={fadeUp}
               className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
-              Ready To Build <br /><span className="text-gradient-lime">Momentum?</span>
+              Let's plan your next <span className="text-gradient-lime">product launch.</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-lg text-primary-foreground/70">
-              A 30-minute call with our strategy team. No pitch deck. Just clarity on what your next 90 days could look like.
+              Tell us what you're building, who needs it and what a successful launch would look like.
+            </motion.p>
+            <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-xl text-lg text-primary-foreground/70">
+              We'll discuss the audience, creator strategy, campaign scope and metrics that make sense for your product.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
               <MagneticButton href="https://ntis.in/7oApLV"
                 className="glow-lime inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink">
-                Book A Strategy Call
+                Book a Product Launch Strategy Call
               </MagneticButton>
               <MagneticButton href="#work"
                 className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 px-8 py-4 text-base font-semibold text-primary-foreground hover:bg-primary-foreground/10">
                 See the work
               </MagneticButton>
             </motion.div>
+            <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-sm text-primary-foreground/60">
+              No generic marketing pitch. A focused conversation about your product and its route to market.
+            </motion.p>
           </motion.div>
         </section>
 

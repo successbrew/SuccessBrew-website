@@ -6,14 +6,14 @@ import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { ViewsGrowthChart } from "@/components/ViewsGrowthChart";
 import { VIEWS_GROWTH } from "@/lib/content/views-growth";
 import type { BrandPartner } from "@/components/LogoShowcase";
-import type { CaseStudy, Stat, Testimonial } from "@/components/ServicesPageClient";
+import type { CaseStudy, Stat } from "@/components/ServicesPageClient";
 
 const E = [0.22, 1, 0.36, 1] as const;
 
 /**
  * "By the numbers" as a bento of proof: every stat sits next to evidence pulled
  * from the site's own data — the case studies behind the views, client logos,
- * a real testimonial — so the numbers read as results, not claims.
+ * our best launches — so the numbers read as results, not claims.
  *
  * Stats are admin-managed, so each one is matched to its proof by its label;
  * anything unrecognised still renders as a clean number-only tile.
@@ -27,15 +27,6 @@ function proofKindFor(label: string): ProofKind {
   if (/client|partner|brand/.test(l)) return "clients";
   if (/testimonial|review|voice/.test(l)) return "voices";
   return "plain";
-}
-
-/** "20+" → 20, "8,000+" → 8000, "100M+" → 100000000; null if not a plain count. */
-function parseCount(value: string): number | null {
-  const m = value.match(/^([\d,]+)([KMkm]?)\+?$/);
-  if (!m) return null;
-  const n = parseInt(m[1].replace(/,/g, ""), 10);
-  const mult = m[2] ? (m[2].toLowerCase() === "k" ? 1_000 : 1_000_000) : 1;
-  return n * mult;
 }
 
 const TILE_TONE: Record<Stat["colorScheme"], { tile: string; label: string; muted: string }> = {
@@ -63,13 +54,11 @@ function spansFor(kinds: ProofKind[]) {
 export function StatsProofBento({
   stats,
   brandPartners,
-  testimonials,
   caseStudies,
   inView,
 }: {
   stats: Stat[];
   brandPartners: BrandPartner[];
-  testimonials: Testimonial[];
   caseStudies: CaseStudy[];
   inView: boolean;
 }) {
@@ -90,17 +79,29 @@ export function StatsProofBento({
             transition={{ duration: 0.6, ease: E, delay: i * 0.08 }}
             className={`flex min-h-[260px] flex-col rounded-xl border p-6 md:p-8 ${tone.tile} ${spans[i]}`}
           >
-            <div className="text-[clamp(2.25rem,4vw,3.5rem)] font-black leading-none tracking-tight">
-              <AnimatedNumber value={s.number} inView={inView} />
-            </div>
-            <div className={`mt-2 text-sm ${tone.label}`}>{s.label}</div>
+            {kind === "launches" ? (
+              <LaunchesProof mutedClass={tone.muted} labelClass={tone.label} />
+            ) : kind === "voices" ? (
+              // Just the headline number, centred and oversized — no quote.
+              <div className="my-auto">
+                <div className="text-[clamp(3.5rem,7vw,6rem)] font-black leading-none tracking-tight">
+                  <AnimatedNumber value={s.number} inView={inView} />
+                </div>
+                <div className={`mt-3 text-xl font-semibold md:text-2xl ${tone.label}`}>Testimonials</div>
+              </div>
+            ) : (
+              <>
+                <div className="text-[clamp(2.25rem,4vw,3.5rem)] font-black leading-none tracking-tight">
+                  <AnimatedNumber value={s.number} inView={inView} />
+                </div>
+                <div className={`mt-2 text-sm ${tone.label}`}>{s.label}</div>
 
-            <div className="mt-auto pt-8">
-              {kind === "views" && <ViewsProof caseStudies={caseStudies} mutedClass={tone.muted} inView={inView} />}
-              {kind === "launches" && <LaunchesProof stat={s} inView={inView} mutedClass={tone.muted} />}
-              {kind === "clients" && <ClientsProof partners={brandPartners} />}
-              {kind === "voices" && <VoicesProof testimonials={testimonials} mutedClass={tone.muted} />}
-            </div>
+                <div className="mt-auto pt-8">
+                  {kind === "views" && <ViewsProof caseStudies={caseStudies} mutedClass={tone.muted} inView={inView} />}
+                  {kind === "clients" && <ClientsProof partners={brandPartners} />}
+                </div>
+              </>
+            )}
           </motion.div>
         );
       })}
@@ -146,26 +147,59 @@ function ViewsProof({ caseStudies, mutedClass, inView }: { caseStudies: CaseStud
   );
 }
 
-/** One "#1" medal per Product of the Day finish, filling in on scroll. */
-function LaunchesProof({ stat, inView, mutedClass }: { stat: Stat; inView: boolean; mutedClass: string }) {
-  const total = parseCount(stat.number);
-  const medals = total ? Math.min(30, Math.max(1, total)) : 20;
+/** Hand-picked launches shown in place of the Product Hunt count. */
+const BEST_LAUNCHES: { name: string; href?: string; note?: string }[] = [
+  { name: "Sivi.ai", href: "https://sivi.ai" },
+  { name: "Bugasura.io", href: "https://bugasura.io" },
+  { name: "Nautis", note: "Featured in the Product Hunt Daily newsletter" },
+  { name: "Nas.io", href: "https://nas.io" },
+];
+
+/** Product Hunt honours our launches have earned. */
+const LAUNCH_AWARDS = [
+  "#2 Product of the Day",
+  "#4 Product of the Week",
+  "#1 Product of the Week · Productivity",
+  "#1 Product of the Week · SaaS",
+  "#4 Product of the Week · AI",
+];
+
+function LaunchesProof({ mutedClass, labelClass }: { mutedClass: string; labelClass: string }) {
   return (
-    <div>
-      <div className="flex flex-wrap gap-1.5">
-        {Array.from({ length: medals }, (_, i) => (
-          <motion.span
-            key={i}
-            className="grid h-8 w-8 place-items-center rounded-full bg-ink text-[10px] font-semibold text-accent"
-            initial={{ opacity: 0.15 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.25, delay: 0.4 + i * 0.04 }}
-          >
-            #1
-          </motion.span>
+    <div className="flex flex-1 flex-col">
+      <p className={`text-xs font-semibold uppercase tracking-[0.1em] ${labelClass}`}>Product Hunt</p>
+      <h3 className="mt-2 text-2xl font-black leading-tight tracking-tight md:text-3xl">Our best Product Hunt launches</h3>
+
+      <ul className="mt-6 divide-y divide-ink/10 border-y border-ink/10">
+        {BEST_LAUNCHES.map((l) => {
+          const body = (
+            <>
+              <span className="min-w-0">
+                <span className="block truncate text-base font-semibold">{l.name}</span>
+                {l.note && <span className={`block truncate text-xs ${mutedClass}`}>{l.note}</span>}
+              </span>
+              {l.href && (
+                <svg className="shrink-0 opacity-40 transition-opacity group-hover:opacity-100" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M7 7h10v10" /></svg>
+              )}
+            </>
+          );
+          return (
+            <li key={l.name}>
+              {l.href ? (
+                <a href={l.href} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 py-3">{body}</a>
+              ) : (
+                <div className="flex items-center justify-between gap-4 py-3">{body}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      <ul className="mt-auto flex flex-wrap gap-1.5 pt-6">
+        {LAUNCH_AWARDS.map((a) => (
+          <li key={a} className="rounded-full bg-ink px-3 py-1.5 text-[11px] font-semibold text-accent">{a}</li>
         ))}
-      </div>
-      <p className={`mt-3 text-xs ${mutedClass}`}>One medal for every #1 Product of the Day on Product Hunt.</p>
+      </ul>
     </div>
   );
 }
@@ -181,23 +215,5 @@ function ClientsProof({ partners }: { partners: BrandPartner[] }) {
         </div>
       ))}
     </div>
-  );
-}
-
-function VoicesProof({ testimonials, mutedClass }: { testimonials: Testimonial[]; mutedClass: string }) {
-  // Prefer a short quote so it reads in full inside the tile.
-  const t = [...testimonials].sort((a, b) => a.quote.length - b.quote.length).find((x) => x.quote.length >= 40) ?? testimonials[0];
-  if (!t) return null;
-  return (
-    <figure>
-      <blockquote className="line-clamp-4 text-sm leading-relaxed">&ldquo;{t.quote}&rdquo;</blockquote>
-      <figcaption className={`mt-3 flex items-center justify-between gap-3 text-xs ${mutedClass}`}>
-        <span>
-          <span className="font-semibold">{t.name}</span>
-          {t.role ? ` · ${t.role}` : ""}
-        </span>
-        <Link href="/testimonials" className="shrink-0 font-semibold underline-offset-4 hover:underline">Read all →</Link>
-      </figcaption>
-    </figure>
   );
 }
