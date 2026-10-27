@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, MotionConfig } from "framer-motion";
+import { motion, MotionConfig, useInView } from "framer-motion";
+import { AnimatedNumber } from "@/components/AnimatedNumber";
+import { Circled, DoodleArrow, Grain, Scribble, Struck } from "@/components/founder/HandDrawn";
+import { PeopleWall } from "@/components/founder/PeopleWall";
+import { GapSlider } from "@/components/founder/GapSlider";
+import { SystemPath } from "@/components/founder/SystemPath";
+import { OneDayCalendar } from "@/components/founder/OneDayCalendar";
+import { MarkerRow, Polaroid, ScrollWords, WipeReveal } from "@/components/founder/FounderBits";
+import { FOUNDER_CLIENTS } from "@/lib/content/founder-clients";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import type { SiteSettings } from "@/components/SocialLinks";
@@ -10,7 +18,7 @@ import type { BrandPartner } from "@/components/LogoShowcase";
 import type { CaseStudy, Testimonial } from "@/components/ServicesPageClient";
 import { ExpandableQuote, extractMainLine } from "@/components/ExpandableQuote";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
-import { Arrow, E, Glow, GradientBorder, GradientText, Mark, Reveal, SectionLabel, fadeUp, headlineMetric, pickFounderCaseStudies, stagger } from "@/components/LandingPrimitives";
+import { Arrow, E, Glow, GradientBorder, GradientText, Reveal, SectionLabel, fadeUp, headlineMetric, pickFounderCaseStudies, stagger } from "@/components/LandingPrimitives";
 import {
   AUDIO_TESTIMONIALS,
   BOOKING_URL,
@@ -22,6 +30,61 @@ import {
   SYSTEM_STAGES,
   VIDEO_TESTIMONIALS,
 } from "@/lib/content/founder-branding";
+
+/** Case studies kept off this page even though they're tagged as personal branding:
+ * the Instamojo "A Chai a Day" creator campaign isn't founder-led growth work. */
+const HIDDEN_CASE_STUDIES = new Set(["cmsj9b67k000004l1z8qbepzr"]);
+
+/** Headline that lands word by word — each word drops in with a small, uneven tilt. */
+function DropWords({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(" ").map((w, i) => (
+        <motion.span
+          key={i}
+          className="inline-block"
+          variants={{
+            hidden: { opacity: 0, y: 36, rotate: i % 2 ? 5 : -4 },
+            visible: { opacity: 1, y: 0, rotate: 0, transition: { type: "spring", stiffness: 260, damping: 20 } },
+          }}
+        >
+          {w}&nbsp;
+        </motion.span>
+      ))}
+    </>
+  );
+}
+
+/** A stat row that counts up once it's on screen. */
+function CountStats({ stats, size = "lg" }: { stats: { value: string; label: string }[]; size?: "lg" | "sm" }) {
+  const ref = useRef<HTMLDListElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  if (size === "sm") {
+    return (
+      <dl ref={ref} className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
+        {stats.map((s) => (
+          <div key={s.label} className="bg-[#0B0B0B] p-5">
+            <dt className="sr-only">{s.label}</dt>
+            <dd>
+              <span className="block text-2xl font-black tracking-tight md:text-3xl"><GradientText><AnimatedNumber value={s.value} inView={inView} /></GradientText></span>
+              <span className="mt-1 block text-xs text-white/50">{s.label}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
+  return (
+    <dl ref={ref} className="mt-12 grid grid-cols-1 divide-y divide-white/10 border-y border-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+      {stats.map((s) => (
+        <div key={s.label} className="flex flex-col-reverse py-6 sm:px-8 sm:first:pl-0">
+          <dt className="mt-2 max-w-[16rem] text-sm leading-snug text-white/55">{s.label}</dt>
+          <dd className="text-5xl font-black tracking-tight md:text-6xl"><GradientText><AnimatedNumber value={s.value} inView={inView} /></GradientText></dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
 
 /* ──────────────────────────────────────────────────────────────────────────
  * Founder Personal Branding landing page.
@@ -85,8 +148,7 @@ export function FounderBrandingPageClient({
     return () => io.disconnect();
   }, []);
 
-  const stories = pickFounderCaseStudies(caseStudies);
-  const people = testimonials.slice(0, 9);
+  const stories = pickFounderCaseStudies(caseStudies.filter((c) => !HIDDEN_CASE_STUDIES.has(c._id)));
   const written = testimonials.filter((t) => t.quote.length >= 120).slice(0, 3);
 
   return (
@@ -97,6 +159,7 @@ export function FounderBrandingPageClient({
         {/* ══ 01 HERO ════════════════════════════════════════════════════ */}
         <section ref={heroRef} className="relative overflow-hidden bg-[#0B0B0B] pt-28 pb-20 lg:pt-36 lg:pb-28">
           <Glow variant="hero" grid />
+          <Grain />
           <div className="relative mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
               <motion.nav variants={fadeUp} aria-label="Breadcrumb"
@@ -108,8 +171,12 @@ export function FounderBrandingPageClient({
                 <span aria-hidden="true" className="text-white/30">·</span>
                 <span className="text-white/70">Personal Branding</span>
               </motion.nav>
-              <motion.h1 variants={fadeUp} className="mt-6 text-balance text-[clamp(2.5rem,5.6vw,5rem)] font-black leading-[0.98] tracking-tight">
-                How you <Mark>position</Mark> yourself is how the world sees you.
+              <motion.h1 variants={stagger(0.06)} className="mt-6 text-[clamp(2.4rem,4.6vw,4.25rem)] font-black leading-[1.04] tracking-tight">
+                <DropWords text="How you" />
+                <motion.span className="inline-block" variants={{ hidden: { opacity: 0, y: 36, rotate: 4 }, visible: { opacity: 1, y: 0, rotate: 0, transition: { type: "spring", stiffness: 260, damping: 20 } } }}>
+                  <Circled delay={1.1}>position</Circled>&nbsp;
+                </motion.span>
+                <DropWords text="yourself is how the world sees you." />
               </motion.h1>
               <motion.p variants={fadeUp} className="mt-6 max-w-xl text-balance text-xl leading-snug text-white/75 md:text-2xl">
                 We turn founder expertise into <span className="font-semibold text-white">authority</span>,{" "}
@@ -135,16 +202,13 @@ export function FounderBrandingPageClient({
               </motion.div>
             </motion.div>
 
-            {/* Founder photo + the founder → opportunity journey */}
-            <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.9, ease: E }}
+            {/* Founder photo (a tilted print) + the founder → opportunity journey */}
+            <motion.div initial={{ opacity: 0, y: 40, rotate: 6 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ delay: 0.3, type: "spring", stiffness: 90, damping: 16 }}
               className="relative">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-white/10 bg-ink sm:aspect-[5/4] lg:aspect-[4/5]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/founder-branding/founder-on-stage.jpg" alt="Sourabh Goyal speaking to a room of founders"
-                  className="h-full w-full object-cover object-[60%_center]" />
-                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
-              </div>
-              <GradientBorder className="relative -mt-24 ml-auto w-[min(100%,300px)] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)] sm:-mt-32 lg:absolute lg:-left-10 lg:bottom-8 lg:mt-0 lg:ml-0"
+              <Polaroid src="/founder-branding/founder-on-stage.jpg" alt="Sourabh Goyal speaking to a room of founders" tilt={2.5} priority
+                aspect="aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]" imgClassName="object-[60%_center]" />
+              <DoodleArrow className="absolute -left-16 top-10 hidden h-20 w-28 -rotate-12 lg:block" delay={1.6} />
+              <GradientBorder className="relative z-10 -mt-24 ml-auto w-[min(100%,300px)] -rotate-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)] sm:-mt-32 lg:absolute lg:-left-12 lg:bottom-4 lg:mt-0 lg:ml-0"
                 innerClassName="bg-[#141414]/95 p-5 backdrop-blur">
               <ol aria-label="How expertise becomes opportunity">
                 {["Founder", "Ideas", "Content", "Audience", "Authority", "Opportunities"].map((step, i, arr) => {
@@ -168,8 +232,9 @@ export function FounderBrandingPageClient({
         </section>
 
         {/* ══ 02 THE VISIBILITY GAP ═════════════════════════════════════ */}
-        <section className="border-t border-white/[0.06] bg-ink py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section className="relative overflow-hidden border-t border-white/[0.06] bg-ink py-24 lg:py-32">
+          <Grain opacity={0.04} />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <Reveal>
               <SectionLabel n="02" text="The visibility gap" tone="dark" />
               <h2 className="mt-5 max-w-4xl text-balance text-[clamp(2.25rem,4.6vw,4rem)] font-black leading-[1.02] tracking-tight">
@@ -178,56 +243,16 @@ export function FounderBrandingPageClient({
               </h2>
             </Reveal>
 
-            <div className="mt-16 grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
-              <Reveal className="rounded-xl bg-gradient-to-br from-primary/25 via-white/[0.03] to-transparent p-8 ring-1 ring-inset ring-white/10 md:p-10">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/60">What you&rsquo;ve built</p>
-                <ul className="mt-8 space-y-6">
-                  {[
-                    "A company worth talking about",
-                    "Opinions your industry needs to hear",
-                    "Stories that inspire customers, employees and investors",
-                  ].map((item) => (
-                    <li key={item} className="flex gap-4 text-lg font-semibold leading-snug md:text-xl">
-                      <span className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary text-white">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-                      </span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-
-              {/* The gap itself */}
-              <div className="flex items-center justify-center lg:px-8" aria-hidden="true">
-                <div className="flex w-full items-center gap-3 lg:h-full lg:w-auto lg:flex-col">
-                  <span className="h-px flex-1 bg-gradient-to-r from-primary to-accent lg:h-auto lg:w-[2px] lg:flex-1 lg:bg-gradient-to-b" />
-                  <span className="rounded-full border border-accent/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-accent">The gap</span>
-                  <span className="h-px flex-1 bg-gradient-to-r from-accent to-white/10 lg:h-auto lg:w-[2px] lg:flex-1 lg:bg-gradient-to-b" />
-                </div>
-              </div>
-
-              <Reveal delay={0.15} className="rounded-xl border border-dashed border-white/15 p-8 md:p-10">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/40">What the internet sees</p>
-                <ul className="mt-8 space-y-6" aria-label="A thin, unclear online presence">
-                  {["An inactive profile", "Scattered, occasional posts", "No clear point of view"].map((item, i) => (
-                    <li key={item} className="flex gap-4">
-                      <span className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full border border-dashed border-white/25 text-[11px] font-semibold text-white/35">?</span>
-                      <span className="flex-1">
-                        <span className="block text-lg leading-snug text-white/35 md:text-xl">{item}</span>
-                        <span aria-hidden="true" className="mt-2 block h-2 rounded-full bg-white/[0.06]" style={{ width: `${70 - i * 15}%` }} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            </div>
+            <Reveal className="mt-14" delay={0.1}>
+              <GapSlider />
+            </Reveal>
 
             <Reveal className="mt-14 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
               <p className="max-w-2xl text-lg text-white/55">
                 You have built a company worth talking about — but your digital presence may not reflect the person you&rsquo;ve become.
               </p>
               <p className="text-2xl font-black tracking-tight md:text-3xl">
-                That&rsquo;s the gap <Mark>we solve.</Mark>
+                That&rsquo;s the gap <Scribble>we solve.</Scribble>
               </p>
             </Reveal>
           </div>
@@ -236,6 +261,7 @@ export function FounderBrandingPageClient({
         {/* ══ 03 WHO TRUSTS US ══════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#0B0B0B] py-24 lg:py-32">
           <Glow variant="corner" />
+          <Grain opacity={0.05} />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <Reveal>
               <SectionLabel n="03" text="Who trusts us" tone="dark" />
@@ -244,56 +270,38 @@ export function FounderBrandingPageClient({
               </h2>
             </Reveal>
 
-            <Reveal delay={0.1}>
-              <dl className="mt-12 grid grid-cols-1 divide-y divide-white/10 border-y border-white/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-                {PROOF_STATS.map((s) => (
-                  <div key={s.label} className="flex flex-col-reverse py-6 sm:px-8 sm:first:pl-0">
-                    <dt className="mt-2 max-w-[16rem] text-sm leading-snug text-white/55">{s.label}</dt>
-                    <dd className="text-5xl font-black tracking-tight md:text-6xl"><GradientText>{s.value}</GradientText></dd>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
+            <CountStats stats={PROOF_STATS} />
 
-            {/* The people wall — who we've worked with */}
-            {people.length > 0 && (
-              <motion.ul initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.05)}
-                className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
-                {people.map((p) => (
-                  <motion.li key={p._id} variants={fadeUp}
-                    className="group flex items-start gap-4 bg-[#0D0D0D] p-6 transition-colors duration-300 hover:bg-gradient-to-br hover:from-primary hover:to-[#0A2A8F]">
-                    {p.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.avatarUrl} alt="" className="h-11 w-11 shrink-0 rounded-full object-cover grayscale" />
-                    ) : (
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-primary to-[#1F55E8] text-base font-semibold text-white transition-colors group-hover:from-accent group-hover:to-accent group-hover:text-ink">
-                        {p.initial}
-                      </span>
-                    )}
-                    <span className="min-w-0">
-                      <span className="block font-semibold text-white">{p.name}</span>
-                      <span title={p.role} className="mt-1 line-clamp-2 text-sm leading-snug text-white/50 transition-colors group-hover:text-white/80">
-                        {p.role}
-                      </span>
-                    </span>
-                  </motion.li>
-                ))}
-              </motion.ul>
-            )}
+            {/* The people wall — founders and leaders we've built with */}
+            <div className="mt-20 flex flex-wrap items-end justify-between gap-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
+                Founders &amp; leaders we&rsquo;ve built with <span className="text-accent">· {FOUNDER_CLIENTS.length}</span>
+              </p>
+              <p className="flex items-center gap-2 text-xs text-white/40">
+                <DoodleArrow className="h-6 w-9 rotate-[20deg]" tone="white" delay={0.2} />
+                Tap a face to see their profile
+              </p>
+            </div>
+            <div className="mt-8">
+              <PeopleWall people={FOUNDER_CLIENTS} />
+            </div>
 
             {brandPartners.length > 0 && (
               <Reveal className="mt-10">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/40">And the brands behind them</p>
                 {/* Logos are a mix of transparent PNGs and JPGs on white, so each sits on its own light tile */}
-                <div className="mt-5 flex flex-wrap items-center gap-3">
-                  {brandPartners.filter((b) => b.logoUrl).slice(0, 10).map((b) => (
-                    <span key={b._id} className="grid h-14 place-items-center rounded-[6px] bg-white/[0.92] px-5">
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger(0.05)} className="mt-5 flex flex-wrap items-center gap-3">
+                  {brandPartners.filter((b) => b.logoUrl).slice(0, 10).map((b, i) => (
+                    <motion.span key={b._id}
+                      variants={{ hidden: { opacity: 0, y: 16, rotate: i % 2 ? 4 : -4 }, visible: { opacity: 1, y: 0, rotate: 0, transition: { type: "spring", stiffness: 300, damping: 20 } } }}
+                      whileHover={{ y: -3, rotate: i % 2 ? 1.5 : -1.5 }}
+                      className="grid h-14 place-items-center rounded-[6px] bg-white/[0.92] px-5">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={b.logoUrl} alt={b.name} loading="lazy"
                         className="h-6 w-auto max-w-[110px] object-contain opacity-80 grayscale transition hover:opacity-100 hover:grayscale-0" />
-                    </span>
+                    </motion.span>
                   ))}
-                </div>
+                </motion.div>
               </Reveal>
             )}
           </div>
@@ -309,7 +317,7 @@ export function FounderBrandingPageClient({
               <h2 className="mt-4 max-w-5xl text-balance text-[clamp(2.75rem,7vw,6.5rem)] font-black leading-[0.95] tracking-tight">
                 It&rsquo;s about becoming{" "}
                 {/* Highlighter bar that follows the text across line breaks */}
-                <Mark>known for something.</Mark>
+                known for <Scribble delay={0.4}>something.</Scribble>
               </h2>
             </Reveal>
 
@@ -327,22 +335,25 @@ export function FounderBrandingPageClient({
               </Reveal>
 
               <Reveal delay={0.15} className="self-end">
-                <ol className="flex flex-col gap-3" aria-label="From fame to opportunity">
+                <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.22)} className="flex flex-col gap-3" aria-label="From fame to opportunity">
                   {[
-                    { label: "Fame", note: "Not the goal", style: "text-white/30 line-through decoration-white/40" },
+                    { label: "Fame", note: "Not the goal", style: "text-white/30" },
                     { label: "Recognition", note: "People know what you stand for", style: "text-white" },
                     { label: "Authority", note: "People trust your point of view", style: "text-white" },
                     { label: "Opportunity", note: "Trust turns into inbound", style: "bg-gradient-to-r from-white to-accent bg-clip-text text-transparent" },
                   ].map((s, i) => (
-                    <li key={s.label} className="flex items-baseline justify-between gap-6 border-b border-white/10 pb-3">
+                    <motion.li key={s.label} variants={{ hidden: { opacity: 0, x: 40 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: E } } }}
+                      className="flex items-baseline justify-between gap-6 border-b border-white/10 pb-3">
                       <span className="flex items-baseline gap-4">
                         <span className="text-xs text-white/35">0{i + 1}</span>
-                        <span className={`text-3xl font-black tracking-tight md:text-4xl ${s.style}`}>{s.label}</span>
+                        <span className={`text-3xl font-black tracking-tight md:text-4xl ${s.style}`}>
+                          {i === 0 ? <Struck delay={0.9}>{s.label}</Struck> : s.label}
+                        </span>
                       </span>
                       <span className="text-right text-xs text-white/45">{s.note}</span>
-                    </li>
+                    </motion.li>
                   ))}
-                </ol>
+                </motion.ol>
               </Reveal>
             </div>
           </div>
@@ -356,7 +367,7 @@ export function FounderBrandingPageClient({
                 <SectionLabel n="05" text="The Successbrew personal brand system" tone="dark" />
                 <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.6vw,4rem)] font-black leading-[1.02] tracking-tight">
                   We don&rsquo;t start with content.<br />
-                  <Mark>We start with positioning.</Mark>
+                  We start with <Scribble>positioning.</Scribble>
                 </h2>
               </div>
               <p className="max-w-md text-lg text-white/55 lg:justify-self-end">
@@ -364,30 +375,7 @@ export function FounderBrandingPageClient({
               </p>
             </Reveal>
 
-            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
-              className="relative mt-16 grid gap-10 lg:grid-cols-5 lg:gap-6">
-              {/* Connecting rail */}
-              <span aria-hidden="true" className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-primary via-primary/70 to-accent lg:bg-gradient-to-r lg:left-0 lg:right-0 lg:top-5 lg:bottom-auto lg:h-px lg:w-auto" />
-              {SYSTEM_STAGES.map((s, i) => {
-                const isLast = i === SYSTEM_STAGES.length - 1;
-                return (
-                  <motion.li key={s.key} variants={fadeUp} className="relative pl-14 lg:pl-0">
-                    <span className={`absolute left-0 top-0 z-10 grid h-10 w-10 place-items-center rounded-full text-sm font-semibold lg:relative
-                      ${isLast ? "bg-accent text-ink ring-4 ring-[#0B0B0B]" : "bg-primary text-white ring-4 ring-[#0B0B0B]"}`}>
-                      0{i + 1}
-                    </span>
-                    <h3 className={`text-2xl font-black uppercase tracking-tight lg:mt-6 ${isLast ? "text-accent" : "text-white"}`}>{s.key}</h3>
-                    <p className="mt-2 text-[17px] font-semibold leading-snug text-white/90">{s.question}</p>
-                    <p className="mt-3 text-sm text-white/50">{s.detail}</p>
-                    {isLast && (
-                      <p className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-accent/50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-accent">
-                        → Opportunity
-                      </p>
-                    )}
-                  </motion.li>
-                );
-              })}
-            </motion.ol>
+            <SystemPath stages={SYSTEM_STAGES} />
           </div>
         </section>
 
@@ -397,24 +385,18 @@ export function FounderBrandingPageClient({
             <Reveal>
               <SectionLabel n="06" text="What we actually do" tone="dark" />
               <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.4vw,3.75rem)] font-black leading-[1.03] tracking-tight">
-                Three things. <GradientText>Done properly.</GradientText>
+                Three things. <Circled><GradientText>Done properly.</GradientText></Circled>
               </h2>
               <p className="mt-6 max-w-sm text-lg text-white/55">
                 No long menu of services. Just the work that makes a founder visible, every month.
               </p>
             </Reveal>
 
-            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
-              className="border-t border-white/10">
+            <ol className="border-t border-white/10">
               {CAPABILITIES.map((c, i) => (
-                <motion.li key={c.title} variants={fadeUp}
-                  className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-white/10 py-8 sm:grid-cols-[3rem_0.8fr_1.2fr] sm:items-baseline">
-                  <span className="text-sm text-white/35">0{i + 1}</span>
-                  <h3 className="text-2xl font-black tracking-tight md:text-3xl">{c.title}</h3>
-                  <p className="col-start-2 mt-2 text-[17px] text-white/55 sm:col-start-3 sm:mt-0">{c.desc}</p>
-                </motion.li>
+                <MarkerRow key={c.title} n={`0${i + 1}`} title={c.title} desc={c.desc} />
               ))}
-            </motion.ol>
+            </ol>
           </div>
         </section>
 
@@ -443,31 +425,7 @@ export function FounderBrandingPageClient({
             </Reveal>
 
             <Reveal delay={0.15}>
-              <div className="rounded-xl border border-white/15 bg-[#0B1640]/40 p-6 backdrop-blur md:p-8">
-                <div className="flex items-end justify-between gap-3 border-b border-white/15 pb-6">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/55">Your time</p>
-                    <p className="mt-1 whitespace-nowrap text-4xl font-black tracking-tight sm:text-5xl">1 day</p>
-                  </div>
-                  <Arrow className="mb-3 h-6 w-6 text-accent" />
-                  <div className="text-right">
-                    <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/55">Your visibility</p>
-                    <p className="mt-1 whitespace-nowrap text-4xl font-black tracking-tight sm:text-5xl"><GradientText>1 month</GradientText></p>
-                  </div>
-                </div>
-                <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger(0.08)} className="mt-6 grid gap-2 sm:grid-cols-2">
-                  {ONE_DAY_FLOW.map((step, i) => {
-                    const isKey = /short-form/i.test(step);
-                    return (
-                      <motion.li key={step} variants={fadeUp}
-                        className={`flex items-center gap-3 rounded-[6px] px-4 py-3 text-[15px] ${isKey ? "bg-accent font-semibold text-ink" : "bg-white/[0.07] text-white/90"}`}>
-                        <span className={`text-xs ${isKey ? "text-ink/60" : "text-white/45"}`}>{String(i + 1).padStart(2, "0")}</span>
-                        {step}
-                      </motion.li>
-                    );
-                  })}
-                </motion.ol>
-              </div>
+              <OneDayCalendar flow={ONE_DAY_FLOW} />
             </Reveal>
           </div>
         </section>
@@ -503,9 +461,7 @@ export function FounderBrandingPageClient({
                       {/* Case study covers are 16:9 graphics with text on them — show them whole */}
                       <Link href={`/case-studies/${c._id}`} tabIndex={-1} aria-hidden="true"
                         className="block overflow-hidden rounded-xl border border-white/10 bg-white/5 lg:sticky lg:top-28">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={c.imageUrl ?? ""} alt="" loading="lazy"
-                          className="aspect-video w-full object-cover transition-transform duration-500 hover:scale-[1.02]" />
+                        <WipeReveal src={c.imageUrl ?? ""} />
                       </Link>
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">{c.tag.trim()}</p>
@@ -598,16 +554,10 @@ export function FounderBrandingPageClient({
         {/* ══ 10 FOUNDER AUTHORITY ══════════════════════════════════════ */}
         <section className="bg-[#0B0B0B] py-24 lg:py-32">
           <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20 lg:px-10">
-            <Reveal className="relative">
-              <div className="overflow-hidden rounded-xl border border-white/10 bg-ink">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/founder-branding/sourabh-portrait.jpg" alt="Sourabh Goyal, Founder of Successbrew" loading="lazy" className="aspect-[4/5] w-full object-cover object-top" />
-              </div>
-              <div className="absolute -bottom-5 left-5 right-5 rounded-[6px] bg-gradient-to-r from-primary to-[#0A2A8F] px-5 py-4 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.8)] sm:left-auto sm:right-6 sm:w-64">
-                <p className="font-semibold text-white">Sourabh Goyal</p>
-                <p className="text-sm text-white/75">Founder, Successbrew</p>
-              </div>
-            </Reveal>
+            <div className="relative px-4 sm:px-10 lg:px-0">
+              <Polaroid src="/founder-branding/sourabh-portrait.jpg" alt="Sourabh Goyal, Founder of Successbrew" tilt={-3} imgClassName="object-top"
+                caption={<><p className="font-semibold">Sourabh Goyal</p><p className="text-sm text-ink/60">Founder, Successbrew</p></>} />
+            </div>
 
             <Reveal delay={0.1}>
               <SectionLabel n="10" text="Founder authority" tone="dark" />
@@ -620,23 +570,16 @@ export function FounderBrandingPageClient({
               </p>
 
               <p className="mt-8 text-xs font-semibold uppercase tracking-[0.1em] text-white/40">Spoken at &amp; worked with</p>
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {ECOSYSTEMS.map((e) => (
-                  <li key={e} className="rounded-full border border-white/15 px-3.5 py-1.5 text-sm text-white/75">{e}</li>
+              <motion.ul initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger(0.07)} className="mt-4 flex flex-wrap gap-2">
+                {ECOSYSTEMS.map((e, i) => (
+                  <motion.li key={e}
+                    variants={{ hidden: { opacity: 0, scale: 0.6, rotate: i % 2 ? 8 : -8 }, visible: { opacity: 1, scale: 1, rotate: i % 3 === 0 ? -1.5 : i % 3 === 1 ? 1 : 0, transition: { type: "spring", stiffness: 380, damping: 18 } } }}
+                    whileHover={{ rotate: 0, y: -2, borderColor: "rgba(198,255,58,0.6)" }}
+                    className="rounded-full border border-white/15 px-3.5 py-1.5 text-sm text-white/75">{e}</motion.li>
                 ))}
-              </ul>
+              </motion.ul>
 
-              <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
-                {FOUNDER_STATS.map((s) => (
-                  <div key={s.label} className="bg-[#0B0B0B] p-5">
-                    <dt className="sr-only">{s.label}</dt>
-                    <dd>
-                      <span className="block text-2xl font-black tracking-tight md:text-3xl"><GradientText>{s.value}</GradientText></span>
-                      <span className="mt-1 block text-xs text-white/50">{s.label}</span>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <CountStats stats={FOUNDER_STATS} size="sm" />
               <Link href="/about/sourabh-goyal" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-accent underline-offset-4 hover:underline">
                 Read Sourabh&rsquo;s full story <Arrow />
               </Link>
@@ -644,9 +587,8 @@ export function FounderBrandingPageClient({
           </div>
 
           <Reveal className="mx-auto mt-24 max-w-5xl px-6 text-center lg:px-10">
-            <p className="text-balance text-[clamp(1.75rem,3.4vw,2.75rem)] font-black leading-[1.12] tracking-tight">
-              We&rsquo;ve spent years studying how attention is earned, how communities are built, and how expertise becomes influence.
-            </p>
+            <ScrollWords className="text-balance text-[clamp(1.75rem,3.4vw,2.75rem)] font-black leading-[1.12] tracking-tight"
+              text="We’ve spent years studying how attention is earned, how communities are built, and how expertise becomes influence." accent={["influence"]} />
             <p className="mt-6 text-xl font-semibold md:text-2xl"><GradientText>Now we do the same for founders.</GradientText></p>
           </Reveal>
         </section>
@@ -654,10 +596,11 @@ export function FounderBrandingPageClient({
         {/* ══ 11 FINAL CTA ══════════════════════════════════════════════ */}
         <section ref={finalRef} id="cta" className="relative overflow-hidden border-t border-white/[0.06] bg-[#0B0B0B] text-white">
           <Glow variant="center" grid />
+          <Grain />
           <div className="relative mx-auto max-w-5xl px-6 py-28 text-center lg:px-10 lg:py-36">
             <Reveal>
               <h2 className="text-balance text-[clamp(2.5rem,6vw,5.5rem)] font-black leading-[0.98] tracking-tight">
-                Your reputation is being built <GradientText>every day.</GradientText>
+                <ScrollWords text="Your reputation is being built every day." accent={["every", "day"]} />
               </h2>
               <p className="mx-auto mt-6 max-w-2xl text-balance text-xl text-white/70 md:text-2xl">
                 The only question is whether you&rsquo;re building it intentionally.

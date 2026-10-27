@@ -12,7 +12,7 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform, type Moti
  * Reduced motion: everything renders still, in its final state.
  */
 
-const BAND = ["#IBrewMyOwnSuccess", "Building 1M entrepreneurs by 2030", "Community", "Content studio", "Podcast", "Learning", "Events"];
+const BAND = ["#BrewYourOwnSuccess", "Building 1M entrepreneurs by 2030", "Community", "Content studio", "Podcast", "Learning", "Events"];
 
 export function FooterMarquee() {
   const reduced = useReducedMotion();

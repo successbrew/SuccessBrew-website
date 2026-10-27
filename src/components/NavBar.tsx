@@ -62,7 +62,7 @@ const NAV: NavEntry[] = [
       items: [
         { icon: Clapperboard, title: "What We Do",    desc: "Full studio service offerings",       href: "/#services" },
         { icon: Settings,     title: "Our Process",   desc: "How we collaborate with you",         href: "/#process"  },
-        { icon: Sparkles,     title: "Selected Work", desc: "Case studies & brand results",        href: "/#work"        },
+        { icon: Sparkles,     title: "Selected Work", desc: "Case studies & brand results",        href: "/case-studies"  },
         { icon: MessageCircle, title: "Client Voices", desc: "What our founders say",               href: "/#voices"   },
         { icon: User,          title: "Founder Led Growth", desc: "Personal branding for founders", href: "/personal-branding" },
       ],

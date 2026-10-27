@@ -54,7 +54,7 @@ export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
             <img src="/SB-logo.png" alt="Successbrew" className="h-10 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
           </Link>
           <p className="mt-2 max-w-xs text-sm text-background/60">India&apos;s startup ecosystem — community, content studio, podcast, learning and events.</p>
-          <p className="mt-4 text-sm font-semibold text-accent">#IBrewMyOwnSuccess</p>
+          <p className="mt-4 text-sm font-semibold text-accent">#BrewYourOwnSuccess</p>
           <SocialLinks settings={siteSettings} showLabel className="mt-6 text-background/70 hover:text-background" />
         </div>
         {COLUMNS.map(({ title, links }) => (
