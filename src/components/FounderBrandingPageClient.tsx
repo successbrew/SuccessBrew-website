@@ -205,8 +205,8 @@ export function FounderBrandingPageClient({
             {/* Founder photo (a tilted print) + the founder → opportunity journey */}
             <motion.div initial={{ opacity: 0, y: 40, rotate: 6 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ delay: 0.3, type: "spring", stiffness: 90, damping: 16 }}
               className="relative">
-              <Polaroid src="/founder-branding/founder-on-stage.jpg" alt="Sourabh Goyal speaking to a room of founders" tilt={2.5} priority
-                aspect="aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]" imgClassName="object-[60%_center]" />
+              <Polaroid src="/founder-branding/sourabh-stool.jpg" alt="Sourabh Goyal, founder of Successbrew" tilt={2.5} priority
+                className="mx-auto max-w-md lg:max-w-none" aspect="aspect-[4/5]" innerDrift={2.5} />
               <DoodleArrow className="absolute -left-16 top-10 hidden h-20 w-28 -rotate-12 lg:block" delay={1.6} />
               <GradientBorder className="relative z-10 -mt-24 ml-auto w-[min(100%,300px)] -rotate-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)] sm:-mt-32 lg:absolute lg:-left-12 lg:bottom-4 lg:mt-0 lg:ml-0"
                 innerClassName="bg-[#141414]/95 p-5 backdrop-blur">

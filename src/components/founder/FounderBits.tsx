@@ -44,17 +44,21 @@ function Word({ word, index, total, progress, lime, still }: { word: string; ind
 
 /* ── Polaroid ────────────────────────────────────────────────────────────────
  * A photo print: slight tilt, a strip of tape, drifts against the scroll and
- * leans toward a mouse pointer. */
+ * leans toward a mouse pointer. `innerDrift` is how far (in %) the photo slides
+ * inside its frame; it's always kept below the zoom margin, so the frame edge
+ * never shows and tightly-cropped heads aren't cut. */
 export function Polaroid({
-  src, alt, caption, tilt = -2.5, className = "", imgClassName = "", aspect = "aspect-[4/5]", priority = false,
+  src, alt, caption, tilt = -2.5, className = "", imgClassName = "", aspect = "aspect-[4/5]", priority = false, innerDrift = 6,
 }: {
-  src: string; alt: string; caption?: React.ReactNode; tilt?: number; className?: string; imgClassName?: string; aspect?: string; priority?: boolean;
+  src: string; alt: string; caption?: React.ReactNode; tilt?: number; className?: string; imgClassName?: string; aspect?: string; priority?: boolean; innerDrift?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const drift = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const inner = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
+  const inner = useTransform(scrollYProgress, [0, 1], [`-${innerDrift}%`, `${innerDrift}%`]);
+  // zoom just enough to cover the slide on both edges
+  const zoom = 1 + (innerDrift * 2.3) / 100;
   const px = useMotionValue(0);
   const py = useMotionValue(0);
   const rx = useSpring(useTransform(py, [-0.5, 0.5], [6, -6]), { stiffness: 200, damping: 20 });
@@ -79,7 +83,7 @@ export function Polaroid({
           src={src}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
-          style={reduced ? undefined : { y: inner, scale: 1.14 }}
+          style={reduced ? undefined : { y: inner, scale: zoom }}
           className={`h-full w-full object-cover ${imgClassName}`}
         />
       </div>
