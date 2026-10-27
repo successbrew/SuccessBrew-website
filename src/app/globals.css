@@ -147,11 +147,13 @@
     color: var(--foreground);
     font-family: var(--font-sans);
     line-height: 1.55;
-    overflow-x: hidden;
+    /* clip, not hidden: hidden turns html/body into scroll containers, which
+       silently breaks every position: sticky on the site. */
+    overflow-x: clip;
   }
 
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 
@@ -353,4 +355,10 @@
 }
 @utility glow-lime {
   box-shadow: 0 10px 30px -10px rgb(198 255 58 / 0.6);
+}
+
+/* Footer brand band (FooterMotion.tsx) */
+@keyframes footer-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }

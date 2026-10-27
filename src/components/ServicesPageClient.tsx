@@ -1,9 +1,8 @@
-﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-img-element */
+﻿/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView, useMotionValue, useAnimationFrame, useScroll, useMotionValueEvent } from "framer-motion";
-import Link from "next/link";
+import { motion, useInView, useMotionValue, useAnimationFrame, useScroll, useMotionValueEvent } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { Carousel, type CarouselHandle } from "@/components/ui/carousel";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
@@ -15,6 +14,10 @@ import { AmbientBackground } from "@/components/AmbientBackground";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { StatsProofBento } from "@/components/StatsProofBento";
+import { ServiceExplorer } from "@/components/services/ServiceExplorer";
+import { EngagementCards } from "@/components/services/EngagementCards";
+import { LaunchCTA } from "@/components/services/LaunchCTA";
+import { WhySuccessbrew } from "@/components/WhySuccessbrew";
 
 // â"€â"€ Types â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 export interface Service {
@@ -314,72 +317,29 @@ function CaseStudyGrid({ caseStudies }: { caseStudies: CaseStudy[] }) {
   );
 }
 
-// ── ServiceCard — click-to-expand card, wired to open the details modal ──────
-/** Services with their own landing page, keyed by normalised title. Clicking
- * one of these cards goes to that page instead of opening the details modal. */
-const SERVICE_PAGES: Record<string, string> = {
-  "founder led growth": "/personal-branding",
-};
-
-function servicePageFor(title: string): string | undefined {
-  return SERVICE_PAGES[title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()];
-}
-
-function ServiceCard({ svc, onOpen }: { svc: Service; onOpen: () => void }) {
-  const href = servicePageFor(svc.title);
-  const card = (
-    <motion.article
-      variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } }}
-      whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
-      {...(href ? {} : {
-        role: "button",
-        tabIndex: 0,
-        onClick: onOpen,
-        onKeyDown: (e: React.KeyboardEvent) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onOpen();
-          }
-        },
-      })}
-      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border border-ink/5 bg-background p-8 hover:border-primary/30 hover:shadow-[0_30px_60px_-30px_oklch(0.16_0.02_260_/_0.35)] md:p-10">
-      <div>
-        <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-ink/40">
-          <span>{svc.num}</span>
-          <motion.span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-accent"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
-          />
-        </div>
-        <h3 className="mt-8 text-2xl font-extrabold tracking-tight md:text-3xl">{svc.title}</h3>
-        <p className="mt-4 text-ink/60">{svc.description}</p>
-      </div>
-      <div className="mt-10 flex flex-wrap gap-2">
-        {(svc.tags ?? []).map((t) => (
-          <span key={t} className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-ink/70 transition group-hover:bg-primary/8">{t}</span>
-        ))}
-      </div>
-      <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        {href ? "Explore" : "View details"} <span aria-hidden="true">→</span>
-      </span>
-      {/* blue→lime edge on hover */}
-      <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-    </motion.article>
-  );
-  return href ? (
-    <Link href={href} className="block h-full rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
-      {card}
-    </Link>
-  ) : card;
-}
+export const WHY_SUCCESSBREW = [
+  {
+    title: "Strategy and execution in one team led by a successful creator",
+    body: "Connect product positioning, creator content and distribution instead of managing disconnected vendors.",
+  },
+  {
+    title: "Content built around the product",
+    body: "Help audiences understand what the software does and where it fits into their workflow.",
+  },
+  {
+    title: "A network-led approach",
+    body: "Our network of 500+ creators lets us shortlist suitable partners based on your audience, product category, geography, budget and campaign objectives.",
+  },
+  {
+    title: "A focus on learning, not just publishing",
+    body: "Use campaign data to understand which messages, creators and use cases deserve further investment.",
+  },
+];
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export function ServicesPageClient({ services, processSteps, caseStudies, testimonials, stats, brandPartners, siteSettings }: ServicesPageProps) {
   const statsRef = useRef<HTMLDivElement>(null);
   const processRef = useRef<HTMLOListElement>(null);
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const statsInView = useInView(statsRef, { once: true, margin: "-80px" });
   const { scrollYProgress: processProgress } = useScroll({ target: processRef, offset: ["start 85%", "end 65%"] });
   const [activeStep, setActiveStep] = useState(-1);
@@ -458,77 +418,8 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           </div>
         </section>
 
-        {/* â•â• SERVICES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-        <section id="services" className="bg-sand py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
-              variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <motion.div variants={fadeUp}>
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">What we do</p>
-                <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="Everything your brand needs. In one place." /></h2>
-              </motion.div>
-              <motion.a variants={fadeUp} href="#cta" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-ink underline-offset-4 hover:underline">
-                Start a project
-              </motion.a>
-            </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
-              variants={stagger(0.08)} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {services.map((svc) => (
-                <ServiceCard key={svc._id} svc={svc} onOpen={() => setExpandedCard(svc._id)} />
-              ))}
-            </motion.div>
-          </div>
-        </section>
+        <ServiceExplorer services={services} />
 
-        {/* Service card expanded modal */}
-        <AnimatePresence>
-          {expandedCard && (() => {
-            const svc = services.find(s => s._id === expandedCard);
-            if (!svc) return null;
-            return (
-              <motion.div
-                key="modal-backdrop"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8"
-                onClick={() => setExpandedCard(null)}
-              >
-                <div className="absolute inset-0 bg-ink/60 backdrop-blur-sm" />
-                <motion.div
-                  key="modal-panel"
-                  initial={{ opacity: 0, scale: 0.94, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.96, y: 10 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="relative z-10 w-full max-w-xl overflow-hidden rounded-[2rem] bg-background p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)]"
-                >
-                  <button
-                    onClick={() => setExpandedCard(null)}
-                    className="absolute right-6 top-6 grid h-9 w-9 place-items-center rounded-full bg-ink/6 text-ink/50 transition hover:bg-ink/12 hover:text-ink"
-                    aria-label="Close"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                  </button>
-                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink/35">{svc.num}</p>
-                  <h3 className="mt-4 text-3xl font-black tracking-tight">{svc.title}</h3>
-                  <p className="mt-5 text-base leading-relaxed text-ink/65">{svc.description}</p>
-                  <div className="mt-8 flex flex-wrap gap-2">
-                    {(svc.tags ?? []).map((t) => (
-                      <span key={t} className="rounded-full bg-sand px-4 py-1.5 text-sm font-semibold text-ink/70">{t}</span>
-                    ))}
-                  </div>
-                  <a href="#cta" onClick={() => setExpandedCard(null)}
-                    className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgb(0_60_209_/_0.5)] transition hover:translate-y-[-2px]">
-                    Start a project
-                  </a>
-                </motion.div>
-              </motion.div>
-            );
-          })()}
-        </AnimatePresence>
         {/* â•â• PROCESS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="process" className="relative overflow-hidden bg-[#111111] py-24 text-white lg:py-32">
           <AmbientBackground tone="dark" noise={false} />
@@ -676,38 +567,11 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           </div>
         </section>
 
-        {/* â•â• CTA â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-        <section id="cta" className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] text-primary-foreground">
-          <AmbientBackground tone="dark" />
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
-            variants={stagger(0.14)}
-            className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
-            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary-foreground/70">Let's build</motion.p>
-            <motion.h2 variants={fadeUp}
-              className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
-              Let's plan your next <span className="text-gradient-lime">product launch.</span>
-            </motion.h2>
-            <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-lg text-primary-foreground/70">
-              Tell us what you're building, who needs it and what a successful launch would look like.
-            </motion.p>
-            <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-xl text-lg text-primary-foreground/70">
-              We'll discuss the audience, creator strategy, campaign scope and metrics that make sense for your product.
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              <MagneticButton href="https://ntis.in/7oApLV"
-                className="glow-lime inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-ink">
-                Book a Product Launch Strategy Call
-              </MagneticButton>
-              <MagneticButton href="#work"
-                className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 px-8 py-4 text-base font-semibold text-primary-foreground hover:bg-primary-foreground/10">
-                See the work
-              </MagneticButton>
-            </motion.div>
-            <motion.p variants={fadeUp} className="mx-auto mt-8 max-w-xl text-sm text-primary-foreground/60">
-              No generic marketing pitch. A focused conversation about your product and its route to market.
-            </motion.p>
-          </motion.div>
-        </section>
+        <EngagementCards />
+
+        <WhySuccessbrew points={WHY_SUCCESSBREW} />
+
+        <LaunchCTA />
 
         {/* â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <Footer siteSettings={siteSettings} />

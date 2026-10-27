@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
+import { FooterMarquee, FooterRise, FooterWordmark } from "@/components/FooterMotion";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
@@ -42,9 +43,11 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
 
 export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
   return (
-    <footer className="relative bg-ink text-background">
+    <footer className="relative overflow-hidden bg-ink text-background">
       {/* Brand signature: a blue→lime hairline across the top of every page's footer */}
       <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-accent" />
+      <FooterMarquee />
+      <FooterRise>
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr] lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] lg:px-10">
         <div>
           <Link href="/" className="mb-5 inline-block">
@@ -60,8 +63,12 @@ export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
             <ul className="mt-5 space-y-3 text-sm">
               {links.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-background/80 transition hover:text-accent">
-                    {link.label}
+                  <Link href={link.href} className="group/link relative inline-flex items-center gap-1.5 text-background/80 transition-colors hover:text-accent">
+                    <span className="relative">
+                      {link.label}
+                      <span aria-hidden="true" className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover/link:scale-x-100" />
+                    </span>
+                    <span aria-hidden="true" className="-translate-x-1 text-xs opacity-0 transition-all duration-300 group-hover/link:translate-x-0 group-hover/link:opacity-100">↗</span>
                   </Link>
                 </li>
               ))}
@@ -69,6 +76,8 @@ export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
           </div>
         ))}
       </div>
+      </FooterRise>
+      <FooterWordmark />
       <div className="border-t border-background/10">
         <div className="mx-auto px-6 py-6 text-xs text-background/50 lg:px-10">
           © 2026 Successbrew Studio. Building 1M entrepreneurs by 2030.
