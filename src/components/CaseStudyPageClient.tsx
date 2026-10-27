@@ -23,6 +23,24 @@ const stagger = (d = 0.1) => ({
   visible: { transition: { staggerChildren: d } },
 });
 
+/** Shapes of the case study's JSON columns, as written by the admin editor. */
+type Metric = { value: string; label: string };
+type Step = { title?: string; description?: string; order?: number };
+type BeforeAfter = { before?: string; after?: string };
+
+/** JSON columns may arrive parsed or as a string; fall back when missing or malformed. */
+function parseJson<T>(data: unknown, fallback: T): T {
+  if (!data) return fallback;
+  if (typeof data === "string") {
+    try {
+      return JSON.parse(data) as T;
+    } catch {
+      return fallback;
+    }
+  }
+  return data as T;
+}
+
 interface CaseStudyPageClientProps {
   caseStudy: CaseStudy;
   relatedStudies: CaseStudy[];
@@ -32,40 +50,33 @@ interface CaseStudyPageClientProps {
 function AnimatedCounter({ value, label, inView }: { value: string; label: string; inView: boolean }) {
   const [count, setCount] = useState(0);
   const reducedMotion = usePrefersReducedMotion();
+  const match = value.match(/^([\d,]+)([KMkm%+]*)$/);
+  const target = match ? parseInt(match[1].replace(/,/g, ""), 10) : 0;
+  const suffix = match?.[2] || "";
+  const isCount = Boolean(match); // a boolean dep — `match` is a new array every render
 
+  // Count up once on screen. With reduced motion (or a non-numeric value) the
+  // final value is rendered directly below, so no state is set from the effect body.
   React.useEffect(() => {
-    if (!inView || reducedMotion) {
-      const match = value.match(/^([\d,]+)([KMkm%+]*)$/);
-      if (match) setCount(parseInt(match[1].replace(/,/g, ""), 10));
-      return;
-    }
-
-    const match = value.match(/^([\d,]+)([KMkm%+]*)$/);
-    if (!match) return;
-
-    const target = parseInt(match[1].replace(/,/g, ""), 10);
-    const suffix = match[2] || "";
+    if (!isCount || !inView || reducedMotion) return;
     const duration = 1400;
     const startTime = Date.now();
-
+    let frame = 0;
     const tick = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(target * eased));
-      if (progress < 1) requestAnimationFrame(tick);
+      const progress = Math.min((Date.now() - startTime) / duration, 1);
+      setCount(Math.round(target * (1 - Math.pow(1 - progress, 3))));
+      if (progress < 1) frame = requestAnimationFrame(tick);
     };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [isCount, target, inView, reducedMotion]);
 
-    tick();
-  }, [value, inView, reducedMotion]);
-
-  const match = value.match(/^([\d,]+)([KMkm%+]*)$/);
-  const suffix = match?.[2] || "";
+  const shown = !match ? value : reducedMotion ? target : count;
 
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-primary">
-        {count.toLocaleString()}{suffix}
+        {typeof shown === "number" ? shown.toLocaleString() : shown}{match ? suffix : ""}
       </div>
       <p className="text-sm md:text-base font-semibold text-ink/60 text-center">{label}</p>
     </div>
@@ -81,44 +92,23 @@ export function CaseStudyPageClient({
   const [resultsInView, setResultsInView] = React.useState(false);
 
   React.useEffect(() => {
+    const node = resultsRef.current;
+    if (!node) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setResultsInView(true);
-        }
+        if (entry.isIntersecting) setResultsInView(true);
       },
       { threshold: 0.3 }
     );
-
-    if (resultsRef.current) {
-      observer.observe(resultsRef.current);
-    }
-
-    return () => {
-      if (resultsRef.current) {
-        observer.unobserve(resultsRef.current);
-      }
-    };
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
-  // Parse JSON fields with fallback
-  const parseJson = (data: any, defaultValue: any = []) => {
-    if (!data) return defaultValue;
-    if (typeof data === "string") {
-      try {
-        return JSON.parse(data);
-      } catch {
-        return defaultValue;
-      }
-    }
-    return data || defaultValue;
-  };
-
-  const heroMetrics = parseJson(caseStudy.heroMetrics, []);
-  const beforeAfter = parseJson(caseStudy.beforeAfter, null);
-  const strategySteps = parseJson(caseStudy.strategySteps, []);
-  const resultMetrics = parseJson(caseStudy.resultMetrics, []);
-  const timelineSteps = parseJson(caseStudy.timelineSteps, []);
+  const heroMetrics = parseJson<Metric[]>(caseStudy.heroMetrics, []);
+  const beforeAfter = parseJson<BeforeAfter | null>(caseStudy.beforeAfter, null);
+  const strategySteps = parseJson<Step[]>(caseStudy.strategySteps, []);
+  const resultMetrics = parseJson<Metric[]>(caseStudy.resultMetrics, []);
+  const timelineSteps = parseJson<Step[]>(caseStudy.timelineSteps, []);
 
   const primaryMetric = heroMetrics[0] || null;
 
@@ -155,7 +145,7 @@ export function CaseStudyPageClient({
                     </p>
                   </motion.div>
                   <motion.h1 variants={fadeUp} className="max-w-4xl text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white">
-                    How Successbrew transformed {caseStudy.clientName || "the client"}'s{" "}
+                    How Successbrew transformed {caseStudy.clientName || "the client"}&rsquo;s{" "}
                     <span className="relative inline-block">
                       <span className="relative z-10 mark-gradient">{caseStudy.title}</span>
                     </span>
@@ -328,7 +318,7 @@ export function CaseStudyPageClient({
 
                   {strategySteps.length > 0 ? (
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                      {strategySteps.map((step: any, idx: number) => (
+                      {strategySteps.map((step, idx) => (
                         <motion.div
                           key={idx}
                           variants={fadeUp}
@@ -411,7 +401,7 @@ export function CaseStudyPageClient({
                   </motion.div>
 
                   <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-                    {resultMetrics.map((metric: any, idx: number) => (
+                    {resultMetrics.map((metric, idx) => (
                       <motion.div
                         key={idx}
                         variants={fadeUp}
@@ -453,11 +443,9 @@ export function CaseStudyPageClient({
                   </motion.div>
 
                   <div className="space-y-8">
-                    {timelineSteps
-                      .sort(
-                        (a: any, b: any) => (a.order || 0) - (b.order || 0)
-                      )
-                      .map((step: any, idx: number) => (
+                    {[...timelineSteps]
+                      .sort((a, b) => (a.order || 0) - (b.order || 0))
+                      .map((step, idx) => (
                         <motion.div
                           key={idx}
                           variants={fadeUp}

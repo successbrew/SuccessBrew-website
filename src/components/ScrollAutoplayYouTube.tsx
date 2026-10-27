@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const YOUTUBE_ORIGIN = "https://www.youtube.com";
 
@@ -39,11 +39,11 @@ export function ScrollAutoplayYouTube({
   const readyRef = useRef(false);
   const [muted, setMuted] = useState(true);
 
-  function postCommand(func: "playVideo" | "pauseVideo" | "mute" | "unMute", args: unknown[] = []) {
+  const postCommand = useCallback((func: "playVideo" | "pauseVideo" | "mute" | "unMute", args: unknown[] = []) => {
     iframeRef.current?.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), YOUTUBE_ORIGIN);
-  }
+  }, []);
 
-  function play() {
+  const play = useCallback(() => {
     postCommand("playVideo");
     // Give playback a moment to actually start before lifting mute — Chrome
     // allows this without a gesture only once the media is already playing.
@@ -51,7 +51,7 @@ export function ScrollAutoplayYouTube({
       postCommand("unMute");
       setMuted(false);
     }, 400);
-  }
+  }, [postCommand]);
 
   function toggleMute() {
     if (muted) {
@@ -78,7 +78,7 @@ export function ScrollAutoplayYouTube({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [play, postCommand]);
 
   return (
     <div className={`group relative ${className ?? ""}`}>

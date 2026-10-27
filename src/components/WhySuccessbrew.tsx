@@ -69,7 +69,7 @@ function WhyDeck({ points }: { points: { title: string; body: string }[] }) {
   const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 28, mass: 0.4 });
   const position = useTransform(smooth, (p) => toPosition(p, steps));
   const bar = useTransform(position, [0, steps], [0, 1]);
-  const drift = useTransform(position, [0, steps], ["4%", "-10%"]);
+  const drift = useTransform(position, [0, steps], ["3%", "-3%"]);
 
   const [current, setCurrent] = useState(0);
   const [started, setStarted] = useState(false);
@@ -92,14 +92,16 @@ function WhyDeck({ points }: { points: { title: string; body: string }[] }) {
   return (
     <section ref={trackRef} id="why" className="relative bg-cream" style={{ height: `${100 + steps * 75 + 25}vh` }}>
       <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
-        {/* Oversized backdrop word, drifting slightly with the deck. */}
-        <motion.span
-          aria-hidden="true"
-          style={{ x: drift }}
-          className="pointer-events-none absolute -bottom-6 left-0 select-none whitespace-nowrap text-[22vw] font-semibold leading-none tracking-tighter text-ink/[0.035]"
-        >
-          Successbrew
-        </motion.span>
+        {/* Oversized backdrop word, drifting slightly with the deck. Sized so the
+            whole word (~90% of the width) stays on screen through the drift. */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -bottom-4 flex justify-center">
+          <motion.span
+            style={{ x: drift }}
+            className="select-none whitespace-nowrap text-[12.5vw] font-semibold leading-none tracking-tighter text-ink/[0.045]"
+          >
+            Successbrew
+          </motion.span>
+        </div>
 
         <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-6 pt-16 lg:grid-cols-[1fr_1.15fr] lg:gap-16 lg:px-10 lg:pt-0">
           {/* ── Left: heading, counter, progress ── */}

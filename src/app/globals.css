@@ -362,3 +362,30 @@
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+
+/* Launch CTA starfield (services/LaunchCTA.tsx) */
+@keyframes launch-twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.8; }
+}
+
+/* Footer wordmark bubbles (FooterBrewMark.tsx): rise from inside the liquid to its surface. */
+@keyframes brew-bubble {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.85; }
+  85% { opacity: 0.7; }
+  100% { transform: translateY(-128px); opacity: 0; }
+}
+.brew-bubble {
+  transform-box: fill-box;
+  animation-name: brew-bubble;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  animation-iteration-count: infinite;
+}
+/* off screen: stop the bubbles too (the waves stop in JS) */
+.brew-paused .brew-bubble {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brew-bubble { animation: none; opacity: 0; }
+}

@@ -7,16 +7,16 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
  * and throws when used; the `sendEmail` wrapper will catch failures and
  * record them in the DB so build doesn't fail.
  */
-export const resend: any = RESEND_API_KEY
+export const resend: Pick<Resend, "emails"> = RESEND_API_KEY
   ? new Resend(RESEND_API_KEY)
-  : {
+  : ({
       emails: {
         send: async () => {
           console.warn("RESEND_API_KEY is not set — emails will not be sent.");
           throw new Error("RESEND_API_KEY not configured");
         },
       },
-    };
+    } as unknown as Pick<Resend, "emails">);
 
 const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL;
 const RESEND_REPLY_TO_EMAIL = process.env.RESEND_REPLY_TO_EMAIL ?? RESEND_FROM_EMAIL;

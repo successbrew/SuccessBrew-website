@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
 import { CommunityPartnerGrid } from "@/components/CommunityPartnerGrid";
@@ -97,15 +97,6 @@ const winAvatarBg: Record<string, string> = {
   primary: "bg-[#003CD1] text-white",
   accent: "bg-[#C6FF3A] text-[#111111]",
 };
-const postAvatarBg: Record<string, string> = {
-  blue: "bg-[#003CD1] text-white",
-  dark: "bg-[#111111] text-white",
-};
-const postTagBg: Record<string, string> = {
-  lime:      "bg-[#C6FF3A] text-[#111111]",
-  dark:      "bg-[#111111] text-white",
-  lightBlue: "bg-[#D4F0FF] text-[#0a4a7a]",
-};
 
 // ── Static data (not CMS — product structure) ─────────────────────────────────
 const pillars = [
@@ -126,16 +117,9 @@ const resources = [
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export function CommunityPageClient({ events, episodes, communityTestimonials, posts, communityPartners, communityMembers, siteSettings }: CommunityPageProps) {
+// `posts` stays in the props (the page still fetches it) but the feed section was removed.
+export function CommunityPageClient({ events, episodes, communityTestimonials, communityPartners, communityMembers, siteSettings }: CommunityPageProps) {
   const [activeResource, setActiveResource] = useState("Blogs");
-  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
-
-  const toggleLike = (id: string) =>
-    setLikedPosts(prev => {
-      const n = new Set(prev);
-      if (n.has(id)) n.delete(id); else n.add(id);
-      return n;
-    });
 
   const eventPillars = EVENT_PILLARS.map((p) => ({
     ...p,

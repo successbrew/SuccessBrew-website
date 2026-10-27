@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- client logos are arbitrary external URLs */
+
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
