@@ -2,7 +2,7 @@ import { validateUpload, UploadValidationError, readUploadForm } from "@/lib/upl
 import { NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3, assertPrivateStorage } from "@/lib/s3";
-import { checkRateLimit, clientIp } from "@/lib/rate-limit";
+import { checkRateLimitDetailed, clientIp } from "@/lib/rate-limit";
 
 const ALLOWED_TYPES = new Set([
   "image/jpeg", "image/png", "image/webp", "image/gif",
@@ -25,7 +25,11 @@ const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
  */
 export async function POST(request: Request) {
   const ip = clientIp(request);
-  if (!(await checkRateLimit(`apply-upload:${ip}`, 20, 10 * 60 * 1000))) {
+  const limit = await checkRateLimitDetailed(`apply-upload:${ip}`, 20, 10 * 60 * 1000);
+  if (limit === "unavailable") {
+    return NextResponse.json({ error: "Uploads are temporarily unavailable. Please try again in a few minutes." }, { status: 503 });
+  }
+  if (limit === "limited") {
     return NextResponse.json({ error: "Too many uploads. Try again in a few minutes." }, { status: 429 });
   }
 

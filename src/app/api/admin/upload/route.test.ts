@@ -2,7 +2,7 @@ import { beforeEach, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ profile: vi.fn(), upload: vi.fn(), rate: vi.fn() }));
 vi.mock("@/lib/auth/server", () => ({ auth: { getSession: async () => ({ data: { user: { id: "admin", role: "admin" } } }) } }));
 vi.mock("@/lib/prisma", () => ({ prisma: { adminProfile: { findUnique: mocks.profile } } }));
-vi.mock("@/lib/rate-limit", () => ({ checkRateLimit: mocks.rate }));
+vi.mock("@/lib/rate-limit", () => ({ checkRateLimitDetailed: mocks.rate }));
 vi.mock("@/lib/s3", () => ({ s3: { send: mocks.upload }, S3_BUCKET: "public", publicUrlForKey: vi.fn() }));
 import { POST } from "./route";
 beforeEach(() => vi.resetAllMocks());

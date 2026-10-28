@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_ROLES } from "@/lib/auth/roles";
 import { s3, S3_BUCKET, publicUrlForKey } from "@/lib/s3";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimitDetailed } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   const { data: session } = await auth.getSession();
@@ -23,7 +23,11 @@ export async function POST(request: Request) {
   }
   // Defense in depth: caps how fast a compromised/malicious admin session can
   // mint presigned S3 upload URLs, independent of the auth check above.
-  if (!(await checkRateLimit(`admin-upload:${session.user.id}`, 60, 10 * 60 * 1000))) {
+  const limit = await checkRateLimitDetailed(`admin-upload:${session.user.id}`, 60, 10 * 60 * 1000);
+  if (limit === "unavailable") {
+    return NextResponse.json({ error: "Uploads are temporarily unavailable (rate limit storage is offline)." }, { status: 503 });
+  }
+  if (limit === "limited") {
     return NextResponse.json({ error: "Too many uploads. Try again in a few minutes." }, { status: 429 });
   }
 
