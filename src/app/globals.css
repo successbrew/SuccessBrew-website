@@ -411,3 +411,67 @@
 @media (prefers-reduced-motion: reduce) {
   .brew-bubble { animation: none; opacity: 0; }
 }
+
+/* ── Blog article body (rendered Tiptap HTML) ──────────────────────────────
+ * The typography plugin isn't installed, so long-form styles live here. */
+.blog-prose {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: rgb(17 17 17 / 0.82);
+}
+.blog-prose > * + * { margin-top: 1.25em; }
+.blog-prose h2 {
+  margin-top: 2.2em;
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #111111;
+  scroll-margin-top: 7rem;
+}
+.blog-prose h3 {
+  margin-top: 1.8em;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  font-weight: 600;
+  color: #111111;
+}
+.blog-prose h2 + *, .blog-prose h3 + * { margin-top: 0.6em; }
+.blog-prose a {
+  color: #003CD1;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.blog-prose a:hover { text-decoration-thickness: 2px; }
+.blog-prose strong { font-weight: 600; color: #111111; }
+.blog-prose ul, .blog-prose ol { padding-left: 1.4em; }
+.blog-prose ul { list-style: disc; }
+.blog-prose ol { list-style: decimal; }
+.blog-prose li + li { margin-top: 0.4em; }
+.blog-prose li::marker { color: #003CD1; }
+.blog-prose blockquote {
+  border-left: 4px solid #C6FF3A;
+  padding: 0.2em 0 0.2em 1.2em;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #111111;
+}
+.blog-prose img { width: 100%; border-radius: 1rem; margin-top: 2em; margin-bottom: 2em; }
+.blog-prose hr { border: 0; border-top: 1px solid rgb(17 17 17 / 0.12); margin: 2.5em 0; }
+.blog-prose code {
+  border-radius: 0.35rem;
+  background: rgb(17 17 17 / 0.06);
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+}
+.blog-prose pre {
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: #111111;
+  color: #F2ECDD;
+  padding: 1.2em 1.4em;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.blog-prose pre code { background: none; padding: 0; }

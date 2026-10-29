@@ -7,7 +7,7 @@ import {
   Clapperboard, Settings, Sparkles, MessageCircle,
   Globe, Gift, Calendar, Mic, Trophy, BookOpen,
   FolderOpen, GraduationCap, Handshake, BookText, Star,
-  User, Rocket, type LucideIcon,
+  User, Rocket, Newspaper, type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -91,6 +91,7 @@ const NAV: NavEntry[] = [
         { icon: Mic,      title: "Podcast",        desc: "100+ raw founder conversations",      href: "/community/podcast"      },
         { icon: Trophy,   title: "Community Wins", desc: "Stories from our members",            href: "/community#wins"         },
         { icon: BookOpen, title: "Learning Hub",   desc: "200+ playbooks, templates & ebooks", href: "/community#learning-hub" },
+        { icon: Newspaper, title: "Blogs",         desc: "Ideas and playbooks from the team",   href: "/community/blogs" },
       ],
       featured: {
         bg: "bg-[#C6FF3A]",

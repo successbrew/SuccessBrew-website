@@ -46,6 +46,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // The blog moved under Community; keep any old /blog links working.
+  async redirects() {
+    return [
+      { source: "/blog", destination: "/community/blogs", permanent: true },
+      { source: "/blog/:path*", destination: "/community/blogs/:path*", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

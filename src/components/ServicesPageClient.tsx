@@ -12,6 +12,8 @@ import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
+import { HeroVideoFrame } from "@/components/services/HeroVideoFrame";
+import { CursorGlow } from "@/components/community/CommunityMotion";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { StatsProofBento } from "@/components/StatsProofBento";
 import { ServiceExplorer } from "@/components/services/ServiceExplorer";
@@ -245,11 +247,15 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
       viewport={{ once: true, margin: "-60px" }}
       whileHover={{ y: -2, transition: { duration: 0.25, ease: E } }}
       className="edge-gradient group block overflow-hidden rounded-2xl border border-ink/5 bg-background transition-shadow duration-300 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.18)]">
-      <div className="relative h-52 overflow-hidden">
+      <motion.div className="relative h-52 overflow-hidden"
+        initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
+        whileInView={{ clipPath: "inset(0% 0% 0% 0%)", transition: { duration: 0.9, delay: 0.15 + (i % 3) * 0.08, ease: E } }}
+        viewport={{ once: true, margin: "-60px" }}>
         <img src={cs.imageUrl ?? "/grid-images/IMG_9736.JPG"} alt={cs.title} draggable={false}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -translate-x-[160%] -skew-x-12 bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-[900ms] ease-out group-hover:translate-x-[260%]" />
         <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-ink backdrop-blur">{cs.tag}</span>
-      </div>
+      </motion.div>
       <div className="p-6">
         <h3 className="text-lg font-black tracking-tight">{cs.title}</h3>
         <p className="mt-2 line-clamp-2 text-sm font-semibold text-primary">{cs.results}</p>
@@ -357,6 +363,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
         {/* â•â• HERO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section className="relative overflow-hidden bg-cream pt-32 pb-24 lg:pt-40 lg:pb-32">
           <AmbientBackground tone="light" />
+          <CursorGlow />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
               <motion.div variants={fadeUp}
@@ -383,9 +390,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               </motion.div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.9, ease: E }}
+            <HeroVideoFrame
               className="relative mx-auto mt-16 aspect-video w-full max-w-[calc((100svh-8rem)*16/9)] overflow-hidden rounded-xl border border-ink/5 bg-ink shadow-[0_40px_80px_-30px_oklch(0.16_0.02_260_/_0.25)]">
               <YouTubeEmbed
                 videoId="LPjwAuFAil0"
@@ -393,7 +398,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                 className="h-full w-full"
                 poster
               />
-            </motion.div>
+            </HeroVideoFrame>
           </div>
         </section>
 
@@ -466,7 +471,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                       ${isActive ? "border-accent bg-accent text-ink" : "border-white/15 bg-[#111111] text-white/50"}`}>
                       {step.stepNumber}
                     </span>
-                    <div className={`flex flex-1 flex-col rounded-xl border p-6 transition-colors duration-300 md:mt-6
+                    <div className={`flex flex-1 flex-col rounded-xl border p-6 transition-[colors,transform] duration-300 hover:-translate-y-1 md:mt-6
                       ${isLast
                         ? "border-primary bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)]"
                         : isActive ? "border-white/15 bg-white/[0.06]" : "border-white/10 bg-white/[0.02]"}`}>
@@ -530,8 +535,9 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                       ? "text-2xl leading-tight md:text-[1.7rem]"
                       : preview.length < 160 ? "text-xl leading-snug md:text-2xl" : "text-lg leading-snug md:text-xl";
                     return (
-                    <figure key={`${t._id}-${i}`}
-                      className={`flex min-h-[380px] w-[320px] shrink-0 flex-col rounded-xl border border-ink/5 p-8 md:min-h-[420px] md:w-[380px] md:p-10 ${cardBg[t.cardStyle] ?? cardBg.sand}`}>
+                    <motion.figure key={`${t._id}-${i}`}
+                      whileHover={{ y: -8, rotate: i % 2 ? 0.6 : -0.6, transition: { duration: 0.35, ease: E } }}
+                      className={`flex min-h-[380px] w-[320px] shrink-0 flex-col rounded-xl border border-ink/5 p-8 transition-shadow duration-300 hover:shadow-[0_30px_60px_-30px_rgba(0,60,209,0.35)] md:min-h-[420px] md:w-[380px] md:p-10 ${cardBg[t.cardStyle] ?? cardBg.sand}`}>
                       <svg className="h-7 w-7 shrink-0 text-primary" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M9.5 6C6.5 7.2 4.5 9.8 4.5 13v5h6v-6H7.6c.2-2 1.4-3.5 3.3-4.3L9.5 6zm9 0c-3 1.2-5 3.8-5 7v5h6v-6h-2.9c.2-2 1.4-3.5 3.3-4.3L18.5 6z" />
                       </svg>
@@ -558,7 +564,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
                           <div className="line-clamp-2 text-xs opacity-60">{t.role}</div>
                         </div>
                       </figcaption>
-                    </figure>
+                    </motion.figure>
                     );
                   })}
                 </DraggableMarquee>

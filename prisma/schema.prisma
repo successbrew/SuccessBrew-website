@@ -80,38 +80,38 @@ model ProcessStep {
 }
 
 model CaseStudy {
-  id             String   @id @default(cuid())
-  order          Int      @default(0)
-  tag            String
-  title          String
-  imageUrl       String
-  clientName     String?
-  description    String?
-  problem        String
-  strategy       String
-  results        String
+  id              String  @id @default(cuid())
+  order           Int     @default(0)
+  tag             String
+  title           String
+  imageUrl        String
+  clientName      String?
+  description     String?
+  problem         String
+  strategy        String
+  results         String
   solutionContent String?
-  reverseLayout  Boolean  @default(false)
-  showOnHomepage Boolean  @default(false)
-  pdfUrl         String?
+  reverseLayout   Boolean @default(false)
+  showOnHomepage  Boolean @default(false)
+  pdfUrl          String?
 
   /// JSON array: [{metric: string, value: string, label: string}]
-  heroMetrics    Json     @default("[]")
+  heroMetrics Json @default("[]")
 
   /// JSON object: {before: string, after: string}
-  beforeAfter    Json?
+  beforeAfter Json?
 
   /// JSON array: [{title: string, description: string}]
-  strategySteps  Json     @default("[]")
+  strategySteps Json @default("[]")
 
   /// JSON array: [{metric: string, value: string, label: string}]
-  resultMetrics  Json     @default("[]")
+  resultMetrics Json @default("[]")
 
   /// JSON array: [{title: string, description: string, order: int}]
-  timelineSteps  Json     @default("[]")
+  timelineSteps Json @default("[]")
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum TestimonialGroup {
@@ -174,14 +174,14 @@ model CommunityEvent {
   /// Detail-page fields for the dedicated event landing page (Hero -> Benefits ->
   /// Become a Partner). All optional — older/simple events can leave them blank
   /// and only show up in the room's list, without a landing page detail section.
-  subtitle     String?
+  subtitle           String?
   /// Free-text display range shown in the info bar, e.g. "6:30 - 10:00 PM".
-  timeRange    String?
+  timeRange          String?
   /// e.g. "Free for members - Rs999 guests" — shown as a hero badge and in the
   /// registration panel.
-  priceNote    String?
+  priceNote          String?
   /// "Who's in the room" paragraph.
-  audienceNote String?
+  audienceNote       String?
   /// One optional secondary stat next to Total Seats, e.g. value "6" / label
   /// "Matched intros each" — kept as a free label so it fits any event type.
   highlightStatValue String?
@@ -193,28 +193,28 @@ model CommunityEvent {
   /// Public site only shows remainingSeats when this is on, so an admin can
   /// track it privately before deciding to surface it.
   showRemainingSeats Boolean  @default(false)
-  agenda           String?
-  hostName         String?
-  hostRole         String?
-  hostBio          String?
-  hostPhotoUrl     String?
-  venueAddress     String?
-  venuePhotoUrl    String?
+  agenda             String?
+  hostName           String?
+  hostRole           String?
+  hostBio            String?
+  hostPhotoUrl       String?
+  venueAddress       String?
+  venuePhotoUrl      String?
   /// YouTube URL for a recap/highlight video, shown on the event's landing page.
-  videoUrl         String?
+  videoUrl           String?
   /// One entry per line, format "Title | Description" (rendered as the
   /// numbered "What you'll leave with" cards); a bare line with no "|" still
   /// renders as a title-only card.
-  benefits         String[] @default([])
-  becomePartnerUrl String?
+  benefits           String[] @default([])
+  becomePartnerUrl   String?
   /// Editorial gallery for the event's visual-storytelling section (distinct from
   /// imageUrl/venuePhotoUrl/hostPhotoUrl) — one image URL per line, admin-managed.
-  galleryUrls  String[] @default([])
+  galleryUrls        String[] @default([])
   /// Short audience-segment chips for the "Who Should Attend" section, one per
   /// line, e.g. "Founders". Free strings, not an enum, so any event type fits.
-  audienceTags String[] @default([])
+  audienceTags       String[] @default([])
   /// FAQ accordion entries, one per line, format "Question | Answer".
-  faq          String?
+  faq                String?
 
   speakers EventSpeaker[]
   /// Per-event partner selection, picked from the same BrandPartner pool as
@@ -310,8 +310,33 @@ model Blog {
   authorName    String?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  tags          BlogTag[]
 
   @@index([status, publishedAt])
+}
+
+/// A topic label on blog posts (e.g. "Personal Branding"). Shared across posts,
+/// so renaming a tag updates every post and each tag has one public page at
+/// /blog/tag/[slug].
+model Tag {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  /// Optional intro shown at the top of the tag's public page.
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  posts       BlogTag[]
+}
+
+model BlogTag {
+  blogId String
+  tagId  String
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, tagId])
+  @@index([tagId])
 }
 
 enum BrandPartnerGroup {
@@ -333,7 +358,9 @@ model BrandPartner {
   events CommunityEvent[] @relation("EventPartners")
 }
 
-/** Singleton row (id is always "singleton") holding site-wide settings like social links. */
+/**
+ * Singleton row (id is always "singleton") holding site-wide settings like social links.
+ */
 model SiteSettings {
   id            String   @id @default("singleton")
   instagramUrl  String?
@@ -422,21 +449,21 @@ enum ApplicationSource {
 /// One row per speaker application. Never deleted — status only ever moves
 /// forward through StatusHistory-tracked transitions (see status-transitions.ts).
 model Application {
-  id              String             @id @default(cuid())
-  applicationCode String             @unique
+  id              String            @id @default(cuid())
+  applicationCode String            @unique
   /// Lowercased applicant email, mirrored out of `personal` so we can enforce
   /// one application per email at the DB layer. Nullable (rather than
   /// backfilled) so existing rows aren't touched — Postgres allows multiple
   /// NULLs under a unique constraint, so old rows are unaffected and only
   /// new submissions are deduped.
-  email           String?            @unique
+  email           String?           @unique
   /// Neon Auth user id of the applicant, when they happen to be signed in —
   /// login is never required to submit, so this is null for anonymous
   /// applicants. Not a Prisma relation — Neon Auth's user table lives outside
   /// our schema (same pattern as Blog.authorId).
   userId          String?
-  status          ApplicationStatus  @default(DRAFT)
-  source          ApplicationSource  @default(SPEAKER)
+  status          ApplicationStatus @default(DRAFT)
+  source          ApplicationSource @default(SPEAKER)
 
   categoryId    String?
   category      Category?    @relation(fields: [categoryId], references: [id])
@@ -446,11 +473,11 @@ model Application {
   /// Wizard step 1 (PersonalInfo), validated by src/lib/validators/application.ts,
   /// typed by src/lib/types/application.ts — not normalized into columns because
   /// the field set is expected to keep growing with the wizard.
-  personal Json?
+  personal     Json?
   /// Wizard steps 3-4 (ProfessionalInfo + social presence).
   professional Json?
   /// Wizard step 5 (SuccessBrew questions).
-  answers Json?
+  answers      Json?
 
   submittedAt DateTime?
   createdAt   DateTime  @default(now())
@@ -537,12 +564,12 @@ model Speaker {
 /// scheduling follow-ups, etc.) — never shown on the public profile. Distinct
 /// from Review, which is scoped to the application-review stage.
 model SpeakerNote {
-  id         String   @id @default(cuid())
-  speakerId  String
-  speaker    Speaker  @relation(fields: [speakerId], references: [id], onDelete: Cascade)
-  authorId   String
-  note       String
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  speakerId String
+  speaker   Speaker  @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+  authorId  String
+  note      String
+  createdAt DateTime @default(now())
 
   @@index([speakerId])
 }
@@ -697,24 +724,24 @@ model Lead {
 }
 
 model Order {
-  reconciledAt      DateTime?
-  id                String      @id @default(cuid())
-  leadId            String?
-  lead              Lead?       @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  userId            String?
-  customerEmail     String
-  productKey        String
-  provider          String
-  providerOrderId   String?
+  reconciledAt        DateTime?
+  id                  String      @id @default(cuid())
+  leadId              String?
+  lead                Lead?       @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  userId              String?
+  customerEmail       String
+  productKey          String
+  provider            String
+  providerOrderId     String?
   providerCheckoutUrl String?
-  amount            Int
-  currency          String      @default("INR")
-  status            OrderStatus @default(INITIATED)
-  paidAt            DateTime?
-  refundedAt        DateTime?
-  cancelledAt       DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  amount              Int
+  currency            String      @default("INR")
+  status              OrderStatus @default(INITIATED)
+  paidAt              DateTime?
+  refundedAt          DateTime?
+  cancelledAt         DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 
   payments Payment[]
   events   PaymentEvent[]
@@ -764,12 +791,13 @@ model PaymentEvent {
 }
 
 model Refund {
-  id String @id @default(cuid())
-  providerRefundId String @unique
-  paymentId String
-  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  amount Int
-  createdAt DateTime @default(now())
+  id               String   @id @default(cuid())
+  providerRefundId String   @unique
+  paymentId        String
+  payment          Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  amount           Int
+  createdAt        DateTime @default(now())
+
   @@index([paymentId])
 }
 
@@ -779,12 +807,12 @@ model Entitlement {
   customerEmail String
   productKey    String
   status        EntitlementStatus @default(ACTIVE)
-  startsAt      DateTime           @default(now())
+  startsAt      DateTime          @default(now())
   expiresAt     DateTime?
-  grantedAt     DateTime           @default(now())
+  grantedAt     DateTime          @default(now())
   revokedAt     DateTime?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@unique([customerEmail, productKey])
   @@index([userId, status])
@@ -792,18 +820,18 @@ model Entitlement {
 }
 
 model Resource {
-  id          String              @id @default(cuid())
-  title       String
-  slug        String              @unique
-  description String?
+  id           String              @id @default(cuid())
+  title        String
+  slug         String              @unique
+  description  String?
   resourceType String
-  url         String?
-  storageKey  String?
-  accessLevel ResourceAccessLevel @default(PAID)
-  isPublished Boolean             @default(false)
-  order       Int                 @default(0)
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  url          String?
+  storageKey   String?
+  accessLevel  ResourceAccessLevel @default(PAID)
+  isPublished  Boolean             @default(false)
+  order        Int                 @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
 
   accessGrants ResourceAccess[]
 
@@ -864,13 +892,13 @@ model DigestTopic {
 /// follows that topic — the mechanism that keeps AI/web-search cost bounded
 /// by topic count rather than member count.
 model DigestTopicBrief {
-  id      String      @id @default(cuid())
-  topicId String
-  topic   DigestTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  id        String      @id @default(cuid())
+  topicId   String
+  topic     DigestTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
   /// Date-only (UTC midnight) for the day this brief covers.
   date      DateTime
   content   String
-  createdAt DateTime @default(now())
+  createdAt DateTime    @default(now())
 
   @@unique([topicId, date])
 }

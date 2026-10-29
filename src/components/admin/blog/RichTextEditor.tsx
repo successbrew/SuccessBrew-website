@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,7 +16,8 @@ export function RichTextEditor({
 }) {
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [StarterKit, Link, Image],
+    // StarterKit v3 already bundles Link; adding it again registers it twice.
+    extensions: [StarterKit, Image],
     content: value ?? { type: "doc", content: [{ type: "paragraph" }] },
     onUpdate: ({ editor }) => onChange(editor.getJSON()),
     editorProps: {

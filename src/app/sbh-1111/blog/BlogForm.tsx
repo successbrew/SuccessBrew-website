@@ -15,8 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/admin/blog/RichTextEditor";
+import { TagInput } from "@/components/admin/blog/TagInput";
+import { ImageUploadField } from "@/components/admin/generic/ImageUploadField";
 import { blogSchema, slugify, type BlogInput } from "@/lib/admin/schemas/blog";
 import type { ActionResult } from "@/lib/admin/crud";
+import { blogPostPath } from "@/lib/blog-format";
 
 type BlogFormValues = {
   title: string;
@@ -25,14 +28,18 @@ type BlogFormValues = {
   excerpt: string;
   body: JSONContent;
   status: "DRAFT" | "PUBLISHED";
+  tags: string[];
 };
 
 export function BlogForm({
   defaultValues,
   action,
+  allTags,
 }: {
   defaultValues: BlogFormValues;
   action: (input: BlogInput) => Promise<ActionResult>;
+  /** Every existing tag name, offered as suggestions. */
+  allTags: string[];
 }) {
   const router = useRouter();
   const [values, setValues] = useState(defaultValues);
@@ -89,14 +96,15 @@ export function BlogForm({
             setValues((v) => ({ ...v, slug: e.target.value }));
           }}
         />
+        <p className="text-xs text-muted-foreground">Public URL: {blogPostPath(values.slug || "your-post-slug")}</p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="coverImageUrl">Cover Image URL</Label>
-        <Input
+        <Label htmlFor="coverImageUrl">Cover Image</Label>
+        <ImageUploadField
           id="coverImageUrl"
           value={values.coverImageUrl}
-          onChange={(e) => setValues((v) => ({ ...v, coverImageUrl: e.target.value }))}
+          onChange={(coverImageUrl) => setValues((v) => ({ ...v, coverImageUrl }))}
         />
       </div>
 
@@ -107,6 +115,16 @@ export function BlogForm({
           rows={3}
           value={values.excerpt}
           onChange={(e) => setValues((v) => ({ ...v, excerpt: e.target.value }))}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="tags">Tags</Label>
+        <TagInput
+          id="tags"
+          value={values.tags}
+          onChange={(tags) => setValues((v) => ({ ...v, tags }))}
+          suggestions={allTags}
         />
       </div>
 

@@ -2,6 +2,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 
@@ -133,7 +135,11 @@ export function WhyTimeline({ steps }: { steps: [string, string][] }) {
   );
 }
 
-export interface ResourceItem { type: string; count: string; desc: string; icon: string; bg: string; countColor: string }
+export interface ResourceItem {
+  type: string; count: string; desc: string; icon: string; bg: string; countColor: string;
+  /** Set once the format has a live page; otherwise the card says "Coming Soon". */
+  href?: string;
+}
 
 /** Learning Hub as an accordion row: on desktop the selected format widens and
  * reveals its description while the rest fold into narrow spines (hover, focus
@@ -177,9 +183,16 @@ export function ResourceAccordion({ resources }: { resources: ResourceItem[] }) 
                 <p className={`mt-0.5 text-2xl font-black ${r.countColor}`}>{r.count}</p>
                 <p className={`mt-3 text-sm leading-7 opacity-70 transition-opacity duration-300 lg:w-[16rem] ${on ? "lg:opacity-70 lg:delay-200" : "lg:opacity-0"}`}>{r.desc}</p>
               </div>
-              <span className={`relative mt-6 inline-flex w-fit items-center gap-2 whitespace-nowrap text-sm font-bold transition-opacity ${r.countColor} ${on ? "" : "lg:opacity-0"}`}>
-                Coming Soon...
-              </span>
+              {r.href ? (
+                <Link href={r.href}
+                  className={`group/cta relative mt-6 inline-flex w-fit items-center gap-2 whitespace-nowrap rounded-full bg-[#C6FF3A] px-4 py-2 text-sm font-bold text-[#111111] transition hover:bg-white ${on ? "" : "lg:pointer-events-none lg:opacity-0"}`}>
+                  Read the {r.type.toLowerCase()} <ArrowRight className="h-4 w-4 transition-transform group-hover/cta:translate-x-0.5" />
+                </Link>
+              ) : (
+                <span className={`relative mt-6 inline-flex w-fit items-center gap-2 whitespace-nowrap text-sm font-bold transition-opacity ${r.countColor} ${on ? "" : "lg:opacity-0"}`}>
+                  Coming Soon...
+                </span>
+              )}
             </motion.div>
           );
         })}

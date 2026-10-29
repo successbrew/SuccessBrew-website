@@ -114,7 +114,7 @@ const pillars = [
 ];
 
 const resources = [
-  { type: "Blogs",     count: "120+", desc: "Tactical articles on growth, fundraising and product-market fit.",    icon: "📝", bg: "bg-[#003CD1] text-white",    countColor: "text-[#C6FF3A]" },
+  { type: "Blogs",     count: "120+", desc: "Tactical articles on growth, fundraising and product-market fit.",    icon: "📝", bg: "bg-[#003CD1] text-white",    countColor: "text-[#C6FF3A]", href: "/community/blogs" },
   { type: "Playbooks", count: "35+",  desc: "Step-by-step frameworks for go-to-market, hiring and content.",       icon: "📖", bg: "bg-[#FFF3D0] text-[#111111]", countColor: "text-[#003CD1]" },
   { type: "Templates", count: "80+",  desc: "Investor decks, SOPs, content calendars — grab and go.",              icon: "📄", bg: "bg-[#FFF3D0] text-[#111111]", countColor: "text-[#003CD1]" },
   { type: "Ebooks",    count: "18+",  desc: "Deep dives from founders who did it and documented it.",               icon: "📘", bg: "bg-[#C6FF3A] text-[#111111]", countColor: "text-[#003CD1]" },
