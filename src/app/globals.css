@@ -223,6 +223,28 @@
   animation-play-state: paused;
 }
 
+/* Podcast card equaliser: bars sit still and only bounce while the card is
+   hovered or focused. */
+@keyframes eq-bounce {
+  0%, 100% { transform: scaleY(0.35); }
+  50%      { transform: scaleY(1); }
+}
+.eq-bar {
+  transform-origin: bottom;
+  transform: scaleY(0.35);
+  animation: eq-bounce 0.9s ease-in-out infinite;
+  animation-play-state: paused;
+}
+/* About page ecosystem orbit: the active link's dashes flow outward. */
+@keyframes orbit-flow {
+  to { stroke-dashoffset: -3; }
+}
+
+.group:hover .eq-bar,
+.group:focus-within .eq-bar {
+  animation-play-state: running;
+}
+
 /* ── Community Hero Image Animations ── */
 
 /* Slide uses standalone `translate` property — completely separate from `transform`
@@ -280,7 +302,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee, .animate-word-bob { animation: none; }
+  .animate-marquee, .animate-word-bob, .eq-bar { animation: none; }
 }
 
 

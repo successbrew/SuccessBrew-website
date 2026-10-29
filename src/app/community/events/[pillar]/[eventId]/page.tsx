@@ -50,8 +50,13 @@ export default async function EventLandingPage({
     })
     .catch(() => []);
 
+  // Request time, read once on the server so the client renders the same
+  // "upcoming vs. wrapped" state it was sent.
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
   return (
     <EventLandingPageClient
+      now={now}
       pillar={pillar}
       event={{
         id: event.id,
@@ -95,6 +100,7 @@ export default async function EventLandingPage({
         date: e.date,
         eventDate: e.eventDate.toISOString(),
         location: e.location,
+        imageUrl: e.imageUrl ?? "",
       }))}
       siteSettings={siteSettings}
       testimonials={testimonials.map((t) => ({

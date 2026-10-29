@@ -1,7 +1,6 @@
 ﻿/* eslint-disable react/no-unescaped-entities, @next/next/no-img-element */
 "use client";
 
-import React, { useState } from "react";
 import { motion } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import { LogoShowcase, type BrandPartner } from "@/components/LogoShowcase";
@@ -15,6 +14,7 @@ import type { Testimonial } from "@/components/ServicesPageClient";
 import { EVENT_PILLARS } from "@/lib/event-pillars";
 import { EventPosterCard } from "@/components/EventPosterCard";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
+import { CursorGlow, StatCard, WhyTimeline, ResourceAccordion, InsideAvatars } from "@/components/community/CommunityMotion";
 // NetworkCanvas visualization temporarily removed from this page — component
 // file kept intact at @/components/CommunityNetworkCanvas for re-adding later.
 
@@ -84,6 +84,11 @@ const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = { hidden: { opacity: 0, y: 26 }, visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: E } } };
 const cardUp = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } };
 const stagger = (d = 0.1) => ({ hidden: {}, visible: { transition: { staggerChildren: d } } });
+// Wins are "dealt" onto the table: each card lands from a slight alternating tilt.
+const dealt = {
+  hidden: (i: number) => ({ opacity: 0, y: 48, rotate: i % 2 ? 5 : -5, scale: 0.96 }),
+  visible: { opacity: 1, y: 0, rotate: 0, scale: 1, transition: { type: "spring" as const, stiffness: 140, damping: 18 } },
+};
 
 // ── Color maps ────────────────────────────────────────────────────────────────
 const winCardBg: Record<string, string> = {
@@ -119,8 +124,6 @@ const resources = [
 // ── Component ─────────────────────────────────────────────────────────────────
 // `posts` stays in the props (the page still fetches it) but the feed section was removed.
 export function CommunityPageClient({ events, episodes, communityTestimonials, communityPartners, communityMembers, siteSettings }: CommunityPageProps) {
-  const [activeResource, setActiveResource] = useState("Blogs");
-
   const eventPillars = EVENT_PILLARS.map((p) => ({
     ...p,
     count: events.filter((e) => e.category === p.category).length,
@@ -137,6 +140,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[#F2ECDD] pt-32 pb-16 lg:pt-40 lg:pb-20">
           <AmbientBackground tone="light" noise={false} />
+          <CursorGlow />
 
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
@@ -172,7 +176,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
                         </span>
                       ))}
                     </span>
-                    <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-4 rounded-[2px] bg-gradient-to-r from-accent via-accent to-[#E4FFA8] md:h-6" />
+                    <motion.span aria-hidden
+                      variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1, transition: { delay: 0.55, duration: 0.7, ease: E } } }}
+                      className="absolute inset-x-0 bottom-1 -z-0 h-4 origin-left rounded-[2px] bg-gradient-to-r from-accent via-accent to-[#E4FFA8] md:h-6" />
                   </span>
                 </motion.h1>
 
@@ -206,16 +212,8 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
                 { num: "200+",   label: "Events Hosted",   sub: "Summits, meetups & workshops",     bg: "bg-[linear-gradient(150deg,#C6FF3A_0%,#DDFF8A_100%)] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.2 },
                 { num: "50+",    label: "Brand Partners",  sub: "Collaborations & partnerships",   bg: "bg-[#FFF3D0] text-[#111111]", subColor: "text-[#111111]/55", floatDelay: 1.8 },
                 { num: "$8M+",   label: "Impact Created",  sub: "Value unlocked for our community", bg: "bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] text-white",     subColor: "text-white/70",     floatDelay: 2.4 },
-              ] as const).map(({ num, label, sub, bg, subColor }) => (
-                <motion.div key={label}
-                  variants={{ hidden: { opacity: 0, y: 18, scale: 0.94 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: E } } }}
-                  whileHover={{ scale: 1.02, transition: { duration: 0.25, ease: E } }}
-                  className={`relative w-[calc(50%-8px)] cursor-default overflow-hidden rounded-3xl border border-[#111111]/5 p-6 text-center shadow-[0_8px_32px_-8px_rgba(0,0,0,0.14)] sm:w-44 md:w-48 ${bg}`}>
-                  <div className="text-3xl font-black tracking-tight sm:text-4xl">{num}</div>
-                  <div className="mt-2 text-sm font-bold">{label}</div>
-                  <div className={`mt-1 text-[11px] font-medium ${subColor}`}>{sub}</div>
-                  <div aria-hidden className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
-                </motion.div>
+              ] as const).map(({ num, label, sub, bg, subColor }, i) => (
+                <StatCard key={label} num={num} label={label} sub={sub} bg={bg} subColor={subColor} index={i} />
               ))}
             </motion.div>
           </div>
@@ -255,21 +253,24 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
               className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {pillars.map((p) => (
                 <motion.article key={p.num} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
-                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#111111]/5 bg-white p-8 hover:border-[#003CD1]/30 hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.2)] md:p-10">
-                  <div>
-                    <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40">
+                  className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#111111]/5 bg-white p-8 hover:shadow-[0_30px_60px_-30px_rgba(0,52,180,0.55)] md:p-10">
+                  {/* Hover "pours" the card full of blue from the bottom edge. */}
+                  <span aria-hidden className="absolute inset-0 origin-bottom scale-y-0 bg-[linear-gradient(160deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-y-100" />
+                  <span aria-hidden className="pointer-events-none absolute -right-3 -top-8 select-none text-[9rem] font-black leading-none tracking-tighter text-[#111111]/[0.04] transition-colors duration-500 group-hover:text-white/[0.08]">{p.num}</span>
+                  <div className="relative">
+                    <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40 transition-colors duration-500 group-hover:text-white/60">
                       <span>{p.num}</span>
-                      <span aria-hidden className="h-2 w-2 rounded-full bg-[#C6FF3A] transition group-hover:bg-[#003CD1]" />
+                      <span aria-hidden className="h-2 w-2 rounded-full bg-[#C6FF3A] transition-transform duration-500 group-hover:scale-150" />
                     </div>
-                    <div className="mt-6 text-3xl">{p.icon}</div>
-                    <h3 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">{p.title}</h3>
-                    <p className="mt-4 text-[#111111]/60">{p.desc}</p>
+                    <div className="mt-6 inline-block text-3xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-12 group-hover:scale-125">{p.icon}</div>
+                    <h3 className="mt-4 text-2xl font-extrabold tracking-tight transition-colors duration-500 group-hover:text-white md:text-3xl">{p.title}</h3>
+                    <p className="mt-4 text-[#111111]/60 transition-colors duration-500 group-hover:text-white/75">{p.desc}</p>
                   </div>
-                  <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+                  <div className="relative mt-8 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap gap-2">
-                      {p.tags.map(t => <span key={t} className="rounded-full bg-[#FFF3D0] px-3 py-1 text-xs font-semibold text-[#111111]/70">{t}</span>)}
+                      {p.tags.map(t => <span key={t} className="rounded-full bg-[#FFF3D0] px-3 py-1 text-xs font-semibold text-[#111111]/70 transition-colors duration-500 group-hover:bg-white/10 group-hover:text-white">{t}</span>)}
                     </div>
-                    <span className="rounded-full bg-[#003CD1]/8 px-3 py-1 text-[11px] font-bold text-[#003CD1]">{p.badge}</span>
+                    <span className="rounded-full bg-[#003CD1]/8 px-3 py-1 text-[11px] font-bold text-[#003CD1] transition-colors duration-500 group-hover:bg-[#C6FF3A] group-hover:text-[#111111]">{p.badge}</span>
                   </div>
                 </motion.article>
               ))}
@@ -314,17 +315,9 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
             </div>
 
             {/* Timeline — full section width, below the text/picture row */}
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mt-20">
-              <ol className="relative grid grid-cols-5 gap-0">
-                <div aria-hidden className="absolute left-0 right-0 top-[18px] h-px bg-gradient-to-r from-white/25 via-white/40 to-accent sm:top-6" />
-                {[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1M 🎯"]].map(([yr, lbl], i) => (
-                  <li key={yr} className="relative text-center">
-                    <div className={`relative z-10 mx-auto grid h-9 w-9 place-items-center rounded-full border text-xs font-bold sm:h-12 sm:w-12 sm:text-sm ${i === 4 ? "border-[#C6FF3A] bg-[#C6FF3A] text-[#111111]" : "border-white/30 bg-[#003CD1] text-white"}`}>{yr}</div>
-                    <div className={`mt-2 text-[9px] font-bold leading-tight sm:mt-3 sm:text-xs ${i === 4 ? "text-[#C6FF3A]" : "text-white/60"}`}>{lbl}</div>
-                  </li>
-                ))}
-              </ol>
-            </motion.div>
+            <div className="mt-20">
+              <WhyTimeline steps={[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1M 🎯"]]} />
+            </div>
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
               className="mt-20 grid gap-6 md:grid-cols-3">
@@ -357,10 +350,10 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
               </motion.a>
             </motion.div>
             {communityTestimonials.length > 0 ? (
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.11)}
                 className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {communityTestimonials.slice(0, 6).map((t) => (
-                  <motion.figure key={t._id} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
+                {communityTestimonials.slice(0, 6).map((t, i) => (
+                  <motion.figure key={t._id} custom={i} variants={dealt} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
                     className={`flex h-full flex-col justify-between rounded-3xl border border-[#111111]/5 p-8 md:p-10 ${winCardBg[t.cardStyle] ?? winCardBg.sand}`}>
                     <blockquote className="text-balance text-lg font-medium leading-snug">
                       <ExpandableQuote
@@ -451,8 +444,13 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                       </span>
                     </div>
-                    <div className="absolute bottom-3 left-3 right-3">
+                    <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-3">
                       <p className="text-xs font-bold text-white/80">{ep.episodeNumber} · {ep.duration}</p>
+                      <span aria-hidden className="flex h-4 items-end gap-[3px]">
+                        {[0, 0.25, 0.5, 0.15, 0.4].map((d, i) => (
+                          <span key={i} className="eq-bar h-full w-[3px] rounded-full bg-[#C6FF3A]" style={{ animationDelay: `${-d}s` }} />
+                        ))}
+                      </span>
                     </div>
                   </a>
                   <div className="flex flex-1 flex-col justify-between p-5">
@@ -481,41 +479,13 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         <section id="learning-hub" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
-              className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              className="mb-8">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Learning Hub</p>
                 <h2 className="mt-3 max-w-3xl text-balance text-4xl font-black tracking-tight md:text-6xl"><WordReveal text="200+ resources built for builders." /></h2>
               </motion.div>
-              <motion.div variants={fadeUp} className="flex flex-wrap gap-2">
-                {resources.map(r => (
-                  <button key={r.type} onClick={() => setActiveResource(r.type)}
-                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeResource === r.type ? "border-transparent bg-gradient-to-r from-primary to-[#1F55E8] text-white glow-blue" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30 hover:text-[#111111]"}`}>
-                    {r.type}
-                  </button>
-                ))}
-              </motion.div>
             </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.09)}
-              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-              {resources.map((r) => (
-                <motion.div key={r.type} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.25, ease: E } }} onClick={() => setActiveResource(r.type)}
-                  className={`flex cursor-pointer flex-col justify-between rounded-3xl p-7 transition-shadow hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.14)] ${r.bg} ${activeResource === r.type ? "ring-2 ring-offset-2 ring-[#003CD1]" : ""}`}>
-                  <div>
-                    <div className="text-3xl">{r.icon}</div>
-                    <h3 className="mt-4 text-lg font-black">{r.type}</h3>
-                    <p className={`mt-0.5 text-2xl font-black ${r.countColor}`}>{r.count}</p>
-                    <p className="mt-3 text-sm leading-7 opacity-70">{r.desc}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setActiveResource(r.type); }}
-                    className={`mt-6 inline-flex items-center gap-2 text-sm font-bold ${r.countColor} hover:underline`}
-                  >
-                    Coming Soon...
-                  </button>
-                </motion.div>
-              ))}
-            </motion.div>
+            <ResourceAccordion resources={resources} />
           </div>
         </section>
 
@@ -524,7 +494,8 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
           <AmbientBackground tone="dark" />
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.14)}
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
-            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">8,000+ already inside</motion.p>
+            <InsideAvatars people={communityTestimonials} />
+            <motion.p variants={fadeUp} className="mt-5 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">8,000+ already inside</motion.p>
             <motion.h2 variants={fadeUp} className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-black leading-[0.95] tracking-tight md:text-8xl">
               Ready to <span className="mark-gradient">Brew</span> <span className="text-gradient-lime">Yours?</span>
             </motion.h2>

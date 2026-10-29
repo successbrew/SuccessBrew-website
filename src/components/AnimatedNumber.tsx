@@ -2,15 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/** Counts a stat like "8,000+" or "200K+" up from 0 the first time `inView`
+/** Counts a stat like "8,000+", "200K+" or "$8M+" up from 0 the first time `inView`
  * turns true. Values that don't fit that shape are shown as-is.
  *
  * Re-runs whenever the value itself changes (e.g. an admin edits the stat and
  * the page refreshes in place) — otherwise the old count would stay on screen
  * with the new suffix, like "200M+" for a stat that now says "100M+". */
 export function AnimatedNumber({ value, inView }: { value: string; inView: boolean }) {
-  const match = value.match(/^([\d,]+)([KMkm]?)(\+?)$/);
-  const target = match ? parseInt(match[1].replace(/,/g, ""), 10) : 0;
+  const match = value.match(/^(\D*)([\d,]+)([KMkm]?)(\+?)$/);
+  const target = match ? parseInt(match[2].replace(/,/g, ""), 10) : 0;
   const isCount = Boolean(match);
   const [count, setCount] = useState(0);
   const animatedTo = useRef<number | null>(null);
@@ -36,9 +36,9 @@ export function AnimatedNumber({ value, inView }: { value: string; inView: boole
   }, [inView, target, isCount]);
 
   if (!match) return <>{value}</>;
-  const [, , suffix, plus] = match;
+  const [, prefix, , suffix, plus] = match;
   // Never show more than the target, even for a frame mid-change.
   const shown = Math.min(count, target);
   const formatted = target >= 1000 ? shown.toLocaleString("en-IN") : shown;
-  return <>{formatted}{suffix}{plus}</>;
+  return <>{prefix}{formatted}{suffix}{plus}</>;
 }

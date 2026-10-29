@@ -3,12 +3,14 @@
 import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, MotionConfig, useInView } from "framer-motion";
+import { motion, MotionConfig, useInView, useScroll, useTransform } from "framer-motion";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
-import { Arrow, E, Glow, GradientBorder, GradientText, Mark, Reveal, SectionLabel, fadeUp, stagger } from "@/components/LandingPrimitives";
+import { BrewShader } from "@/components/about/BrewShader";
+import { EcosystemOrbit, GrowthChart, JourneyRail, ParallaxGallery, ScrollWords, StrikeStatement } from "@/components/about/AboutMotion";
 import {
   COMMUNITY_GALLERY,
   COMPANY_STATS,
@@ -22,353 +24,273 @@ import {
 } from "@/lib/content/about";
 
 /* ──────────────────────────────────────────────────────────────────────────
- * About — the Successbrew story. The founder has his own page at
- * /about/sourabh-goyal; this page links to it from the hero, the origin story
- * and the "Meet the founder" block.
+ * About — the Successbrew story, told as one continuous scroll. The founder
+ * has his own page at /about/sourabh-goyal; this page links to it from the
+ * hero, the origin story and the founder block.
  * ────────────────────────────────────────────────────────────────────────── */
 
-const btn =
-  "group inline-flex h-12 items-center justify-center gap-2 rounded-[6px] px-6 text-[15px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink";
-const btnBlue = `${btn} bg-gradient-to-r from-primary to-[#1F55E8] text-white shadow-[0_10px_30px_-10px_rgba(0,60,209,0.8)] hover:from-white hover:to-white hover:text-ink`;
-const btnLime = `${btn} bg-accent text-ink shadow-[0_10px_30px_-10px_rgba(198,255,58,0.55)] hover:bg-white`;
-const btnGhost = `${btn} border border-white/15 text-white hover:border-white/40 hover:bg-white/5`;
+const E = [0.22, 1, 0.36, 1] as const;
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: E } } };
+const stagger = (d = 0.1) => ({ hidden: {}, visible: { transition: { staggerChildren: d } } });
+
+const GALLERY = [
+  ...COMMUNITY_GALLERY,
+  { src: "/founder-branding/community-meetup.jpg", alt: "A Successbrew community meetup" },
+  { src: "/founder-branding/founder-on-stage.jpg", alt: "Sourabh on stage at a Successbrew event" },
+];
+
+function Kicker({ n, text }: { n: string; text: string }) {
+  return <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">{n} — {text}</p>;
+}
+
+/** Headline whose lines rise out of a mask one after another. */
+function MaskLines({ lines, className = "" }: { lines: React.ReactNode[]; className?: string }) {
+  return (
+    <motion.span variants={stagger(0.12)} className={className}>
+      {lines.map((l, i) => (
+        <span key={i} className="block overflow-hidden pb-[0.08em]">
+          <motion.span className="block" variants={{ hidden: { y: "105%" }, visible: { y: "0%", transition: { duration: 1, ease: E } } }}>{l}</motion.span>
+        </span>
+      ))}
+    </motion.span>
+  );
+}
+
+function HeroStats() {
+  const ref = useRef<HTMLDListElement>(null);
+  const inView = useInView(ref, { once: true });
+  return (
+    <dl ref={ref} className="grid grid-cols-2 divide-white/10 border-t border-white/10 lg:grid-cols-4 lg:divide-x">
+      {COMPANY_STATS.map((s, i) => (
+        <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 + i * 0.1, duration: 0.7, ease: E }}
+          className="flex flex-col-reverse px-0 py-6 lg:px-8 lg:first:pl-0">
+          <dt className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">{s.label}</dt>
+          <dd className={`text-3xl font-black tabular-nums tracking-tight md:text-4xl ${i === COMPANY_STATS.length - 1 ? "text-accent" : ""}`}>
+            <AnimatedNumber value={s.value} inView={inView} />
+          </dd>
+        </motion.div>
+      ))}
+    </dl>
+  );
+}
+
+/** Portrait that opens from a thin slit as it scrolls into view. */
+function FounderReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.9", "start 0.3"] });
+  const clip = useTransform(scrollYProgress, [0, 1], ["inset(0% 42% 0% 42% round 24px)", "inset(0% 0% 0% 0% round 24px)"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.25, 1]);
+  return (
+    <motion.div ref={ref} style={{ clipPath: clip }} className="relative aspect-[4/5] overflow-hidden rounded-3xl">
+      <motion.div style={{ scale }} className="absolute inset-0">
+        <Image src="/founder-branding/sourabh-portrait.jpg" alt={FOUNDER.name} fill sizes="(max-width:1024px) 100vw, 45vw" className="object-cover object-top" />
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }) {
-  const statsRef = useRef<HTMLDListElement>(null);
-  const statsInView = useInView(statsRef, { once: true, margin: "-80px" });
-
   return (
     <MotionConfig reducedMotion="user">
       <NavBar variant="dark" activePage="About" ctaText="Join the Mission" ctaHref="/about#join" />
-      <main className="overflow-x-hidden bg-ink font-sans text-white">
+      <main className="overflow-x-clip bg-[#0B0B0B] font-sans text-white">
 
-        {/* ══ HERO ═══════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-[#0B0B0B] pt-28 pb-20 lg:pt-36 lg:pb-28">
-          <Glow variant="hero" grid />
-          <div className="relative mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-10">
-            <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
-              <motion.p variants={fadeUp} className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                About · The Successbrew story
+        {/* ══ HERO — live brew + the thesis ═════════════════════════════════ */}
+        <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pt-32">
+          <BrewShader />
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0B0B0B] to-transparent" />
+          <div className="relative mx-auto w-full max-w-7xl px-6 lg:px-10">
+            <motion.div initial="hidden" animate="visible" variants={stagger(0.12)}>
+              <motion.p variants={fadeUp} className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
+                <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-accent" />About Successbrew</span>
+                <span className="text-white/25">/</span><span>Est. 2018</span>
+                <span className="text-white/25">/</span><span>Built in India</span>
               </motion.p>
-              <motion.h1 variants={fadeUp} className="mt-6 text-balance text-[clamp(2.75rem,6vw,5.5rem)] font-black leading-[0.96] tracking-tight">
-                Building opportunity for the <GradientText>next generation.</GradientText>
-              </motion.h1>
-              <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-white/60 md:text-xl">
-                One person&rsquo;s question. Thousands of people&rsquo;s success. A movement that&rsquo;s only just getting started.
-              </motion.p>
-              <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-3">
-                <a href="#story" className={btnBlue}>Read our story <span aria-hidden="true">↓</span></a>
-                <Link href={FOUNDER_PROFILE_HREF} className={btnGhost}>
-                  Meet the founder <Arrow className="transition-transform group-hover:translate-x-0.5" />
-                </Link>
-              </motion.div>
-              <motion.dl variants={fadeUp} className="mt-12 flex flex-wrap gap-x-10 gap-y-5 border-t border-white/10 pt-8">
-                {[
-                  { v: "8,000+", l: "Members" },
-                  { v: "200+", l: "Events" },
-                  { v: "1M", l: "Entrepreneurs by 2030", gradient: true },
-                ].map((s) => (
-                  <div key={s.l} className="flex flex-col-reverse">
-                    <dt className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-white/45">{s.l}</dt>
-                    <dd className="text-3xl font-black tracking-tight">{s.gradient ? <GradientText>{s.v}</GradientText> : s.v}</dd>
-                  </div>
-                ))}
-              </motion.dl>
-            </motion.div>
-
-            {/* Community collage */}
-            <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.9, ease: E }}
-              className="relative pb-16 lg:pb-0">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-white/10 sm:aspect-[5/4] lg:aspect-[4/5]">
-                <Image src="/grid-images/IMG_9736.JPG" alt="A packed Successbrew community event" fill priority
-                  sizes="(max-width:1024px) 100vw, 45vw" className="object-cover" />
-                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-              </div>
-              <GradientBorder className="absolute -bottom-2 left-4 w-[46%] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] lg:-left-10 lg:bottom-10" innerClassName="overflow-hidden bg-ink">
-                <div className="relative aspect-[4/3]">
-                  <Image src="/grid-images/20220423062049_IMG_2072.JPG" alt="Founders at an early Successbrew meetup" fill
-                    sizes="(max-width:1024px) 45vw, 20vw" className="object-cover" />
-                </div>
-              </GradientBorder>
-              <div className="absolute right-4 top-4 rounded-[6px] bg-accent px-4 py-3 text-ink shadow-[0_10px_30px_-10px_rgba(198,255,58,0.6)]">
-                <p className="text-2xl font-black leading-none">2018</p>
-                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/70">Where it began</p>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ══ 01 THE BEGINNING ═══════════════════════════════════════════ */}
-        <section id="story" className="scroll-mt-20 border-t border-white/[0.06] py-24 lg:py-32">
-          <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20 lg:px-10">
-            <Reveal className="relative">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-white/10">
-                <Image src="/grid-images/IMG-20220514-WA0017.jpg" alt="An early roundtable between founders" fill
-                  sizes="(max-width:1024px) 100vw, 40vw" className="object-cover" />
-              </div>
-              <div className="absolute -bottom-5 left-5 rounded-[6px] bg-gradient-to-r from-primary to-[#0A2A8F] px-5 py-3.5 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.8)]">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/70">It started with</p>
-                <p className="text-lg font-black">a simple question.</p>
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.1}>
-              <SectionLabel n="01" text="The beginning" tone="dark" />
-              <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.6vw,4rem)] font-black leading-[1.02] tracking-tight">
-                Why do talented people stay <Mark>invisible?</Mark>
-              </h2>
-              <div className="mt-8 space-y-5 text-[17px] text-white/55">
-                {ORIGIN_STORY.map((p) => <p key={p}>{p}</p>)}
-              </div>
-              <p className="mt-6 text-2xl font-black leading-snug tracking-tight">
-                He built it himself. That room became <GradientText>Successbrew.</GradientText>
-              </p>
-              <Link href={FOUNDER_PROFILE_HREF} className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-white underline-offset-4 hover:underline">
-                Read Sourabh&rsquo;s story <Arrow />
-              </Link>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ══ 02 THE JOURNEY ═════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#0B0B0B] py-24 lg:py-32">
-          <Glow variant="corner" />
-          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-            <Reveal>
-              <SectionLabel n="02" text="The journey" tone="dark" />
-              <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.6vw,4rem)] font-black leading-[1.02] tracking-tight">
-                From 30 people in a room to <GradientText>an ecosystem.</GradientText>
-              </h2>
-            </Reveal>
-
-            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
-              className="relative mt-16 grid gap-8 md:grid-cols-3 lg:grid-cols-6 lg:gap-5">
-              <span aria-hidden="true" className="absolute bottom-2 left-[19px] top-2 w-px bg-gradient-to-b from-primary via-primary/70 to-accent md:hidden lg:block lg:bottom-auto lg:left-0 lg:right-0 lg:top-5 lg:h-px lg:w-auto lg:bg-gradient-to-r" />
-              {MILESTONES.map((m, i) => {
-                const isLast = i === MILESTONES.length - 1;
-                return (
-                  <motion.li key={m.year} variants={fadeUp} className="relative pl-14 md:pl-0">
-                    <span className={`absolute left-0 top-0 z-10 grid h-10 w-10 place-items-center rounded-full text-xs font-semibold ring-4 ring-[#0B0B0B] md:relative
-                      ${isLast ? "bg-accent text-ink" : "bg-primary text-white"}`}>
-                      &rsquo;{m.year.slice(2)}
-                    </span>
-                    <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/40 md:mt-6">{m.year}</p>
-                    <h3 className={`mt-1 text-xl font-black tracking-tight ${isLast ? "text-accent" : ""}`}>{m.title}</h3>
-                    <p className="mt-2 text-sm text-white/55">{m.desc}</p>
-                  </motion.li>
-                );
-              })}
-            </motion.ol>
-          </div>
-        </section>
-
-        {/* ══ NORTH STAR ═════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-28 lg:py-40">
-          <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[460px] w-[460px] rounded-full bg-accent/25 blur-[130px]" />
-          <Reveal className="relative mx-auto max-w-5xl px-6 text-center lg:px-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/60">Our north star</p>
-            <h2 className="mt-6 text-balance text-[clamp(3rem,8.5vw,7.5rem)] font-black leading-[0.9] tracking-tight">
-              No talent should go <GradientText>unseen.</GradientText>
-            </h2>
-            <p className="mx-auto mt-8 max-w-xl text-lg text-white/70">
-              Every city has thousands of people with world-class potential and no address to send their ambition.
-              Successbrew is that address.
-            </p>
-          </Reveal>
-        </section>
-
-        {/* ══ 03 WHAT SUCCESSBREW IS TODAY ═══════════════════════════════ */}
-        <section className="border-t border-white/[0.06] py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <Reveal>
-              <SectionLabel n="03" text="Successbrew today" tone="dark" />
-              <h2 className="mt-5 max-w-3xl text-balance text-[clamp(2.25rem,4.4vw,3.75rem)] font-black leading-[1.03] tracking-tight">
-                Not just a community. <Mark>An ecosystem.</Mark>
-              </h2>
-            </Reveal>
-            <motion.ul initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
-              className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {ECOSYSTEM.map((e, i) => (
-                <motion.li key={e.title} variants={fadeUp}>
-                  <Link href={e.href}
-                    className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-6 transition-colors hover:border-accent/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                    <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-primary to-accent opacity-60 transition-opacity group-hover:opacity-100" />
-                    <span className="text-xs text-white/35">0{i + 1}</span>
-                    <h3 className="mt-6 text-xl font-black tracking-tight">{e.title}</h3>
-                    <p className="mt-2 flex-1 text-[15px] text-white/55">{e.desc}</p>
-                    <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
-                      {e.cta} <Arrow className="transition-transform group-hover:translate-x-0.5" />
-                    </span>
+              <h1 className="mt-8 text-[clamp(3.25rem,10vw,10rem)] font-black leading-[0.88] tracking-[-0.03em]">
+                <MaskLines lines={["No talent", <>should go <span className="bg-gradient-to-r from-[#8FB0FF] via-white to-accent bg-clip-text text-transparent">unseen.</span></>]} />
+              </h1>
+              <div className="mt-10 grid gap-8 pb-12 lg:grid-cols-[1fr_auto] lg:items-end">
+                <motion.p variants={fadeUp} className="max-w-xl text-lg leading-relaxed text-white/70 md:text-xl">
+                  Successbrew is the room India&rsquo;s ambitious people were missing — a community, content studio, podcast and events
+                  platform where founders, creators and investors find each other.
+                </motion.p>
+                <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
+                  <a href="#story" className="group inline-flex h-14 items-center gap-2 rounded-full bg-white px-7 text-[15px] font-semibold text-[#111111] transition hover:bg-accent">
+                    Read our story <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                  </a>
+                  <Link href={FOUNDER_PROFILE_HREF} className="inline-flex h-14 items-center gap-2 rounded-full border border-white/20 px-7 text-[15px] font-semibold text-white backdrop-blur transition hover:border-white/50">
+                    Meet the founder <ArrowUpRight className="h-4 w-4" />
                   </Link>
-                </motion.li>
-              ))}
-            </motion.ul>
-          </div>
-        </section>
-
-        {/* ══ 04 VALUES ══════════════════════════════════════════════════ */}
-        <section className="border-t border-white/[0.06] bg-[#0B0B0B] py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <Reveal className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
-              <div>
-                <SectionLabel n="04" text="What we stand for" tone="dark" />
-                <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.4vw,3.75rem)] font-black leading-[1.03] tracking-tight">
-                  Six principles. <GradientText>One direction.</GradientText>
-                </h2>
+                </motion.div>
               </div>
-              <p className="max-w-md text-lg text-white/55 lg:justify-self-end">
-                The beliefs behind every event we host, every piece of content we make and every introduction we make.
-              </p>
-            </Reveal>
-            <motion.ul initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.06)}
-              className="mt-14 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
-              {VALUES.map((v, i) => (
-                <motion.li key={v.title} variants={fadeUp} className="bg-[#0B0B0B] p-7 transition-colors hover:bg-[#121212]">
-                  <span className="inline-grid h-9 w-9 place-items-center rounded-[6px] bg-gradient-to-br from-primary to-[#1F55E8] text-xs font-semibold">0{i + 1}</span>
-                  <h3 className="mt-5 text-lg font-black tracking-tight">{v.title}</h3>
-                  <p className="mt-2 text-[15px] text-white/55">{v.desc}</p>
-                </motion.li>
-              ))}
-            </motion.ul>
+            </motion.div>
+            <HeroStats />
           </div>
         </section>
 
-        {/* ══ 05 GALLERY ═════════════════════════════════════════════════ */}
-        <section className="border-t border-white/[0.06] py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <Reveal>
-              <SectionLabel n="05" text="Behind the scenes" tone="dark" />
-              <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.4vw,3.75rem)] font-black leading-[1.03] tracking-tight">
-                Built in rooms like these.
-              </h2>
-            </Reveal>
-            <div className="mt-14 grid auto-rows-[220px] grid-cols-2 gap-3 md:auto-rows-[260px] md:grid-cols-4">
-              {COMMUNITY_GALLERY.map((g, i) => (
-                <Reveal key={g.src} delay={(i % 4) * 0.05}
-                  className={`group relative overflow-hidden rounded-xl border border-white/10 ${
-                    i === 0 ? "col-span-2 row-span-2" : i === 5 ? "col-span-2" : i >= 3 ? "md:col-span-2" : ""
-                  }`}>
-                  <Image src={g.src} alt={g.alt} fill sizes="(max-width:768px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-                </Reveal>
-              ))}
+        {/* ══ 01 THE BEGINNING — read by scrolling ═════════════════════════ */}
+        <section id="story" className="scroll-mt-20 py-28 lg:py-40">
+          <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24 lg:px-10">
+            <div className="lg:sticky lg:top-28 lg:self-start">
+              <Kicker n="01" text="The beginning" />
+              <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.4vw,4rem)] font-black leading-[1] tracking-tight">Why do talented people stay invisible?</h2>
+              <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-3xl">
+                <Image src="/grid-images/IMG-20220514-WA0017.jpg" alt="An early roundtable between founders" fill sizes="(max-width:1024px) 100vw, 35vw" className="object-cover" />
+                <span className="absolute bottom-4 left-4 rounded-full bg-[#0B0B0B]/80 px-4 py-2 text-xs font-semibold backdrop-blur">2018 · the first room</span>
+              </div>
+            </div>
+            <div>
+              <ScrollWords
+                paragraphs={[...ORIGIN_STORY, "he built the room himself. That room became Successbrew."]}
+                className="text-[clamp(1.5rem,2.6vw,2.4rem)] font-semibold leading-[1.3] tracking-tight" />
+              <Link href={FOUNDER_PROFILE_HREF} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent underline-offset-4 hover:underline">
+                Read Sourabh&rsquo;s story <ArrowUpRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* ══ 06 IMPACT ══════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#0B0B0B] py-24 lg:py-32">
-          <Glow variant="center" />
-          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-            <Reveal className="text-center">
-              <SectionLabel n="06" text="The impact, so far" tone="dark" />
-            </Reveal>
-            <dl ref={statsRef} className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 lg:grid-cols-4">
-              {COMPANY_STATS.map((s) => (
-                <div key={s.label} className="flex flex-col-reverse items-center bg-[#0B0B0B]/80 px-4 py-10 text-center backdrop-blur">
-                  <dt className="mt-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">{s.label}</dt>
-                  <dd className="text-[clamp(2.5rem,5vw,4.25rem)] font-black leading-none tracking-tight">
-                    <GradientText><AnimatedNumber value={s.value} inView={statsInView} /></GradientText>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
+        {/* ══ 02 THE JOURNEY — pinned, horizontal ══════════════════════════ */}
+        <JourneyRail milestones={MILESTONES} photos={COMMUNITY_GALLERY.slice(0, 3)} />
 
-        {/* ══ PEOPLE OVER PRODUCTS ═══════════════════════════════════════ */}
-        <section className="border-t border-white/[0.06] py-28 lg:py-40">
-          <div className="mx-auto max-w-5xl px-6 text-center lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
-              {[
-                { t: "We don’t build", dim: true },
-                { t: "products.", dim: false },
-                { t: "We build", dim: true },
-                { t: "people.", gradient: true },
-              ].map((l) => (
-                <motion.p key={l.t} variants={fadeUp}
-                  className={`text-[clamp(3rem,9vw,8rem)] font-black leading-[0.92] tracking-tight ${l.dim ? "text-white/30" : ""}`}>
-                  {l.gradient ? <GradientText>{l.t}</GradientText> : l.t}
-                </motion.p>
-              ))}
-            </motion.div>
-            <Reveal className="mx-auto mt-12 max-w-lg">
-              <p className="text-lg text-white/55">
-                Products can be replicated. Systems can be automated. But the moment a person discovers what they&rsquo;re
-                capable of — that&rsquo;s irreversible.
-              </p>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ══ 07 ROADMAP ═════════════════════════════════════════════════ */}
-        <section className="border-t border-white/[0.06] bg-[#0B0B0B] py-24 lg:py-32">
+        {/* ══ 03 GROWTH ═════════════════════════════════════════════════════ */}
+        <section className="py-28 lg:py-40">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <Reveal>
-              <SectionLabel n="07" text="The roadmap" tone="dark" />
-              <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.4vw,3.75rem)] font-black leading-[1.03] tracking-tight">
-                What comes next — on the way to <GradientText>1M by 2030.</GradientText>
-              </h2>
-            </Reveal>
-            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
-              className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              {ROADMAP.map((r, i) => (
-                <motion.li key={r.title} variants={fadeUp} className="relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-6">
-                  <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-accent" style={{ opacity: 0.35 + i * 0.16 }} />
-                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-accent">Phase 0{i + 1}</p>
-                  <h3 className="mt-4 text-lg font-black tracking-tight">{r.title}</h3>
-                  <p className="mt-2 text-sm text-white/55">{r.desc}</p>
+            <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <Kicker n="03" text="Growth" />
+                <h2 className="mt-5 max-w-3xl text-balance text-[clamp(2.25rem,4.4vw,4rem)] font-black leading-[1] tracking-tight">
+                  30 people to 8,000+. <span className="text-white/35">Next stop, a million.</span>
+                </h2>
+              </div>
+              <p className="max-w-xs text-sm text-white/45">Community members, log scale. Solid line is where we&rsquo;ve been; dashed is the 2030 commitment.</p>
+            </div>
+            <div className="mt-14 rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4 sm:p-8">
+              <GrowthChart />
+            </div>
+          </div>
+        </section>
+
+        {/* ══ 04 ECOSYSTEM ══════════════════════════════════════════════════ */}
+        <section className="relative overflow-hidden border-y border-white/[0.06] bg-[#080808] py-28 lg:py-40">
+          <div aria-hidden className="pointer-events-none absolute left-1/4 top-1/2 h-[600px] w-[600px] -translate-y-1/2 rounded-full bg-primary/20 blur-[160px]" />
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
+            <Kicker n="04" text="Successbrew today" />
+            <h2 className="mt-5 mb-16 max-w-3xl text-balance text-[clamp(2.25rem,4.4vw,4rem)] font-black leading-[1] tracking-tight">Not a community. An ecosystem.</h2>
+            <EcosystemOrbit nodes={ECOSYSTEM} />
+          </div>
+        </section>
+
+        {/* ══ 05 PRINCIPLES ═════════════════════════════════════════════════ */}
+        <section className="py-28 lg:py-40">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <Kicker n="05" text="What we stand for" />
+            <h2 className="mt-5 max-w-3xl text-balance text-[clamp(2.25rem,4.4vw,4rem)] font-black leading-[1] tracking-tight">Six principles. One direction.</h2>
+            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)} className="mt-16 border-t border-white/10">
+              {VALUES.map((v, i) => (
+                <motion.li key={v.title} variants={fadeUp}
+                  className="group grid gap-3 border-b border-white/10 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-[5rem_1fr_1fr] md:items-baseline md:gap-8 md:py-10">
+                  <span className="text-sm font-semibold tabular-nums text-white/30 transition-colors group-hover:text-accent">0{i + 1}</span>
+                  <h3 className="text-[clamp(1.75rem,3.4vw,3rem)] font-black leading-none tracking-tight transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-3">{v.title}</h3>
+                  <p className="max-w-md text-base leading-relaxed text-white/45 transition-colors duration-300 group-hover:text-white/80">{v.desc}</p>
                 </motion.li>
               ))}
             </motion.ol>
           </div>
         </section>
 
-        {/* ══ MEET THE FOUNDER ═══════════════════════════════════════════ */}
-        <section className="border-t border-white/[0.06] py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <Reveal>
-              <GradientBorder innerClassName="bg-[#0F0F0F]">
-                <Link href={FOUNDER_PROFILE_HREF}
-                  className="group grid overflow-hidden rounded-[11px] md:grid-cols-[0.8fr_1.2fr] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
-                  <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[360px]">
-                    <Image src="/founder-branding/sourabh-portrait.jpg" alt={FOUNDER.name} fill sizes="(max-width:768px) 100vw, 40vw"
-                      className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]" />
-                  </div>
-                  <div className="flex flex-col justify-center p-8 md:p-12">
-                    <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/45">Meet the founder</p>
-                    <h2 className="mt-4 text-[clamp(2rem,4vw,3.25rem)] font-black leading-[1.02] tracking-tight">{FOUNDER.name}</h2>
-                    <p className="mt-2 text-white/55">{FOUNDER.role}</p>
-                    <p className="mt-6 text-xl font-semibold leading-snug">&ldquo;<GradientText>{FOUNDER.quote}</GradientText>&rdquo;</p>
-                    <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-accent">
-                      Read his story <Arrow className="transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </div>
-                </Link>
-              </GradientBorder>
-            </Reveal>
+        {/* ══ 06 ROOMS LIKE THESE — parallax ═══════════════════════════════ */}
+        <section className="overflow-hidden border-t border-white/[0.06] bg-[#080808] py-28 lg:py-40">
+          <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[0.7fr_1.3fr] lg:px-10">
+            <div className="lg:sticky lg:top-28 lg:self-start">
+              <Kicker n="06" text="Behind the scenes" />
+              <h2 className="mt-5 text-balance text-[clamp(2.25rem,4.4vw,4rem)] font-black leading-[1] tracking-tight">Built in rooms like these.</h2>
+              <p className="mt-6 max-w-sm text-lg text-white/55">Every photo here is a real Successbrew room — no stock, no stage-managed shoots.</p>
+            </div>
+            <ParallaxGallery photos={GALLERY} />
           </div>
         </section>
 
-        {/* ══ JOIN ═══════════════════════════════════════════════════════ */}
-        <section id="join" className="relative scroll-mt-20 overflow-hidden border-t border-white/[0.06] bg-[#0B0B0B]">
-          <Glow variant="center" grid />
-          <div className="relative mx-auto max-w-4xl px-6 py-28 text-center lg:px-10 lg:py-36">
-            <Reveal>
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">You&rsquo;re invited</p>
-              <h2 className="mt-5 text-balance text-[clamp(3rem,8vw,6.5rem)] font-black leading-[0.92] tracking-tight">
-                Join the <GradientText>movement.</GradientText>
-              </h2>
-              <p className="mx-auto mt-6 max-w-md text-lg text-white/60">Success is brewed together. Your seat at this table is waiting.</p>
-              <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link href="/apply?source=community" className={`${btnLime} h-14 px-8 text-base`}>
-                  Apply to Join Community <Arrow className="transition-transform group-hover:translate-x-0.5" />
-                </Link>
-                <Link href="/community/events" className={`${btnGhost} h-14 px-8 text-base`}>Attend an event</Link>
-              </div>
-            </Reveal>
+        {/* ══ STATEMENT ═════════════════════════════════════════════════════ */}
+        <section className="py-28 lg:py-44">
+          <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.4fr_0.6fr] lg:items-end lg:px-10">
+            <StrikeStatement />
+            <p className="max-w-sm text-lg leading-relaxed text-white/55">
+              Products can be replicated. Systems can be automated. But the moment a person discovers what they&rsquo;re capable of — that&rsquo;s irreversible.
+            </p>
           </div>
+        </section>
+
+        {/* ══ 07 ROADMAP — the climb to 2030 ═══════════════════════════════ */}
+        <section className="relative overflow-hidden border-t border-white/[0.06] bg-[#080808] py-28 lg:py-40">
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <Kicker n="07" text="The roadmap" />
+                <h2 className="mt-5 max-w-2xl text-balance text-[clamp(2.25rem,4.4vw,4rem)] font-black leading-[1] tracking-tight">The climb to 1M by 2030.</h2>
+              </div>
+              <span className="rounded-full bg-accent px-5 py-2.5 text-sm font-black text-[#111111]">1,000,000 · 2030</span>
+            </div>
+            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
+              className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:items-end">
+              {ROADMAP.map((r, i) => (
+                <motion.li key={r.title} variants={{ hidden: { opacity: 0, y: 60 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: E } } }}
+                  style={{ ["--step" as string]: `${(ROADMAP.length - 1 - i) * 3.5}rem` }}
+                  className="lg:mb-[var(--step)]">
+                  <div className={`relative overflow-hidden rounded-3xl border p-6 ${i === ROADMAP.length - 1 ? "border-accent/50 bg-accent text-[#111111]" : "border-white/10 bg-white/[0.03]"}`}>
+                    <p className={`text-[11px] font-semibold uppercase tracking-[0.14em] ${i === ROADMAP.length - 1 ? "text-[#111111]/60" : "text-accent"}`}>Phase 0{i + 1}</p>
+                    <h3 className="mt-6 text-xl font-black tracking-tight">{r.title}</h3>
+                    <p className={`mt-2 text-sm leading-relaxed ${i === ROADMAP.length - 1 ? "text-[#111111]/70" : "text-white/55"}`}>{r.desc}</p>
+                  </div>
+                </motion.li>
+              ))}
+            </motion.ol>
+          </div>
+        </section>
+
+        {/* ══ FOUNDER ═══════════════════════════════════════════════════════ */}
+        <section className="py-28 lg:py-40">
+          <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24 lg:px-10">
+            <FounderReveal />
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
+              <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">The founder</motion.p>
+              <motion.blockquote variants={fadeUp} className="mt-8 text-balance text-[clamp(2rem,3.8vw,3.5rem)] font-semibold leading-[1.1] tracking-tight">
+                &ldquo;{FOUNDER.quote}&rdquo;
+              </motion.blockquote>
+              <motion.div variants={fadeUp} className="mt-10 border-t border-white/10 pt-6">
+                <p className="text-xl font-black">{FOUNDER.name}</p>
+                <p className="mt-1 text-white/50">{FOUNDER.role}</p>
+                <p className="mt-6 max-w-lg leading-relaxed text-white/60">{FOUNDER.intro}</p>
+                <Link href={FOUNDER_PROFILE_HREF} className="group mt-8 inline-flex h-12 items-center gap-2 rounded-full border border-white/20 px-6 text-sm font-semibold transition hover:border-accent hover:bg-accent hover:text-[#111111]">
+                  Read his story <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══ JOIN — the brew again ═════════════════════════════════════════ */}
+        <section id="join" className="relative scroll-mt-20 overflow-hidden">
+          <BrewShader intensity={1.2} />
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#0B0B0B] to-transparent" />
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
+            className="relative mx-auto max-w-7xl px-6 py-36 lg:px-10 lg:py-52">
+            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.16em] text-white/60">You&rsquo;re invited</motion.p>
+            <h2 className="mt-6 text-[clamp(3.25rem,10vw,9rem)] font-black leading-[0.88] tracking-[-0.03em]">
+              <MaskLines lines={["Join the", <span key="m" className="text-accent">movement.</span>]} />
+            </h2>
+            <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center gap-3">
+              <Link href="/apply?source=community" className="group inline-flex h-14 items-center gap-2 rounded-full bg-accent px-8 text-base font-semibold text-[#111111] transition hover:bg-white">
+                Apply to Join Community <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+              <Link href="/community/events" className="inline-flex h-14 items-center gap-2 rounded-full border border-white/25 px-8 text-base font-semibold text-white backdrop-blur transition hover:border-white/60">
+                Attend an event
+              </Link>
+              <Link href="/" className="inline-flex h-14 items-center gap-2 px-4 text-base font-semibold text-white/70 transition hover:text-white">
+                Work with our studio →
+              </Link>
+            </motion.div>
+          </motion.div>
         </section>
       </main>
       <Footer siteSettings={siteSettings} />

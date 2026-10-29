@@ -1,10 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { AmbientBackground } from "@/components/AmbientBackground";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowDown } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence, useInView, useReducedMotion, useScroll } from "framer-motion";
+import { ArrowRight, ArrowUpRight, Scissors } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { WordReveal } from "@/components/WordReveal";
@@ -12,6 +11,9 @@ import { ScrollAutoplayYouTube } from "@/components/ScrollAutoplayYouTube";
 import type { SiteSettings } from "@/components/SocialLinks";
 import type { EventPillar } from "@/lib/event-pillars";
 import { getSmoothScroll } from "@/components/SmoothScroll";
+import { RoomMotif, roomTheme } from "@/components/community/rooms";
+import { Countdown } from "@/components/community/Countdown";
+import { ProgrammeList } from "@/components/events/ProgrammeList";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } };
@@ -64,6 +66,7 @@ export interface RelatedEvent {
   date: string;
   eventDate: string;
   location: string;
+  imageUrl: string;
 }
 
 export interface EventTestimonial {
@@ -292,7 +295,7 @@ function SectionNav({
   if (items.length === 0) return null;
 
   return (
-    <div className="sticky top-20 z-30 border-b border-[#111111]/8 bg-[#F2ECDD]/92 backdrop-blur-md">
+    <div className="sticky top-20 z-30 mt-10 border-b border-[#111111]/8 bg-[#F2ECDD]/92 backdrop-blur-md lg:hidden">
       <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 lg:px-10">
         <div className="hide-scrollbar flex grow items-center gap-1 overflow-x-auto">
           {items.map((item) => (
@@ -349,14 +352,217 @@ function FaqRow({ item, isOpen, onToggle }: { item: FaqItem; isOpen: boolean; on
   );
 }
 
-const GALLERY_PATTERN = [
-  "col-span-2 row-span-2",
-  "col-span-1 row-span-1",
-  "col-span-1 row-span-1",
-  "col-span-2 row-span-1",
-  "col-span-1 row-span-2",
-  "col-span-1 row-span-1",
-];
+/** Little poster "stamp" of the room this event belongs to — links back to it
+ * and performs the room's motif once on load (and again on hover). */
+function RoomStamp({ pillar }: { pillar: EventPillar }) {
+  const theme = roomTheme(pillar.slug);
+  const [hot, setHot] = useState(false);
+  const [landed, setLanded] = useState(false);
+  return (
+    <motion.a href={`/community/events/${pillar.slug}`} aria-label={`Part of ${pillar.title}`}
+      onMouseEnter={() => setHot(true)} onMouseLeave={() => setHot(false)}
+      initial={{ opacity: 0, rotate: -12, scale: 0.8 }} animate={{ opacity: 1, rotate: -4, scale: 1 }}
+      whileHover={{ rotate: 0, scale: 1.04 }}
+      transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.2 }}
+      onAnimationComplete={() => setLanded(true)}
+      className={`relative block h-[72px] w-[58px] shrink-0 overflow-hidden rounded-lg shadow-[0_10px_24px_-10px_rgba(0,0,0,0.6)] ring-2 ring-white/80 ${theme.surface}`}>
+      <RoomMotif slug={pillar.slug} play={landed || hot} loop={hot} />
+      <span className={`absolute bottom-1 left-1.5 text-[8px] font-bold ${theme.tone === "light" ? "text-white/80" : "text-[#111111]/60"}`}>{theme.code}</span>
+    </motion.a>
+  );
+}
+
+/** Seats claimed vs. total, filling once when it scrolls into view. */
+function SeatsBar({ total, remaining }: { total: number; remaining: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true });
+  const reduced = useReducedMotion();
+  const claimed = Math.min(1, Math.max(0, (total - remaining) / total));
+  return (
+    <div ref={ref} className="w-full">
+      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/45">
+        <span>{total - remaining} seats claimed</span>
+        <span className="text-[#003CD1]">{remaining} left</span>
+      </div>
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#111111]/8">
+        <motion.div initial={{ scaleX: reduced ? claimed : 0 }} animate={inView ? { scaleX: claimed } : undefined}
+          transition={{ duration: 1.2, ease: E }}
+          className="h-full origin-left rounded-full bg-gradient-to-r from-[#003CD1] to-[#C6FF3A]" />
+      </div>
+    </div>
+  );
+}
+
+/** Agenda with a rail that fills as you read down it; each stop lights up as it
+ * reaches the middle of the screen. */
+function AgendaRail({ items, timed }: { items: AgendaItem[]; timed: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 55%"] });
+  return (
+    <div ref={ref} className="relative pl-7 sm:pl-9">
+      <div aria-hidden className="absolute bottom-0 left-0 top-0 w-0.5 rounded-full bg-[#111111]/8" />
+      <motion.div aria-hidden style={{ scaleY: reduced ? 1 : scrollYProgress }}
+        className="absolute bottom-0 left-0 top-0 w-0.5 origin-top rounded-full bg-gradient-to-b from-[#003CD1] to-[#C6FF3A]" />
+      {items.map((item, i) => (
+        <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "0px 0px -40% 0px" }}
+          variants={fadeUp} className="relative pb-10 last:pb-0">
+          <motion.span aria-hidden
+            variants={{ hidden: { scale: 0.5, backgroundColor: "#FFFFFF" }, visible: { scale: 1, backgroundColor: "#003CD1", transition: { duration: 0.4, ease: E } } }}
+            className="absolute -left-[35px] top-1.5 h-4 w-4 rounded-full border-2 border-[#003CD1] ring-4 ring-white sm:-left-[43px]" />
+          {timed && item.time && (
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">{item.time}</p>
+          )}
+          <h3 className="mt-1 text-lg font-black text-[#111111] sm:text-xl">{item.title}</h3>
+          {item.description && <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-[#111111]/60">{item.description}</p>}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+/** The facts card, drawn as a ticket: admission details on the left, a torn-off
+ * stub on the right with the countdown and the register action. */
+function Ticket({ event, pillar, registerHref, now }: { event: EventLandingData; pillar: EventPillar; registerHref: string; now: number }) {
+  const theme = roomTheme(pillar.slug);
+  const upcoming = new Date(event.eventDate).getTime() > now;
+  const facts = [
+    { label: "Date", value: event.date },
+    { label: "Time", value: event.timeRange ?? "TBA" },
+    { label: "Venue", value: event.location },
+    { label: "Seats", value: seatsSummary(event, { totalSuffix: "seats", fallback: "Open seating" }) },
+  ];
+  return (
+    <motion.div initial={{ opacity: 0, y: 40, rotate: -1 }} whileInView={{ opacity: 1, y: 0, rotate: 0 }} viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: E }}
+      className="relative grid overflow-hidden rounded-3xl bg-white shadow-[0_40px_80px_-40px_rgba(0,0,0,0.45)] lg:grid-cols-[1fr_auto_auto]">
+      <div className="p-6 sm:p-8 lg:p-10">
+        <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#111111]/15 pb-5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#111111]/45">Admit one · Room {theme.code}</span>
+          {event.priceNote && <span className="rounded-full bg-[#111111] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white">{event.priceNote}</span>}
+        </div>
+        <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+          {facts.map((f) => (
+            <div key={f.label} className="min-w-0">
+              <dt className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#111111]/40">{f.label}</dt>
+              <dd className="mt-1.5 text-base font-black leading-snug text-[#111111]">{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+        {event.showRemainingSeats && event.totalSeats && event.remainingSeats != null && (
+          <div className="mt-7"><SeatsBar total={event.totalSeats} remaining={event.remainingSeats} /></div>
+        )}
+      </div>
+
+      {/* Perforation: notches punched out of the card edges + a dashed tear line. */}
+      <div aria-hidden className="relative hidden w-0 lg:block">
+        <span className="absolute -left-4 -top-4 h-8 w-8 rounded-full bg-[#F2ECDD]" />
+        <span className="absolute -bottom-4 -left-4 h-8 w-8 rounded-full bg-[#F2ECDD]" />
+        <span className="absolute bottom-6 top-6 left-0 border-l-2 border-dashed border-[#111111]/15" />
+      </div>
+      <div aria-hidden className="relative h-0 lg:hidden">
+        <span className="absolute -left-4 -top-4 h-8 w-8 rounded-full bg-[#F2ECDD]" />
+        <span className="absolute -right-4 -top-4 h-8 w-8 rounded-full bg-[#F2ECDD]" />
+        <span className="absolute left-6 right-6 top-0 border-t-2 border-dashed border-[#111111]/15" />
+      </div>
+
+      <div className={`relative flex flex-col justify-between gap-6 p-6 sm:p-8 lg:w-[22rem] lg:p-10 ${theme.surface} ${theme.tone === "light" ? "text-white" : "text-[#111111]"}`}>
+        <div className="relative z-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-60">{upcoming ? "Doors open in" : "This room has wrapped"}</p>
+          {upcoming ? (
+            <Countdown target={event.eventDate} tone={theme.tone === "light" ? "light" : "dark"} className="mt-3" />
+          ) : (
+            <p className="mt-3 text-2xl font-black leading-tight">Catch the next one in {pillar.title}.</p>
+          )}
+        </div>
+        <div className="relative z-10">
+          <a href={upcoming ? registerHref : `/community/events/${pillar.slug}`} target={upcoming && event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
+            className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-bold transition hover:translate-y-[-2px] ${theme.tone === "light" ? "bg-[#C6FF3A] text-[#111111]" : "bg-[#111111] text-white"}`}>
+            {upcoming ? "Save my seat" : "See upcoming dates"} <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
+          </a>
+          {/* Decorative barcode. */}
+          <div aria-hidden className="mt-5 h-8 w-full opacity-50 [background:repeating-linear-gradient(90deg,currentColor_0_2px,transparent_2px_4px,currentColor_4px_5px,transparent_5px_9px)]" />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/** Desktop table of contents for the body: sticks beside the content and marks
+ * the section you're reading. */
+function SideIndex({ items, activeId, registerHref, hasRegisterUrl, calendarHref }: {
+  items: { id: string; label: string }[]; activeId: string | null; registerHref: string; hasRegisterUrl: boolean; calendarHref: string;
+}) {
+  return (
+    <nav aria-label="On this page" className="sticky top-28 hidden self-start lg:block">
+      <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#111111]/40">On this page</p>
+      <ol className="space-y-1 border-l border-[#111111]/10">
+        {items.map((item, i) => {
+          const on = activeId === item.id;
+          return (
+            <li key={item.id} className="relative">
+              {on && <motion.span layoutId="side-index" className="absolute -left-px top-0 h-full w-0.5 bg-[#003CD1]" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
+              <button type="button" onClick={() => smoothScrollToId(item.id)}
+                className={`flex w-full items-baseline gap-3 py-1.5 pl-4 text-left text-sm transition-colors ${on ? "font-bold text-[#111111]" : "text-[#111111]/50 hover:text-[#111111]"}`}>
+                <span className="w-5 text-[10px] tabular-nums opacity-60">{String(i + 1).padStart(2, "0")}</span>
+                {item.label}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <div className="mt-8 space-y-2">
+        <a href={registerHref} target={hasRegisterUrl ? "_blank" : undefined} rel="noreferrer noopener"
+          className="flex items-center justify-center gap-2 rounded-full bg-[#C6FF3A] px-5 py-3 text-sm font-bold text-[#111111] transition hover:translate-y-[-1px]">
+          Register <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
+        </a>
+        <a href={calendarHref} target="_blank" rel="noreferrer noopener"
+          className="flex items-center justify-center rounded-full border border-[#111111]/15 px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-[#111111]/70 transition hover:border-[#111111]/30">
+          Add to calendar
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+/** Body section heading: small running number + title, so the page reads like
+ * a printed programme. */
+function SectionHead({ n, kicker, title }: { n: number; kicker: string; title: string }) {
+  return (
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-8 flex items-baseline gap-4 border-t border-[#111111]/15 pt-6">
+      <span className="text-xs font-semibold tabular-nums text-[#003CD1]">{String(n).padStart(2, "0")}</span>
+      <div>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#111111]/45">{kicker}</p>
+        <h2 className="mt-2 text-balance text-3xl font-black tracking-tight md:text-4xl">{title}</h2>
+      </div>
+    </motion.div>
+  );
+}
+
+/** Portrait that slides its bio up over the photo on hover/focus. */
+function PersonCard({ name, role, bio, photoUrl, badge }: { name: string; role: string | null; bio: string | null; photoUrl: string | null; badge: string }) {
+  return (
+    <motion.div variants={fadeUp} tabIndex={bio ? 0 : undefined}
+      className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] outline-none focus-visible:ring-2 focus-visible:ring-[#003CD1]">
+      {photoUrl ? (
+        <img src={photoUrl} alt={name} loading="lazy" className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-105 group-focus:scale-105" />
+      ) : (
+        <div className="grid h-full w-full place-items-center bg-[#003CD1] text-6xl font-black text-white/30">{name.charAt(0)}</div>
+      )}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+      <span className="absolute left-4 top-4 rounded-full bg-[#C6FF3A] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#111111]">{badge}</span>
+      <div className="absolute inset-x-0 bottom-0 p-5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
+        <p className="text-lg font-black leading-tight text-white">{name}</p>
+        {role && <p className="mt-1 text-xs font-semibold text-[#C6FF3A]">{role}</p>}
+        {bio && (
+          <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr]">
+            <p className="overflow-hidden text-xs leading-relaxed text-white/75"><span className="block pt-3">{bio}</span></p>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
 export function EventLandingPageClient({
   pillar,
@@ -364,20 +570,29 @@ export function EventLandingPageClient({
   relatedEvents,
   siteSettings,
   testimonials,
+  now,
 }: {
   pillar: EventPillar;
   event: EventLandingData;
   relatedEvents: RelatedEvent[];
   siteSettings: SiteSettings;
   testimonials: EventTestimonial[];
+  /** Request time from the server, so "upcoming vs. wrapped" renders the same on both sides. */
+  now: number;
 }) {
+  const theme = roomTheme(pillar.slug);
+  const ink = theme.tone === "dark";
+  const upcoming = new Date(event.eventDate).getTime() > now;
+  // A wrapped event sends people to the room's next dates instead of a dead registration link.
+  const ctaHref = upcoming ? (event.registerUrl ?? "#registration") : `/community/events/${pillar.slug}`;
+  const ctaExternal = upcoming && !!event.registerUrl;
+  const ctaLabel = upcoming ? "Save my seat" : "See upcoming dates";
   const agendaItems = useMemo(() => parseAgenda(event.agenda), [event.agenda]);
   const benefitItems = useMemo(() => parseBenefits(event.benefits), [event.benefits]);
   const faqItems = useMemo(() => parseFaq(event.faq), [event.faq]);
   const venue = event.venueAddress || event.location;
   const registerHref = event.registerUrl ?? "#registration";
   const hasTimedAgenda = agendaItems.some((a) => a.time);
-  const heroDate = new Date(event.eventDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }).toUpperCase();
   const videoId = youtubeVideoId(event.videoUrl);
   const hasSpeakerSection = event.speakers.length > 0 || !!event.hostName;
   const hasAudienceSection = !!event.audienceNote || event.audienceTags.length > 0;
@@ -393,9 +608,9 @@ export function EventLandingPageClient({
       [
         { id: "overview", label: "Overview", show: true },
         { id: "highlights", label: "Highlights", show: benefitItems.length > 0 },
-        { id: "gallery", label: "Gallery", show: event.galleryUrls.length >= 2 },
         { id: "speakers", label: "Speakers", show: hasSpeakerSection },
         { id: "schedule", label: "Schedule", show: agendaItems.length > 0 },
+        { id: "gallery", label: "Gallery", show: event.galleryUrls.length >= 2 },
         { id: "audience", label: "Who's In The Room", show: hasAudienceSection },
         { id: "location", label: "Location", show: !!venue },
         { id: "voices", label: "Voices", show: testimonials.length > 0 },
@@ -404,561 +619,316 @@ export function EventLandingPageClient({
     [benefitItems.length, event.galleryUrls.length, hasSpeakerSection, agendaItems.length, hasAudienceSection, venue, testimonials.length, faqItems.length]
   );
   const activeId = useActiveSection(navItems.map((i) => i.id));
+  const num = (id: string) => navItems.findIndex((i) => i.id === id) + 1;
 
   return (
     <>
       <NavBar activePage="Community" ctaText="Apply to Join" ctaHref="/apply?source=community" />
       <main className="min-h-screen overflow-x-hidden bg-[#F2ECDD] font-sans text-[#111111]">
 
-        {/* ══ HERO — cinematic, bottom-anchored ═══════════════════════════ */}
-        <section className="relative flex min-h-[86vh] flex-col justify-end overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] pb-16 pt-32 text-white lg:min-h-[92vh] lg:pb-20 lg:pt-40">
-          {event.imageUrl ? (
-            <>
-              {/* Cover images here are typically pre-designed banners with their own
-                  title/date text baked in, not plain photography — heavy blur turns
-                  them into a color/mood wash so they never compete with the real,
-                  crisp title rendered on top. */}
-              <div
-                aria-hidden
-                className="absolute inset-0 scale-110 bg-cover bg-center blur-xl"
-                style={{ backgroundImage: `url(${event.imageUrl})` }}
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1640] via-[#003CD1]/55 to-[#003CD1]/85"
-              />
-            </>
-          ) : (
-            <div aria-hidden className="pointer-events-none absolute inset-0">
-              <div className="absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full border border-white/10" />
-              <div className="absolute left-[-100px] bottom-[-120px] h-[360px] w-[360px] rounded-full bg-[#C6FF3A]/20 blur-[120px]" />
-            </div>
-          )}
-
-          {/* Speaker slideshow — vertically centered on the right, independent of
-              the bottom-anchored text below, so it reads as part of the backdrop
-              rather than sharing the text's baseline. Desktop only; a compact
-              in-flow version above the text covers mobile. */}
-          {heroPeople.length > 0 && (
-            <div className="pointer-events-none absolute inset-y-0 right-6 z-[1] hidden w-[440px] items-center justify-center lg:right-10 lg:flex xl:right-16 xl:w-[500px]">
-              <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.3, ease: E }}
-                className="pointer-events-auto w-full max-w-[380px] px-8 xl:max-w-[420px]">
-                <HeroSpeakerSlideshow people={heroPeople} />
-              </motion.div>
-            </div>
-          )}
-
-          <div className="relative mx-auto w-full max-w-5xl px-6 lg:px-10 lg:pr-[420px] xl:pr-[480px]">
-            {heroPeople.length > 0 && (
-              <div className="mx-auto mb-10 w-full max-w-[220px] sm:max-w-[260px] lg:hidden">
-                <HeroSpeakerSlideshow people={heroPeople} />
-              </div>
-            )}
-
-            <motion.div initial="hidden" animate="visible" variants={stagger(0.11)} className="max-w-2xl">
+        {/* ══ HERO — the room's colours, the poster in a frame ════════════ */}
+        <section className={`relative overflow-hidden pb-32 pt-32 lg:pb-40 lg:pt-40 ${theme.hero} ${ink ? "text-[#111111]" : "text-white"}`}>
+          <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-[420px] w-[340px] opacity-40 [mask-image:radial-gradient(closest-side,black_50%,transparent)]">
+            <RoomMotif slug={pillar.slug} play />
+          </div>
+          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-10">
+            <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
               <motion.a variants={fadeUp} href={`/community/events/${pillar.slug}`}
-                className="mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/60 hover:text-white">
-                ← Back to {pillar.title}
+                className={`inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] ${ink ? "text-[#111111]/55 hover:text-[#111111]" : "text-white/55 hover:text-white"}`}>
+                ← {pillar.title}
               </motion.a>
 
-              <motion.div variants={fadeUp} className="mb-6 flex flex-wrap gap-2">
-                <span className="rounded-full bg-[#C6FF3A] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]">
-                  {event.tag}
-                </span>
-                <span className="rounded-full border border-white/25 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-white">
-                  {firstToken(event.location)}
-                </span>
-                {event.priceNote && (
-                  <span className="rounded-full border border-white/25 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-white">
-                    {event.priceNote}
-                  </span>
-                )}
+              <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-2">
+                <span className={`rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${ink ? "bg-[#111111] text-white" : "bg-[#C6FF3A] text-[#111111]"}`}>{event.tag}</span>
+                <span className={`rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${ink ? "border-[#111111]/20" : "border-white/25"}`}>{firstToken(event.location)}</span>
+                <span className={`rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${ink ? "border-[#111111]/20" : "border-white/25"}`}>{event.date}</span>
               </motion.div>
 
-              <motion.p variants={fadeUp} className="mb-4 text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">
-                Successbrew Events · {heroDate}
-              </motion.p>
-
-              <h1 className="text-balance text-[clamp(2.75rem,7vw,5.5rem)] font-black leading-[0.94] tracking-tight text-white">
-                <WordReveal text={event.title} mode="nested" staggerDelay={0.06} />
+              <h1 className="mt-6 text-balance text-[clamp(2.75rem,6.5vw,5.75rem)] font-black leading-[0.92] tracking-tight">
+                <WordReveal text={event.title} mode="nested" staggerDelay={0.05} />
               </h1>
 
               {event.subtitle && (
-                <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-white/70 sm:text-xl">
-                  {event.subtitle}
-                </motion.p>
+                <motion.p variants={fadeUp} className={`mt-6 max-w-xl text-lg sm:text-xl ${ink ? "text-[#111111]/70" : "text-white/70"}`}>{event.subtitle}</motion.p>
               )}
 
-              {/* Date/time/location/seats live once, in the quick-facts card right
-                  below the hero — repeating them here as a second list was pure
-                  duplication. */}
               <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-4">
-                <a href={registerHref} target={event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
-                  className="glow-lime inline-flex items-center gap-2 rounded-full bg-[#C6FF3A] px-8 py-4 text-sm font-bold text-[#111111] transition hover:translate-y-[-2px]">
-                  Save my seat <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                <a href={ctaHref} target={ctaExternal ? "_blank" : undefined} rel="noreferrer noopener"
+                  className={`inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-bold transition hover:translate-y-[-2px] ${ink ? "bg-[#111111] text-white hover:bg-[#003CD1]" : "glow-lime bg-[#C6FF3A] text-[#111111]"}`}>
+                  {ctaLabel} <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
                 </a>
-                {navItems.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => smoothScrollToId(navItems[0].id)}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-4 text-sm font-bold text-white transition hover:bg-white/10"
-                  >
-                    Explore the experience <ArrowDown className="h-4 w-4" strokeWidth={2.5} />
-                  </button>
-                )}
+                <RoomStamp pillar={pillar} />
               </motion.div>
+            </motion.div>
+
+            {/* Poster frame: covers are pre-designed banners, so they're shown whole
+                (contain) over a blurred copy of themselves rather than cropped. */}
+            <motion.div initial={{ opacity: 0, y: 40, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.01 }}
+              transition={{ type: "spring", stiffness: 120, damping: 18, delay: 0.25 }}
+              className="relative mx-auto w-full max-w-[440px]">
+              {event.imageUrl ? (
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-[#111111] shadow-[0_50px_90px_-40px_rgba(0,0,0,0.7)] ring-8 ring-white/90">
+                  <div aria-hidden className="absolute inset-0 scale-125 bg-cover bg-center opacity-60 blur-2xl" style={{ backgroundImage: `url(${event.imageUrl})` }} />
+                  <img src={event.imageUrl} alt={event.title} className="relative h-full w-full object-contain" />
+                </div>
+              ) : heroPeople.length > 0 ? (
+                <HeroSpeakerSlideshow people={heroPeople} />
+              ) : (
+                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl ring-8 ring-white/90 ${theme.surface}`}><RoomMotif slug={pillar.slug} play /></div>
+              )}
             </motion.div>
           </div>
         </section>
 
-        {/* ══ QUICK FACTS ═══════════════════════════════════════════════ */}
-        <div className="relative z-10 mx-auto -mt-10 max-w-5xl px-6 lg:px-10">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={fadeUp}
-            className="flex flex-wrap items-center justify-between gap-6 rounded-3xl bg-white p-6 shadow-[0_24px_60px_-32px_rgba(0,0,0,0.35)] lg:p-8">
-            <div className="grid grow grid-cols-2 gap-6 sm:grid-cols-4">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Date</p>
-                <p className="mt-1 text-sm font-bold text-[#111111]">{event.date}</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Time</p>
-                <p className="mt-1 text-sm font-bold text-[#111111]">{event.timeRange ?? "TBA"}</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Where</p>
-                <p className="mt-1 truncate text-sm font-bold text-[#111111]">{event.location}</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Seats</p>
-                <p className="mt-1 truncate text-sm font-bold text-[#003CD1]">
-                  {seatsSummary(event, { totalSuffix: "seats", fallback: "Open seating" })}
-                </p>
-              </div>
-            </div>
-            <a href={registerHref} target={event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#C6FF3A] px-7 py-3.5 text-sm font-bold text-[#111111] transition hover:translate-y-[-2px]">
-              Save my seat →
-            </a>
-          </motion.div>
+        {/* ══ TICKET ════════════════════════════════════════════════════ */}
+        <div className="relative z-10 mx-auto -mt-20 max-w-6xl px-6 lg:px-10">
+          <Ticket event={event} pillar={pillar} registerHref={registerHref} now={now} />
         </div>
 
-        {/* ══ STICKY SECTION NAV ═══════════════════════════════════════════ */}
+        {/* Mobile/tablet jump nav; desktop gets the side index instead. */}
         <SectionNav items={navItems} activeId={activeId} registerHref={registerHref} hasRegisterUrl={!!event.registerUrl} />
 
-        {/* ══ OVERVIEW ═══════════════════════════════════════════════════ */}
-        <section id="overview" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
-          <div className="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[1.3fr_1fr] lg:gap-16 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}>
-              <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">
-                {pillar.icon} About {pillar.title}
-              </motion.p>
-              <motion.h2 variants={fadeUp} className="mt-4 text-balance text-3xl font-black leading-tight tracking-tight md:text-4xl lg:text-[2.75rem]">
-                {pillar.tagline}
-              </motion.h2>
-              <motion.p variants={fadeUp} className="mt-6 max-w-xl text-base leading-relaxed text-[#111111]/65 sm:text-lg">
-                {pillar.description}
-              </motion.p>
-            </motion.div>
+        {/* ══ BODY: side index + programme ═══════════════════════════════ */}
+        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 lg:grid-cols-[13rem_1fr] lg:gap-16 lg:px-10 lg:py-24">
+          <SideIndex items={navItems} activeId={activeId} registerHref={registerHref} hasRegisterUrl={!!event.registerUrl} calendarHref={googleCalendarUrl(event)} />
 
-            {event.subtitle && (
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-                className="relative rounded-2xl bg-white p-8 lg:mt-2">
-                <span aria-hidden className="absolute left-0 top-8 h-10 w-1 rounded-full bg-gradient-to-b from-[#003CD1] to-[#C6FF3A]" />
-                <p className="pl-5 text-lg font-bold leading-snug text-[#111111] sm:text-xl">
-                  {event.subtitle}
-                </p>
-                <p className="pl-5 pt-4 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40">
-                  This edition — {event.title}
-                </p>
-              </motion.div>
-            )}
-          </div>
-        </section>
-
-        {/* ══ HIGHLIGHTS ═══════════════════════════════════════════════════ */}
-        {benefitItems.length > 0 && (
-          <section id="highlights" className="scroll-mt-36 bg-[#F2ECDD] pb-16 lg:pb-24">
-            <div className="mx-auto max-w-6xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">The Experience</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">What you walk away with.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
-                className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {benefitItems.map((b, i) => (
-                  <motion.div key={i} variants={fadeUp} className="rounded-2xl bg-white p-6 transition hover:-translate-y-1">
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-[#003CD1] text-xs font-black text-white">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="mt-4 text-lg font-black leading-snug text-[#111111]">{b.title}</h3>
-                    {b.description && <p className="mt-2 text-sm leading-relaxed text-[#111111]/60">{b.description}</p>}
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </section>
-        )}
-
-        {/* ══ RECAP VIDEO ══════════════════════════════════════════════════ */}
-        {videoId && (
-          <section className="bg-[#F2ECDD] pb-16 lg:pb-24">
-            <div className="mx-auto max-w-6xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-8 max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">The Recap</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Watch how it went down.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-                className="relative aspect-video w-full overflow-hidden rounded-2xl bg-[#111111] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.35)]">
-                <ScrollAutoplayYouTube videoId={videoId} title={`${event.title} recap`} className="h-full w-full" />
-              </motion.div>
-            </div>
-          </section>
-        )}
-
-        {/* ══ VISUAL GALLERY ═══════════════════════════════════════════════ */}
-        {event.galleryUrls.length >= 2 && (
-          <section id="gallery" className="scroll-mt-36 bg-white py-16 lg:py-24">
-            <div className="mx-auto max-w-6xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">The Room</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">What it actually feels like.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.06)}
-                className="grid grid-cols-2 auto-rows-[150px] gap-3 sm:auto-rows-[180px] md:grid-cols-4 md:auto-rows-[210px] md:gap-4">
-                {event.galleryUrls.map((url, i) => (
-                  <motion.div key={url + i} variants={fadeUp}
-                    className={`group relative overflow-hidden rounded-2xl bg-[#111111]/5 ${GALLERY_PATTERN[i % GALLERY_PATTERN.length]}`}>
-                    <img src={url} alt={`${event.title} — photo ${i + 1}`} loading="lazy"
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </section>
-        )}
-
-        {/* ══ SPEAKERS ═══════════════════════════════════════════════════ */}
-        {hasSpeakerSection && (
-          <section id="speakers" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
-            <div className="mx-auto max-w-6xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">On the Mic</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Who you&rsquo;ll hear from.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
-                className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {event.speakers.map((s) => (
-                  <motion.div key={s.id} variants={fadeUp}>
-                    <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#003CD1]/10">
-                      {s.photoUrl ? (
-                        <img src={s.photoUrl} alt={s.name} loading="lazy"
-                          className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105" />
-                      ) : (
-                        <div className="grid h-full w-full place-items-center text-4xl font-black text-[#003CD1]/25">
-                          {s.name.charAt(0)}
-                        </div>
-                      )}
-                      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
-                      <span className="absolute left-4 top-4 rounded-full bg-[#C6FF3A] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]">
-                        Speaker
-                      </span>
-                      <div className="absolute inset-x-0 bottom-0 p-4">
-                        <p className="text-base font-black text-white">{s.name}</p>
-                        {s.role && <p className="mt-0.5 text-xs font-semibold text-[#C6FF3A]">{s.role}</p>}
-                      </div>
-                    </div>
-                    {s.bio && <p className="mt-3 text-xs leading-relaxed text-[#111111]/55">{s.bio}</p>}
-                  </motion.div>
-                ))}
-                {event.hostName && (
-                  <motion.div variants={fadeUp}>
-                    <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#003CD1]/10">
-                      {event.hostPhotoUrl ? (
-                        <img src={event.hostPhotoUrl} alt={event.hostName} loading="lazy"
-                          className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105" />
-                      ) : (
-                        <div className="grid h-full w-full place-items-center text-4xl font-black text-[#003CD1]/25">
-                          {event.hostName.charAt(0)}
-                        </div>
-                      )}
-                      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
-                      <span className="absolute left-4 top-4 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#003CD1]">
-                        Host
-                      </span>
-                      <div className="absolute inset-x-0 bottom-0 p-4">
-                        <p className="text-base font-black text-white">{event.hostName}</p>
-                        {event.hostRole && <p className="mt-0.5 text-xs font-semibold text-[#C6FF3A]">{event.hostRole}</p>}
-                      </div>
-                    </div>
-                    {event.hostBio && <p className="mt-3 text-xs leading-relaxed text-[#111111]/55">{event.hostBio}</p>}
-                  </motion.div>
-                )}
-              </motion.div>
-            </div>
-          </section>
-        )}
-
-        {/* ══ SCHEDULE ═══════════════════════════════════════════════════ */}
-        {agendaItems.length > 0 && (
-          <section id="schedule" className="scroll-mt-36 bg-white py-16 lg:py-24">
-            <div className="mx-auto max-w-4xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Run of Show</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">The agenda.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.06)}
-                className="relative border-l-2 border-transparent pl-7 [border-image:linear-gradient(to_bottom,#003CD1,#C6FF3A)_1] sm:pl-9">
-                {agendaItems.map((item, i) => (
-                  <motion.div key={i} variants={fadeUp} className="relative pb-10 last:pb-0">
-                    <span aria-hidden className="absolute -left-[33px] top-1.5 grid h-4 w-4 place-items-center rounded-full bg-[#003CD1] ring-4 ring-white sm:-left-[37px]" />
-                    {hasTimedAgenda && item.time && (
-                      <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">{item.time}</p>
-                    )}
-                    <h3 className="mt-1 text-lg font-black text-[#111111] sm:text-xl">{item.title}</h3>
-                    {item.description && <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-[#111111]/60">{item.description}</p>}
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </section>
-        )}
-
-        {/* ══ WHO SHOULD ATTEND ═══════════════════════════════════════════ */}
-        {hasAudienceSection && (
-          <section id="audience" className="relative overflow-hidden scroll-mt-36 bg-[#FFF3D0] py-16 lg:py-24">
-            <AmbientBackground tone="light" />
-            <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}>
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/50">Who&rsquo;s in the Room</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Built for the room, not the crowd.</h2>
-              </motion.div>
-              {event.audienceNote && (
-                <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-                  className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#111111]/70 sm:text-lg">
-                  {event.audienceNote}
-                </motion.p>
+          <div className="min-w-0 space-y-20 lg:space-y-28">
+            {/* Overview */}
+            <section id="overview" className="scroll-mt-36">
+              <SectionHead n={num("overview")} kicker={`${pillar.icon} About ${pillar.title}`} title={pillar.tagline} />
+              <div className="grid gap-8 md:grid-cols-[1.3fr_1fr]">
+                <p className="text-lg leading-relaxed text-[#111111]/70">{pillar.description}</p>
+                {event.highlightStatValue ? (
+                  <div className="rounded-2xl bg-[#111111] p-6 text-white">
+                    <p className="text-5xl font-black tracking-tight text-[#C6FF3A]">{event.highlightStatValue}</p>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-white/60">{event.highlightStatLabel}</p>
+                  </div>
+                ) : event.subtitle ? (
+                  <blockquote className="border-l-4 border-[#C6FF3A] pl-5 text-xl font-bold leading-snug">{event.subtitle}</blockquote>
+                ) : null}
+              </div>
+              {videoId && (
+                <div className="mt-10 aspect-video overflow-hidden rounded-2xl bg-[#111111]">
+                  <ScrollAutoplayYouTube videoId={videoId} title={`${event.title} recap`} className="h-full w-full" />
+                </div>
               )}
-              {event.audienceTags.length > 0 && (
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.05)}
-                  className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                  {event.audienceTags.map((t, i) => (
-                    <motion.span key={i} variants={fadeUp}
-                      className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#111111] shadow-sm">
-                      {t}
-                    </motion.span>
+            </section>
+
+            {/* Highlights — numbered, editorial rows */}
+            {benefitItems.length > 0 && (
+              <section id="highlights" className="scroll-mt-36">
+                <SectionHead n={num("highlights")} kicker="The experience" title="What you walk away with." />
+                <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}>
+                  {benefitItems.map((b, i) => (
+                    <motion.li key={i} variants={fadeUp} className="group grid grid-cols-[4.5rem_1fr] gap-4 border-b border-[#111111]/10 py-6 first:pt-0 sm:grid-cols-[6rem_1fr]">
+                      <span className="text-5xl font-black leading-none tracking-tighter text-transparent transition-colors duration-300 [-webkit-text-stroke:1.5px_#003CD1] group-hover:text-[#003CD1] sm:text-6xl">{String(i + 1).padStart(2, "0")}</span>
+                      <div>
+                        <h3 className="text-xl font-black leading-snug">{b.title}</h3>
+                        {b.description && <p className="mt-2 text-sm leading-relaxed text-[#111111]/60">{b.description}</p>}
+                      </div>
+                    </motion.li>
                   ))}
-                </motion.div>
-              )}
-              {(event.totalSeats || event.highlightStatValue) && (
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-                  className="mt-10 flex flex-wrap items-center justify-center gap-10">
-                  {event.totalSeats && (
-                    <div>
-                      <p className="text-3xl font-black text-[#003CD1]">{event.totalSeats}</p>
-                      <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/50">Seats</p>
-                    </div>
-                  )}
-                  {event.highlightStatValue && (
-                    <div>
-                      <p className="text-3xl font-black text-[#003CD1]">{event.highlightStatValue}</p>
-                      <p className="mt-1 max-w-[10rem] text-[10px] font-semibold uppercase tracking-[0.1em] text-[#111111]/50">{event.highlightStatLabel}</p>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-            </div>
-          </section>
-        )}
+                </motion.ol>
+              </section>
+            )}
 
-        {/* ══ LOCATION ═══════════════════════════════════════════════════ */}
-        {venue && (
-          <section id="location" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
-            <div className="mx-auto max-w-6xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Getting There</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Find the room.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-                className={`grid gap-6 ${event.venuePhotoUrl ? "lg:grid-cols-2" : ""}`}>
-                {event.venuePhotoUrl && (
-                  <div className="aspect-[4/3] overflow-hidden rounded-2xl lg:aspect-auto">
-                    <img src={event.venuePhotoUrl} alt={event.location} loading="lazy" className="h-full w-full object-cover" />
-                  </div>
+            {/* Speakers */}
+            {hasSpeakerSection && (
+              <section id="speakers" className="scroll-mt-36">
+                <SectionHead n={num("speakers")} kicker="On the mic" title="Who you'll hear from." />
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
+                  className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {event.speakers.map((s) => <PersonCard key={s.id} name={s.name} role={s.role} bio={s.bio} photoUrl={s.photoUrl} badge="Speaker" />)}
+                  {event.hostName && <PersonCard name={event.hostName} role={event.hostRole} bio={event.hostBio} photoUrl={event.hostPhotoUrl} badge="Host" />}
+                </motion.div>
+              </section>
+            )}
+
+            {/* Schedule */}
+            {agendaItems.length > 0 && (
+              <section id="schedule" className="scroll-mt-36">
+                <SectionHead n={num("schedule")} kicker="Run of show" title="The agenda." />
+                <div className="rounded-3xl bg-white p-6 sm:p-10">
+                  <AgendaRail items={agendaItems} timed={hasTimedAgenda} />
+                </div>
+              </section>
+            )}
+
+            {/* Gallery — a draggable film strip */}
+            {event.galleryUrls.length >= 2 && (
+              <section id="gallery" className="scroll-mt-36">
+                <SectionHead n={num("gallery")} kicker="The room" title="What it actually feels like." />
+                <div className="hide-scrollbar -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 lg:mx-0 lg:px-0">
+                  {event.galleryUrls.map((url, i) => (
+                    <motion.div key={url + i}
+                      initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: Math.min(i, 5) * 0.06, ease: E }}
+                      className={`relative shrink-0 snap-start overflow-hidden rounded-2xl bg-[#111111]/5 ${i % 3 === 0 ? "h-[300px] w-[240px]" : "h-[300px] w-[380px]"} sm:h-[360px] ${i % 3 === 0 ? "sm:w-[280px]" : "sm:w-[460px]"}`}>
+                      <img src={url} alt={`${event.title} — photo ${i + 1}`} loading="lazy" className="h-full w-full object-cover" />
+                    </motion.div>
+                  ))}
+                </div>
+                <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#111111]/40">Swipe for more →</p>
+              </section>
+            )}
+
+            {/* Who's in the room */}
+            {hasAudienceSection && (
+              <section id="audience" className="scroll-mt-36">
+                <SectionHead n={num("audience")} kicker="Who's in the room" title="Built for the room, not the crowd." />
+                {event.audienceNote && <p className="max-w-2xl text-lg leading-relaxed text-[#111111]/70">{event.audienceNote}</p>}
+                {event.audienceTags.length > 0 && (
+                  <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.05)} className="mt-8 flex flex-wrap gap-3">
+                    {event.audienceTags.map((t, i) => (
+                      <motion.span key={i} variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 20 } } }}
+                        className={`rounded-full px-5 py-2.5 text-sm font-bold ${["bg-[#003CD1] text-white", "bg-[#C6FF3A] text-[#111111]", "bg-white text-[#111111]", "bg-[#111111] text-white"][i % 4]}`}>
+                        {t}
+                      </motion.span>
+                    ))}
+                  </motion.div>
                 )}
-                <div className="rounded-2xl bg-white p-6 lg:p-8">
-                  <p className="text-lg font-black text-[#111111]">{event.location}</p>
-                  {event.venueAddress && <p className="mt-1 text-sm text-[#111111]/60">{event.venueAddress}</p>}
-                  <div className="mt-5 aspect-[16/10] w-full overflow-hidden rounded-xl bg-[#FFF3D0]">
-                    <iframe
-                      title={`Map to ${event.location}`}
-                      src={`https://www.google.com/maps?q=${encodeURIComponent(venue)}&output=embed`}
-                      className="h-full w-full border-0"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
-                  </div>
-                  <div className="mt-5 flex gap-3">
-                    <a href={googleCalendarUrl(event)} target="_blank" rel="noreferrer noopener"
-                      className="flex-1 rounded-full bg-[#111111] px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-[#003CD1]">
-                      Add to calendar
-                    </a>
-                    <ShareButton title={event.title} />
+                {event.totalSeats && (
+                  <p className="mt-8 text-sm font-semibold text-[#111111]/55">Capped at <span className="text-[#003CD1]">{event.totalSeats} seats</span> so every conversation stays real.</p>
+                )}
+              </section>
+            )}
+
+            {/* Location */}
+            {venue && (
+              <section id="location" className="scroll-mt-36">
+                <SectionHead n={num("location")} kicker="Getting there" title="Find the room." />
+                <div className="overflow-hidden rounded-3xl bg-white">
+                  <div className="grid md:grid-cols-[1fr_1.2fr]">
+                    <div className="flex flex-col justify-between gap-6 p-6 sm:p-8">
+                      <div>
+                        <p className="text-2xl font-black">{event.location}</p>
+                        {event.venueAddress && <p className="mt-2 text-sm leading-relaxed text-[#111111]/60">{event.venueAddress}</p>}
+                      </div>
+                      {event.venuePhotoUrl && <img src={event.venuePhotoUrl} alt={event.location} loading="lazy" className="aspect-[4/3] w-full rounded-xl object-cover" />}
+                      <div className="flex gap-3">
+                        <a href={googleCalendarUrl(event)} target="_blank" rel="noreferrer noopener"
+                          className="flex-1 rounded-full bg-[#111111] px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-[#003CD1]">
+                          Add to calendar
+                        </a>
+                        <ShareButton title={event.title} />
+                      </div>
+                    </div>
+                    <div className="min-h-[280px] bg-[#FFF3D0]">
+                      <iframe title={`Map to ${event.location}`} src={`https://www.google.com/maps?q=${encodeURIComponent(venue)}&output=embed`}
+                        className="h-full min-h-[280px] w-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            </div>
-          </section>
-        )}
+              </section>
+            )}
 
-        {/* ══ VOICES / SOCIAL PROOF ═══════════════════════════════════════ */}
-        {testimonials.length > 0 && (
-          <section id="voices" className="scroll-mt-36 bg-white py-16 lg:py-24">
-            <div className="mx-auto max-w-6xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-10 max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Community Voices</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">People who&rsquo;ve been in the room.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
-                className="grid gap-6 sm:grid-cols-3">
-                {testimonials.slice(0, 3).map((t) => (
-                  <motion.div key={t.id} variants={fadeUp} className="flex h-full flex-col rounded-2xl bg-[#F2ECDD] p-6">
-                    <p className="line-clamp-5 text-sm leading-relaxed text-[#111111]/75">&ldquo;{t.quote}&rdquo;</p>
-                    <div className="mt-auto flex items-center gap-3 pt-5">
-                      {t.avatarUrl ? (
-                        <img src={t.avatarUrl} alt={t.name} className="h-10 w-10 rounded-full object-cover" />
-                      ) : (
-                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#003CD1] text-sm font-black text-white">
-                          {t.initial}
-                        </span>
-                      )}
-                      <div>
-                        <p className="text-sm font-black text-[#111111]">{t.name}</p>
-                        <p className="text-xs text-[#111111]/50">{t.role}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </section>
-        )}
+            {/* Voices */}
+            {testimonials.length > 0 && (
+              <section id="voices" className="scroll-mt-36">
+                <SectionHead n={num("voices")} kicker="Community voices" title="People who've been in the room." />
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)} className="space-y-4">
+                  {testimonials.slice(0, 3).map((t, i) => (
+                    <motion.figure key={t.id} variants={fadeUp}
+                      className={`relative rounded-3xl p-6 sm:p-8 ${i === 0 ? "bg-[#111111] text-white" : "bg-white"}`}>
+                      <span aria-hidden className={`absolute right-6 top-2 text-8xl font-black leading-none ${i === 0 ? "text-[#C6FF3A]/25" : "text-[#003CD1]/10"}`}>&ldquo;</span>
+                      <blockquote className={`relative line-clamp-4 text-base leading-relaxed sm:text-lg ${i === 0 ? "text-white/85" : "text-[#111111]/75"}`}>{t.quote}</blockquote>
+                      <figcaption className="mt-5 flex items-center gap-3">
+                        {t.avatarUrl ? (
+                          <img src={t.avatarUrl} alt={t.name} className="h-10 w-10 rounded-full object-cover" />
+                        ) : (
+                          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#003CD1] text-sm font-black text-white">{t.initial}</span>
+                        )}
+                        <div>
+                          <p className="text-sm font-black">{t.name}</p>
+                          <p className={`line-clamp-1 text-xs ${i === 0 ? "text-white/50" : "text-[#111111]/50"}`}>{t.role}</p>
+                        </div>
+                      </figcaption>
+                    </motion.figure>
+                  ))}
+                </motion.div>
+              </section>
+            )}
 
-        {/* ══ FAQ ═══════════════════════════════════════════════════════ */}
-        {faqItems.length > 0 && (
-          <section id="faq" className="scroll-mt-36 bg-[#F2ECDD] py-16 lg:py-24">
-            <div className="mx-auto max-w-3xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-8">
-                <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Good to Know</p>
-                <h2 className="mt-3 text-balance text-3xl font-black tracking-tight md:text-4xl">Frequently asked.</h2>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-                className="rounded-2xl bg-white px-6 sm:px-8">
-                {faqItems.map((item, i) => (
-                  <FaqRow key={i} item={item} isOpen={openFaqIndex === i} onToggle={() => setOpenFaqIndex(openFaqIndex === i ? null : i)} />
-                ))}
-              </motion.div>
-            </div>
-          </section>
-        )}
+            {/* FAQ */}
+            {faqItems.length > 0 && (
+              <section id="faq" className="scroll-mt-36">
+                <SectionHead n={num("faq")} kicker="Good to know" title="Frequently asked." />
+                <div className="rounded-3xl bg-white px-6 sm:px-8">
+                  {faqItems.map((item, i) => (
+                    <FaqRow key={i} item={item} isOpen={openFaqIndex === i} onToggle={() => setOpenFaqIndex(openFaqIndex === i ? null : i)} />
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
 
-        {/* ══ FINAL CTA ═══════════════════════════════════════════════════ */}
-        <section id="registration" className="relative scroll-mt-24 overflow-hidden bg-[#111111] py-20 text-white lg:py-28">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-            <div className="absolute left-1/2 top-1/2 h-[420px] w-[620px] -translate-x-[65%] -translate-y-1/2 rounded-full bg-[#003CD1]/40 blur-[140px]" />
-            <div className="absolute left-1/2 top-1/2 h-[300px] w-[400px] -translate-x-[5%] -translate-y-[30%] rounded-full bg-[#C6FF3A]/15 blur-[130px]" />
+        {/* ══ TEAR-OFF CTA ══════════════════════════════════════════════ */}
+        <section id="registration" className={`relative scroll-mt-24 overflow-hidden py-20 lg:py-28 ${theme.hero} ${ink ? "text-[#111111]" : "text-white"}`}>
+          <div aria-hidden className={`absolute inset-x-0 top-0 flex items-center gap-3 px-6 ${ink ? "text-[#111111]/40" : "text-white/40"}`}>
+            <Scissors className="h-4 w-4 -rotate-90" />
+            <span className="h-0 flex-1 border-t-2 border-dashed border-current" />
           </div>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
-            className="relative mx-auto max-w-2xl px-6 text-center lg:px-10">
-            <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">
-              {event.priceNote ?? "Reserve your seat"}
-            </motion.p>
-            <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-5xl">
-              Ready to be <span className="text-gradient-lime">in the room?</span>
-            </motion.h2>
-            <motion.p variants={fadeUp} className="mt-4 text-white/60">
-              {seatsSummary(event, { totalSuffix: "seats total", fallback: "Limited seating" })}
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-8">
-              <a href={registerHref} target={event.registerUrl ? "_blank" : undefined} rel="noreferrer noopener"
-                className="inline-flex items-center gap-2 glow-lime rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
-                Save my seat <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+            className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 lg:flex-row lg:items-end lg:justify-between lg:px-10">
+            <div>
+              <motion.p variants={fadeUp} className={`text-xs font-semibold uppercase tracking-[0.14em] ${ink ? "text-[#003CD1]" : "text-[#C6FF3A]"}`}>
+                {upcoming
+                  ? `${event.priceNote ?? "Reserve your seat"} · ${seatsSummary(event, { totalSuffix: "seats total", fallback: "Limited seating" })}`
+                  : `This room has wrapped · ${pillar.title}`}
+              </motion.p>
+              <motion.h2 variants={fadeUp} className="mt-4 max-w-2xl text-balance text-5xl font-black leading-[0.92] tracking-tight md:text-7xl">
+                {upcoming ? "Tear here. Take a seat." : "Catch the next one."}
+              </motion.h2>
+            </div>
+            <motion.div variants={fadeUp}>
+              <a href={ctaHref} target={ctaExternal ? "_blank" : undefined} rel="noreferrer noopener"
+                className={`inline-flex items-center gap-2 rounded-full px-9 py-5 text-base font-bold transition hover:translate-y-[-2px] ${ink ? "bg-[#111111] text-white hover:bg-[#003CD1]" : "glow-lime bg-[#C6FF3A] text-[#111111]"}`}>
+                {ctaLabel} <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
               </a>
-              {!event.registerUrl && (
-                <p className="mt-4 text-xs text-white/45">Registration link coming soon — check back shortly.</p>
-              )}
+              {upcoming && !event.registerUrl && <p className={`mt-4 text-xs ${ink ? "text-[#111111]/50" : "text-white/50"}`}>Registration link coming soon — check back shortly.</p>}
             </motion.div>
           </motion.div>
         </section>
 
-        {/* ══ RELATED EVENTS ═══════════════════════════════════════════════ */}
+        {/* ══ ALSO IN THIS ROOM ═════════════════════════════════════════ */}
         {relatedEvents.length > 0 && (
           <section className="bg-[#F2ECDD] py-16 lg:py-20">
             <div className="mx-auto max-w-6xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-                className="mb-8 flex items-end justify-between gap-4">
-                <h2 className="text-2xl font-black tracking-tight md:text-3xl">Can&rsquo;t make this one?</h2>
-                <a href={`/community/events/${pillar.slug}`} className="shrink-0 text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1] hover:underline">
-                  All events →
-                </a>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
-                className="grid gap-5 sm:grid-cols-3">
-                {relatedEvents.map((r) => (
-                  <motion.a key={r.id} variants={fadeUp} href={`/community/events/${pillar.slug}/${r.id}`}
-                    className="group block rounded-2xl bg-white p-6 transition hover:-translate-y-1">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#003CD1]">{r.tag} · {r.date}</p>
-                    <p className="mt-2 text-base font-black text-[#111111] group-hover:text-[#003CD1]">{r.title}</p>
-                    <span className="mt-3 inline-block text-xs font-semibold text-[#111111]/40 group-hover:text-[#003CD1]">View event →</span>
-                  </motion.a>
-                ))}
-              </motion.div>
+              <div className="mb-8 flex items-end justify-between gap-4">
+                <h2 className="text-3xl font-black tracking-tight md:text-4xl">Also in {pillar.title}.</h2>
+                <a href={`/community/events/${pillar.slug}`} className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-[#003CD1] hover:underline">Whole room →</a>
+              </div>
+              <ProgrammeList compact empty=""
+                items={relatedEvents.map((r) => ({
+                  id: r.id, href: `/community/events/${pillar.slug}/${r.id}`, external: false, title: r.title, tag: r.tag,
+                  eventDate: r.eventDate, city: firstToken(r.location), room: { label: pillar.title, swatch: theme.surface }, imageUrl: r.imageUrl,
+                }))} />
             </div>
           </section>
         )}
 
-        {/* ══ BECOME A PARTNER ═════════════════════════════════════════ */}
-        {event.becomePartnerUrl && (
-          <>
-            <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-20 text-white lg:py-28">
-              <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[400px] w-[400px] rounded-full bg-[#C6FF3A]/20 blur-[130px]" />
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
-                className="relative mx-auto max-w-2xl px-6 text-center lg:px-10">
-                <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Sponsor this room</motion.p>
-                <motion.h2 variants={fadeUp} className="mt-4 text-balance text-4xl font-black tracking-tight md:text-5xl">Become a Partner.</motion.h2>
-                <motion.div variants={fadeUp} className="mt-8">
-                  <a href={event.becomePartnerUrl} target="_blank" rel="noreferrer noopener"
-                    className="inline-flex items-center gap-2 glow-lime rounded-full bg-[#C6FF3A] px-8 py-4 text-base font-bold text-[#111111] transition hover:translate-y-[-2px]">
-                    Become a Partner
-                  </a>
-                </motion.div>
-              </motion.div>
-            </section>
-          </>
-        )}
-
         {/* ══ PARTNERS ══════════════════════════════════════════════════ */}
-        {event.partners.length > 0 && (
-          <section className="bg-[#F2ECDD] py-16 lg:py-20">
-            <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/40">Partners</p>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+        {(event.partners.length > 0 || event.becomePartnerUrl) && (
+          <section className="border-t border-[#111111]/10 bg-[#F2ECDD] py-14 lg:py-16">
+            <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 lg:flex-row lg:items-center lg:justify-between lg:px-10">
+              <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
+                {event.partners.length > 0 && <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#111111]/40">With</span>}
                 {event.partners.map((p) => {
-                  const logo = (
-                    <img
-                      src={p.logoUrl}
-                      alt={p.name}
-                      className="h-9 w-auto object-contain grayscale transition hover:grayscale-0"
-                    />
-                  );
+                  const logo = <img src={p.logoUrl} alt={p.name} className="h-8 w-auto object-contain grayscale transition hover:grayscale-0" />;
                   return p.websiteUrl ? (
-                    <a key={p.id} href={p.websiteUrl} target="_blank" rel="noreferrer noopener" aria-label={p.name}>
-                      {logo}
-                    </a>
+                    <a key={p.id} href={p.websiteUrl} target="_blank" rel="noreferrer noopener" aria-label={p.name}>{logo}</a>
                   ) : (
                     <span key={p.id}>{logo}</span>
                   );
                 })}
               </div>
+              {event.becomePartnerUrl && (
+                <a href={event.becomePartnerUrl} target="_blank" rel="noreferrer noopener"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#111111]/20 px-6 py-3 text-sm font-bold transition hover:bg-[#111111] hover:text-white">
+                  Sponsor this room <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
+                </a>
+              )}
             </div>
           </section>
         )}
