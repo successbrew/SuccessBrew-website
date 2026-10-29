@@ -14,6 +14,7 @@ import { getSmoothScroll } from "@/components/SmoothScroll";
 import { RoomMotif, roomTheme } from "@/components/community/rooms";
 import { Countdown } from "@/components/community/Countdown";
 import { ProgrammeList } from "@/components/events/ProgrammeList";
+import { istDateStamp } from "@/lib/event-dates";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } };
@@ -146,13 +147,11 @@ function seatsSummary(event: EventLandingData, { totalSuffix, fallback }: { tota
 
 function googleCalendarUrl(event: EventLandingData) {
   const d = new Date(event.eventDate);
-  const fmt = (dt: Date) => dt.toISOString().slice(0, 10).replace(/-/g, "");
-  const next = new Date(d);
-  next.setDate(next.getDate() + 1);
+  const next = new Date(d.getTime() + 24 * 60 * 60 * 1000);
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: event.title,
-    dates: `${fmt(d)}/${fmt(next)}`,
+    dates: `${istDateStamp(d)}/${istDateStamp(next)}`,
     location: event.venueAddress || event.location,
     details: event.subtitle || event.tag,
   });

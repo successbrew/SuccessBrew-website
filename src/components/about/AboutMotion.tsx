@@ -200,7 +200,8 @@ export interface EcosystemNode { title: string; desc: string; href: string; cta:
 export function EcosystemOrbit({ nodes }: { nodes: EcosystemNode[] }) {
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
-  const pos = [{ x: 50, y: 8 }, { x: 92, y: 50 }, { x: 50, y: 92 }, { x: 8, y: 50 }];
+  // Side nodes sit a little inside the ring so their labels never run off a phone screen.
+  const pos = [{ x: 50, y: 8 }, { x: 88, y: 50 }, { x: 50, y: 92 }, { x: 12, y: 50 }];
   const a = nodes[active];
 
   return (
@@ -221,7 +222,7 @@ export function EcosystemOrbit({ nodes }: { nodes: EcosystemNode[] }) {
         {nodes.map((n, i) => (
           <button key={n.title} type="button" onMouseEnter={() => setActive(i)} onFocus={() => setActive(i)} onClick={() => setActive(i)} aria-pressed={i === active}
             style={{ left: `${pos[i].x}%`, top: `${pos[i].y}%` }}
-            className={`absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-bold transition-all duration-300 ${i === active ? "scale-110 border-accent bg-accent text-ink shadow-[0_0_40px_-6px_rgba(198,255,58,0.8)]" : "border-white/15 bg-[#111111] text-white/75 hover:text-white"}`}>
+            className={`absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-bold sm:px-4 sm:py-2.5 sm:text-sm transition-all duration-300 ${i === active ? "scale-110 border-accent bg-accent text-ink shadow-[0_0_40px_-6px_rgba(198,255,58,0.8)]" : "border-white/15 bg-[#111111] text-white/75 hover:text-white"}`}>
             {n.title}
           </button>
         ))}

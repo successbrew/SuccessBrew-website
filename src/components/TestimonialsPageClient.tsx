@@ -48,7 +48,8 @@ function QuoteStage({ items }: { items: Testimonial[] }) {
 
   return (
     <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
-      <div className="min-h-[15rem] sm:min-h-[17rem] lg:min-h-[19rem]" aria-live="polite">
+      {/* Only announce changes the visitor asked for — not every auto-advance. */}
+      <div className="min-h-[15rem] sm:min-h-[17rem] lg:min-h-[19rem]" aria-live={auto ? "off" : "polite"}>
         <AnimatePresence mode="wait">
           <motion.figure key={t._id} initial="hidden" animate="visible" exit={{ opacity: 0, y: -16, transition: { duration: 0.3 } }}>
             <blockquote className="text-balance text-[clamp(1.75rem,3.6vw,3.25rem)] font-semibold leading-[1.12] tracking-tight text-[#FFF3D0]">

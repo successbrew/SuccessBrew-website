@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform, useVelocity } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { eventDateParts } from "@/lib/event-dates";
 
 const E = [0.22, 1, 0.36, 1] as const;
 
@@ -72,10 +73,7 @@ export function ProgrammeList({ items, compact = false, empty }: { items: Progra
       {fine && !reduced && <CursorPoster item={hover} />}
       <ul className="border-b border-[#111111]/15">
         {items.map((it, i) => {
-          const d = new Date(it.eventDate);
-          const day = d.toLocaleDateString("en-IN", { day: "2-digit" });
-          const month = d.toLocaleDateString("en-IN", { month: "short" }).toUpperCase();
-          const year = d.getFullYear();
+          const { day, month, year } = eventDateParts(it.eventDate);
           return (
             <motion.li key={it.id}
               initial={reduced ? false : { opacity: 0, y: 24 }}
@@ -84,7 +82,7 @@ export function ProgrammeList({ items, compact = false, empty }: { items: Progra
               transition={{ duration: 0.55, delay: Math.min(i, 6) * 0.05, ease: E }}
               className="border-t border-[#111111]/15">
               <a href={it.href} target={it.external ? "_blank" : undefined} rel={it.external ? "noreferrer noopener" : undefined}
-                onMouseEnter={() => setHover(it)} onFocus={() => setHover(it)}
+                onMouseEnter={() => setHover(it)} onFocus={() => setHover(it)} onBlur={() => setHover(null)}
                 className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-4 transition-colors sm:gap-x-6 lg:grid-cols-[8rem_1fr_11rem_11rem_3rem] ${compact ? "py-4" : "py-6 lg:py-8"}`}>
                 <div className="leading-none transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2">
                   <span className={`block font-black tracking-tight text-[#111111] transition-colors group-hover:text-[#003CD1] ${compact ? "text-3xl" : "text-5xl lg:text-6xl"}`}>{day}</span>

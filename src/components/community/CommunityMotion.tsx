@@ -144,9 +144,9 @@ export function ResourceAccordion({ resources }: { resources: ResourceItem[] }) 
 
   return (
     <>
-      <div className="mb-10 flex flex-wrap gap-2" role="tablist" aria-label="Resource formats">
+      <div className="mb-10 flex flex-wrap gap-2" role="group" aria-label="Resource formats">
         {resources.map((r) => (
-          <button key={r.type} type="button" role="tab" aria-selected={active === r.type} onClick={() => setActive(r.type)}
+          <button key={r.type} type="button" aria-pressed={active === r.type} onClick={() => setActive(r.type)}
             className={`relative rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${active === r.type ? "border-transparent text-white" : "border-[#111111]/15 bg-white text-[#111111]/70 hover:border-[#111111]/30 hover:text-[#111111]"}`}>
             {active === r.type && (
               <motion.span layoutId="resource-tab" transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }}

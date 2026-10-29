@@ -14,6 +14,7 @@ import { RoomMotif, roomTheme } from "@/components/community/rooms";
 import { Countdown } from "@/components/community/Countdown";
 import { DepartureBoard, type BoardRow } from "@/components/events/DepartureBoard";
 import { ProgrammeList, type ProgrammeItem } from "@/components/events/ProgrammeList";
+import { eventDateParts } from "@/lib/event-dates";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = { hidden: { opacity: 0, y: 26 }, visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: E } } };
@@ -80,11 +81,11 @@ function toItem(e: EventItem, upcoming: boolean): ProgrammeItem {
 
 function boardRow(e: EventItem, status: string, live: boolean): BoardRow {
   const p = getEventPillarByCategory(e.category);
-  const d = new Date(e.eventDate);
+  const { day, month } = eventDateParts(e.eventDate);
   return {
     key: e._id,
     href: eventHref(e),
-    date: `${d.toLocaleDateString("en-IN", { day: "2-digit" })} ${d.toLocaleDateString("en-IN", { month: "short" })}`,
+    date: `${day} ${month}`,
     room: p ? BOARD_ROOM[p.slug] ?? p.title : eventCategoryLabel(e.category).split(" ")[0],
     title: e.title,
     city: city(e.location),
@@ -218,7 +219,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
   const archive = useMemo(() => {
     const byYear = new Map<number, EventItem[]>();
     past.forEach((e) => {
-      const y = new Date(e.eventDate).getFullYear();
+      const y = eventDateParts(e.eventDate).year;
       byYear.set(y, [...(byYear.get(y) ?? []), e]);
     });
     return [...byYear.entries()];
