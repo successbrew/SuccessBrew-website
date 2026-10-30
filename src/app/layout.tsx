@@ -5,7 +5,6 @@ import { PageTransition } from "@/components/PageTransition";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { BookingClickTracker } from "@/components/BookingClickTracker";
 import { Providers } from "./providers";
-import { BrewBird } from "@/components/BrewBird";
 import { REDUCED_MOTION_HTML_CLASS } from "@/lib/motion-policy";
 import "./globals.css";
 
@@ -34,7 +33,6 @@ export default function RootLayout({
           <SmoothScroll />
           <BookingClickTracker />
           <PageTransition>{children}</PageTransition>
-          <BrewBird />
         </Providers>
         <Analytics />
       </body>
