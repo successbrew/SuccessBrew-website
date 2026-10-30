@@ -128,8 +128,6 @@ export const NAV: NavSection[] = [
     feature: { eyebrow: "Coming soon", stat: "Soon", statLabel: "In the works", sub: "Courses, mentors and playbooks are on the way.", ctaText: "Get notified", ctaHref: "/courses" },
     footer: { left: { label: "Learn more", href: "/courses" }, right: { label: "Apply to join", href: "/apply?source=community" } },
   },
-  // The blog lives under /community/blogs but gets its own top-level button.
-  { label: "Blog", href: "/community/blogs", theme: "blue", badge: "New" },
   {
     label: "About",
     href: "/about",
