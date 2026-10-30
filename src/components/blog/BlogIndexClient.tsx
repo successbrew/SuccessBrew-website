@@ -50,7 +50,7 @@ export function BlogIndexClient({ posts, tags, siteSettings, activeTag }: Props)
 
   return (
     <>
-      <NavBar activePage="Community" ctaText="Apply to Join" ctaHref="/apply?source=blog" />
+      <NavBar activePage="Blog" ctaText="Apply to Join" ctaHref="/apply?source=blog" />
       <main className="min-h-screen bg-[#F2ECDD] font-sans text-[#111111]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}

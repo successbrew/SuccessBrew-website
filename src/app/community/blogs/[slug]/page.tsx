@@ -70,7 +70,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <>
       <ReadingProgress />
-      <NavBar activePage="Community" ctaText="Apply to Join" ctaHref="/apply?source=blog" />
+      <NavBar activePage="Blog" ctaText="Apply to Join" ctaHref="/apply?source=blog" />
       <main className="min-h-screen bg-[#F2ECDD] font-sans text-[#111111]">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
