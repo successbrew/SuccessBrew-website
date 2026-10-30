@@ -4,7 +4,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { motion, useInView, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 
 const E = [0.22, 1, 0.36, 1] as const;
@@ -12,7 +13,7 @@ const E = [0.22, 1, 0.36, 1] as const;
 /** Soft lime/blue light that trails the pointer across its parent section.
  * Fine pointers only, transform-only, and absent under reduced motion. */
 export function CursorGlow() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -64,7 +65,7 @@ export function StatCard({ num, label, sub, bg, subColor, index }: {
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
 
   return (
     <motion.div ref={ref}
@@ -91,7 +92,7 @@ export function StatCard({ num, label, sub, bg, subColor, index }: {
 export function WhyTimeline({ steps }: { steps: [string, string][] }) {
   const ref = useRef<HTMLOListElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const draw = reduced ? 0 : 1.6;
   const last = steps.length - 1;
 
@@ -146,7 +147,7 @@ export interface ResourceItem {
  * or the tabs choose it). Below lg it's a plain grid with everything visible. */
 export function ResourceAccordion({ resources }: { resources: ResourceItem[] }) {
   const [active, setActive] = useState(resources[0]?.type ?? "");
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
 
   return (
     <>
@@ -204,7 +205,7 @@ export function ResourceAccordion({ resources }: { resources: ResourceItem[] }) 
 /** Overlapping member avatars that pop in one after another, ending in a
  * "+8,000" bubble — a quick visual of "already inside". */
 export function InsideAvatars({ people }: { people: { name: string; initial: string; avatarUrl?: string | null }[] }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const shown = people.slice(0, 6);
   if (shown.length === 0) return null;
   const pop = {

@@ -2,7 +2,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView, useReducedMotion, useScroll } from "framer-motion";
+import { motion, AnimatePresence, useInView, useScroll } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ArrowRight, ArrowUpRight, Scissors } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
@@ -15,6 +16,7 @@ import { RoomMotif, roomTheme } from "@/components/community/rooms";
 import { Countdown } from "@/components/community/Countdown";
 import { ProgrammeList } from "@/components/events/ProgrammeList";
 import { istDateStamp } from "@/lib/event-dates";
+import { prefersReducedMotionNow } from "@/lib/motion-policy";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: E } } };
@@ -235,7 +237,7 @@ function HeroSpeakerSlideshow({ people }: { people: HeroPerson[] }) {
 
   useEffect(() => {
     if (people.length <= 1) return;
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotionNow()) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % people.length), 3800);
     return () => clearInterval(id);
   }, [people.length]);
@@ -375,7 +377,7 @@ function RoomStamp({ pillar }: { pillar: EventPillar }) {
 function SeatsBar({ total, remaining }: { total: number; remaining: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const claimed = Math.min(1, Math.max(0, (total - remaining) / total));
   return (
     <div ref={ref} className="w-full">
@@ -396,7 +398,7 @@ function SeatsBar({ total, remaining }: { total: number; remaining: number }) {
  * reaches the middle of the screen. */
 function AgendaRail({ items, timed }: { items: AgendaItem[]; timed: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 55%"] });
   return (
     <div ref={ref} className="relative pl-7 sm:pl-9">

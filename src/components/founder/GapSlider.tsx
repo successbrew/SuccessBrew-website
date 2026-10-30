@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { animate, motion, useInView, useMotionTemplate, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
+import { animate, motion, useInView, useMotionTemplate, useMotionValue, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /**
  * "The visibility gap" as a before/after you can drag: the same profile card,
@@ -12,7 +13,7 @@ import { animate, motion, useInView, useMotionTemplate, useMotionValue, useReduc
 export function GapSlider() {
   const box = useRef<HTMLDivElement>(null);
   const inView = useInView(box, { once: true, margin: "-120px" });
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const pos = useMotionValue(50); // % of width revealed on the "built" side
   const [value, setValue] = useState(50);
   const dragging = useRef(false);

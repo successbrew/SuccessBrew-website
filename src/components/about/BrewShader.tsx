@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { prefersReducedMotionNow } from "@/lib/motion-policy";
 
 const VERT = `
 attribute vec2 a_pos;
@@ -95,7 +96,7 @@ export function BrewShader({ intensity = 1, className = "" }: { intensity?: numb
     const uMouse = gl.getUniformLocation(prog, "u_mouse");
     gl.uniform1f(gl.getUniformLocation(prog, "u_intensity"), intensity);
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = prefersReducedMotionNow();
     const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
     let raf = 0;
     let visible = true;

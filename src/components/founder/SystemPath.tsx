@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 type Stage = { key: string; question: string; detail: string };
 
@@ -22,7 +23,7 @@ const PATH = "M 0 96 C 40 92, 70 80, 100 78 S 240 36, 300 40 S 430 96, 500 92 S 
  */
 export function SystemPath({ stages }: { stages: Stage[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.8", "end 0.55"] });
   const drawn = useSpring(scrollYProgress, { stiffness: 90, damping: 22 });
   const [reached, setReached] = useState(reduced ? stages.length : 0);

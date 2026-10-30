@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { prefersReducedMotionNow } from "@/lib/motion-policy";
 
 /** The `lenis` package itself declares a differently-shaped global `Window.lenis`
  * (its own devtools hook), so we stash the real instance under a distinct key
@@ -13,7 +14,7 @@ export function getSmoothScroll(): Lenis | undefined {
 
 export function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotionNow()) return;
 
     const lenis = new Lenis({
       duration: 0.7,

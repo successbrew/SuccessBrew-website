@@ -2,7 +2,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, useTransform, useVelocity } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform, useVelocity } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ArrowUpRight } from "lucide-react";
 import { eventDateParts } from "@/lib/event-dates";
 
@@ -56,7 +57,7 @@ function CursorPoster({ item }: { item: ProgrammeItem | null }) {
 /** Editorial programme: one row per event with an oversized date. `compact`
  * is the archive variant — tighter rows, smaller type. */
 export function ProgrammeList({ items, compact = false, empty }: { items: ProgrammeItem[]; compact?: boolean; empty: string }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [hover, setHover] = useState<ProgrammeItem | null>(null);
   const [fine, setFine] = useState(false);
 

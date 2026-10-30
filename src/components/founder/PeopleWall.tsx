@@ -1,7 +1,8 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import type { FounderClient } from "@/lib/content/founder-clients";
 
 
@@ -21,7 +22,7 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
  * Each card links to the person's LinkedIn.
  */
 export function PeopleWall({ people }: { people: FounderClient[] }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
 
   return (
     <motion.ul

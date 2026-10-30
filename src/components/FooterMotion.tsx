@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /**
  * The footer's motion pieces (the Footer itself stays a server component):
@@ -14,7 +15,7 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "fr
 const BAND = ["#BrewYourOwnSuccess", "Building 1M entrepreneurs by 2030", "Community", "Content studio", "Podcast", "Learning", "Events"];
 
 export function FooterMarquee() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const items = [...BAND, ...BAND];
   return (
     <div className="group relative overflow-hidden border-b border-background/10 py-5 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
@@ -34,7 +35,7 @@ export function FooterMarquee() {
 
 export function FooterRise({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start 0.55"] });
   const p = useSpring(scrollYProgress, { stiffness: 120, damping: 26 });
   const y = useTransform(p, [0, 1], [70, 0]);

@@ -2,7 +2,8 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { Search, X } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
@@ -25,7 +26,7 @@ interface Props {
 /** Shared view for the blog index and its tag pages: hero, tag rail, instant search,
  * newest post featured, the rest in a grid. */
 export function BlogIndexClient({ posts, tags, siteSettings, activeTag }: Props) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [query, setQuery] = useState("");
   const countsRef = useRef<HTMLDivElement>(null);
   const countsInView = useInView(countsRef, { once: true });

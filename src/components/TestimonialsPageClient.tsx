@@ -2,7 +2,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
@@ -30,7 +31,7 @@ function Avatar({ t, size = "h-12 w-12" }: { t: Testimonial; size?: string }) {
 /** The hero *is* a testimonial: one founder's line at a time, set huge, with a
  * timer bar and manual controls. Pauses on hover/focus and under reduced motion. */
 function QuoteStage({ items }: { items: Testimonial[] }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const n = items.length;
@@ -94,7 +95,7 @@ function QuoteStage({ items }: { items: Testimonial[] }) {
 /** Name index + reading pane: every founder listed on the left, the chosen
  * one's full words on the right. Below lg it folds into an accordion. */
 function Reader({ items }: { items: Testimonial[] }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState<number | null>(0);
   const t = items[active];

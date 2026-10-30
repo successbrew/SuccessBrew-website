@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ArrowUpRight } from "lucide-react";
 
 const E = [0.22, 1, 0.36, 1] as const;
@@ -19,7 +20,7 @@ function LitWord({ word, progress, range }: { word: string; progress: MotionValu
  * viewport, so the story is read at the reader's own pace. */
 export function ScrollWords({ paragraphs, className = "" }: { paragraphs: string[]; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.8", "end 0.45"] });
   const words = paragraphs.flatMap((p, pi) => p.split(" ").map((w) => ({ w, pi })));
   const total = words.length;
@@ -52,7 +53,7 @@ export interface Milestone { year: string; title: string; desc: string }
 export function JourneyRail({ milestones, photos }: { milestones: Milestone[]; photos: { src: string; alt: string }[] }) {
   const section = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [wide, setWide] = useState(false);
   const [dist, setDist] = useState(0);
   const distMV = useMotionValue(0);
@@ -139,7 +140,7 @@ const GOAL = { year: 2030, n: 1_000_000, label: "1M" };
 export function GrowthChart() {
   const ref = useRef<SVGSVGElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const W = 1000, H = 440, L = 70, R = 40, T = 50, B = 50;
   const X = (y: number) => L + ((y - 2018) / (2030 - 2018)) * (W - L - R);
   const Y = (n: number) => T + (1 - (Math.log10(n) - 1) / 5) * (H - T - B);
@@ -199,7 +200,7 @@ export interface EcosystemNode { title: string; desc: string; href: string; cta:
  * light its link and read about it in the panel. */
 export function EcosystemOrbit({ nodes }: { nodes: EcosystemNode[] }) {
   const [active, setActive] = useState(0);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   // Side nodes sit a little inside the ring so their labels never run off a phone screen.
   const pos = [{ x: 50, y: 8 }, { x: 88, y: 50 }, { x: 50, y: 92 }, { x: 12, y: 50 }];
   const a = nodes[active];
@@ -258,7 +259,7 @@ function Column({ photos, progress, range, className = "" }: { photos: { src: st
 /** Three columns drifting at different speeds as you scroll past. */
 export function ParallaxGallery({ photos }: { photos: { src: string; alt: string }[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const cols = [photos.filter((_, i) => i % 3 === 0), photos.filter((_, i) => i % 3 === 1), photos.filter((_, i) => i % 3 === 2)];
   const amp = reduced ? 0 : 1;
@@ -277,7 +278,7 @@ export function ParallaxGallery({ photos }: { photos: { src: string; alt: string
  * statement scrolls into the middle of the screen. */
 export function StrikeStatement() {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.75", "center 0.5"] });
   const p = useSpring(scrollYProgress, { stiffness: 140, damping: 30 });
   const strike = useTransform(p, [0.1, 0.6], [0, 1]);

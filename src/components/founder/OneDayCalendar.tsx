@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 // What a day's slot carries — the formats the one shoot day turns into.
 const FORMATS = [
@@ -20,7 +21,7 @@ const DAYS = 30;
  */
 export function OneDayCalendar({ flow }: { flow: string[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.75", "end 0.55"] });
   const [filled, setFilled] = useState(reduced ? DAYS : 1);
 

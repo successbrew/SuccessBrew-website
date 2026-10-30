@@ -301,8 +301,9 @@
   border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
 }
 
+/* Only when the site respects the OS setting (see src/lib/motion-policy.ts). */
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee, .animate-word-bob, .eq-bar { animation: none; }
+  .respect-reduced-motion .animate-marquee, .respect-reduced-motion .animate-word-bob, .respect-reduced-motion .eq-bar { animation: none; }
 }
 
 
@@ -409,7 +410,7 @@
   animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
-  .brew-bubble { animation: none; opacity: 0; }
+  .respect-reduced-motion .brew-bubble { animation: none; opacity: 0; }
 }
 
 /* ── Blog article body (rendered Tiptap HTML) ──────────────────────────────
@@ -475,3 +476,23 @@
   line-height: 1.6;
 }
 .blog-prose pre code { background: none; padding: 0; }
+
+/* ── The Brew Bird (src/components/BrewBird.tsx) ───────────────────────────
+ * Wings flap only in flight; perched, they fold and the legs show. The head
+ * gives the odd glance about every few seconds. Transform/opacity only. */
+.bird-wing { transform-box: fill-box; transform-origin: 30% 100%; transition: transform 0.25s ease; }
+.bird-perched .bird-wing { transform: scaleY(0.35) rotate(-8deg); }
+.bird-flying .bird-wing { animation: bird-flap 0.2s ease-in-out infinite alternate; }
+.bird-flying .bird-wing-far { animation-delay: -0.1s; }
+@keyframes bird-flap {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(-0.7); }
+}
+.bird-legs { opacity: 0; transition: opacity 0.2s ease; }
+.bird-perched .bird-legs { opacity: 1; }
+.bird-head { transform-box: fill-box; transform-origin: 30% 80%; }
+.bird-perched .bird-head { animation: bird-glance 7s ease-in-out infinite; }
+@keyframes bird-glance {
+  0%, 82%, 100% { transform: rotate(0deg); }
+  86%, 92%      { transform: rotate(-14deg); }
+}

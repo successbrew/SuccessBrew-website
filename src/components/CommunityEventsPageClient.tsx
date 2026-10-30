@@ -2,7 +2,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ArrowUpRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
@@ -97,7 +98,7 @@ function boardRow(e: EventItem, status: string, live: boolean): BoardRow {
 /** Room picker on the season page: the four posters as filter switches. The
  * chosen room lifts and plays its motif; the rest step back. */
 function RoomPicker({ value, onChange, counts }: { value: string; onChange: (v: string) => void; counts: Record<string, number> }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   return (
     <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
       {EVENT_PILLARS.map((p, i) => {

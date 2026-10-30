@@ -2,7 +2,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ArrowUpRight, Shuffle } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import type { SiteSettings } from "@/components/SocialLinks";
@@ -71,7 +72,7 @@ function NameRiver({ items }: { items: Testimonial[] }) {
 }
 
 function Note({ t, i }: { t: Testimonial; i: number }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const paper = PAPERS[i % PAPERS.length];
   const r = tilt(i);
   return (

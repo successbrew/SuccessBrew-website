@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /**
  * Hand-drawn marks — the "a person made this" layer of the founder page.
@@ -13,7 +14,7 @@ type Tone = "lime" | "blue" | "white";
 const STROKE: Record<Tone, string> = { lime: "#C6FF3A", blue: "#3D6BFF", white: "rgba(255,255,255,0.85)" };
 
 function useDraw(delay = 0, duration = 0.9) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   return {
     initial: { pathLength: reduced ? 1 : 0, opacity: reduced ? 1 : 0 },
     whileInView: { pathLength: 1, opacity: 1 },

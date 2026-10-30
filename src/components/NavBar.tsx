@@ -4,7 +4,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { ArrowRight, ChevronDown, Search } from "lucide-react";
 import { NAV, NAV_THEME, type NavGroup, type NavItem, type NavSection } from "@/components/nav/nav-data";
 import { CommandPalette } from "@/components/nav/CommandPalette";
@@ -167,7 +168,7 @@ export default function NavBar({
   ctaHref = "/apply?source=community",
   activePage,
 }: NavBarProps) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const isApple = useIsApple();
   const pathname = usePathname();
   // `dir` makes the panel's content slide the way the pointer moved.

@@ -20,6 +20,7 @@ import { ServiceExplorer } from "@/components/services/ServiceExplorer";
 import { EngagementCards } from "@/components/services/EngagementCards";
 import { LaunchCTA } from "@/components/services/LaunchCTA";
 import { WhySuccessbrew } from "@/components/WhySuccessbrew";
+import { prefersReducedMotionNow } from "@/lib/motion-policy";
 
 // â"€â"€ Types â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 export interface Service {
@@ -195,7 +196,7 @@ function DraggableMarquee({
   }, [children]);
 
   useEffect(() => {
-    reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    reducedMotion.current = prefersReducedMotionNow();
   }, []);
 
   useAnimationFrame((_, delta) => {

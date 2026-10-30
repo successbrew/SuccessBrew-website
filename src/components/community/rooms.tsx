@@ -1,7 +1,8 @@
 "use client";
 
 import { useId } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const E = [0.22, 1, 0.36, 1] as const;
 
@@ -68,7 +69,7 @@ const box = { transformBox: "fill-box" } as const;
  * thing that keeps moving, and only while `loop` is on (i.e. while hovered).
  * Reduced motion shows the finished drawing with no movement. */
 export function RoomMotif({ slug, play, loop = false }: { slug: string; play: boolean; loop?: boolean }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const clipId = useId();
   const on = play || !!reduced;
   const t = (delay = 0, duration = 0.7) => (reduced ? { duration: 0 } : { duration, delay, ease: E });

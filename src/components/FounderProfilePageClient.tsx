@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, MotionConfig } from "framer-motion";
+import { MOTION_CONFIG_REDUCED } from "@/lib/motion-policy";
 import NavBar from "@/components/NavBar";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
@@ -26,7 +27,7 @@ export function FounderProfilePageClient({ siteSettings }: { siteSettings: SiteS
   const [first, ...rest] = FOUNDER.name.split(" ");
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={MOTION_CONFIG_REDUCED}>
       <NavBar variant="dark" activePage="About" ctaText="Work with Sourabh" ctaHref="/personal-branding" />
       <main className="overflow-x-hidden bg-ink font-sans text-white">
 
@@ -59,7 +60,7 @@ export function FounderProfilePageClient({ siteSettings }: { siteSettings: SiteS
               className="relative mx-auto w-full max-w-[460px] pb-8 lg:mr-0">
               <GradientBorder innerClassName="overflow-hidden bg-ink">
                 <div className="relative aspect-[4/5]">
-                  <Image src="/founder-branding/sourabh-portrait.jpg" alt={`${FOUNDER.name}, ${FOUNDER.role}`} fill priority
+                  <Image src="/founder-branding/sourabh-portrait.jpg" alt={`${FOUNDER.name}, ${FOUNDER.role}`} fill loading="eager" fetchPriority="high"
                     sizes="(max-width:1024px) 90vw, 40vw" className="object-cover object-top" />
                   <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
                 </div>
@@ -212,7 +213,7 @@ export function FounderProfilePageClient({ siteSettings }: { siteSettings: SiteS
                 </div>
                 <div className="mt-10 flex items-center gap-4 border-t border-white/10 pt-8">
                   <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-accent/60">
-                    <Image src="/founder-branding/sourabh-portrait.jpg" alt="" fill sizes="48px" className="object-cover object-top" />
+                    <Image src="/founder-branding/sourabh-portrait.jpg" alt="" fill sizes="48px" loading="eager" className="object-cover object-top" />
                   </div>
                   <div>
                     <p className="font-semibold">{FOUNDER.name}</p>

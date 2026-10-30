@@ -1,16 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { WordReveal } from "@/components/WordReveal";
 import { getSmoothScroll } from "@/components/SmoothScroll";
 
@@ -54,7 +46,7 @@ const toPosition = (p: number, steps: number) => {
  * Reduced-motion visitors get the four reasons as a plain list.
  */
 export function WhySuccessbrew({ points }: { points: { title: string; body: string }[] }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   if (reduced) return <WhyList points={points} />;
   return <WhyDeck points={points} />;
 }

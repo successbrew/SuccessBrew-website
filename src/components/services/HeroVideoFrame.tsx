@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const E = [0.22, 1, 0.36, 1] as const;
 
@@ -10,7 +11,7 @@ const E = [0.22, 1, 0.36, 1] as const;
  * by scroll position (not scroll events); static under reduced motion. */
 export function HeroVideoFrame({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center 0.55"] });
   const p = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.4 });
   const rotateX = useTransform(p, [0, 1], [22, 0]);

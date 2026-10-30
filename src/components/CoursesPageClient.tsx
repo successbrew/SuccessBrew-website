@@ -7,6 +7,7 @@ import NavBar from "@/components/NavBar";
 import type { SiteSettings } from "@/components/SocialLinks";
 import { Footer } from "@/components/Footer";
 import { AmbientBackground } from "@/components/AmbientBackground";
+import { prefersReducedMotionNow } from "@/lib/motion-policy";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
@@ -25,7 +26,7 @@ function ScrambleText({ text, trigger }: { text: string; trigger: boolean }) {
   useEffect(() => {
     if (!trigger || done.current) return;
     done.current = true;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotionNow()) return;
     let iteration = 0;
     const total = text.length * 4;
     const id = setInterval(() => {

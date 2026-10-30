@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 function parts(ms: number) {
   const s = Math.max(0, Math.floor(ms / 1000));
@@ -18,7 +19,7 @@ function parts(ms: number) {
  * passed. Each unit rolls its new value in from below; reduced motion swaps
  * values in place. */
 export function Countdown({ target, tone = "dark", className = "", lead }: { target: string; tone?: "light" | "dark"; className?: string; lead?: React.ReactNode }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [now, setNow] = useState<number | null>(null);
   const end = new Date(target).getTime();
 

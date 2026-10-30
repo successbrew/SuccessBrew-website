@@ -3,17 +3,8 @@
 
 import React, { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  AnimatePresence,
-  LayoutGroup,
-  motion,
-  useInView,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import NavBar from "@/components/NavBar";
 import type { CaseStudy } from "@/components/ServicesPageClient";
 import type { SiteSettings } from "@/components/SocialLinks";
@@ -139,7 +130,7 @@ export function CaseStudiesPageClient({ caseStudies, siteSettings }: { caseStudi
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 
 function Hero({ proof, total }: { proof: { c: CaseStudy; m: { value: string; label: string } }[]; total: number }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const words = ["Results", "that"];
   const ticker = [...proof, ...proof];
   return (
@@ -207,7 +198,7 @@ function Hero({ proof, total }: { proof: { c: CaseStudy; m: { value: string; lab
 
 function Featured({ cs }: { cs: CaseStudy }) {
   const ref = useRef<HTMLAnchorElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const imgY = useTransform(scrollYProgress, [0, 1], [18, -18]);
   const metric = headlineMetric(cs);
@@ -262,7 +253,7 @@ function Featured({ cs }: { cs: CaseStudy }) {
 /* ── Story index: editorial rows; the cover follows the cursor ────────────── */
 
 function StoryIndex({ stories, startAt }: { stories: CaseStudy[]; startAt: number }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const box = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const x = useMotionValue(0);
@@ -384,7 +375,7 @@ function ProofBoard({ proof }: { proof: { c: CaseStudy; m: { value: string; labe
 /* ── Closing CTA ─────────────────────────────────────────────────────────── */
 
 function ClosingCTA() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const row = Array.from({ length: 8 }, () => "Your story next");
   return (
     <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-20 text-white lg:py-28">

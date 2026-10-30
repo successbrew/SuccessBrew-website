@@ -1,16 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  animate,
-  motion,
-  useAnimationFrame,
-  useInView,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+import { AnimatePresence, animate, motion, useAnimationFrame, useInView, useMotionValue, useSpring } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 /**
  * The footer's "Successbrew" wordmark as a cup that's always brewing.
@@ -59,7 +51,7 @@ type Burst = { id: number; x: number; y: number; pieces: { dx: number; dy: numbe
 const TONES = ["#C6FF3A", "#3D6BFF", "#FFF3D0", "#C6FF3A", "#003CD1"];
 
 export function FooterBrewMark() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const clipId = useId().replace(/:/g, "");
   const box = useRef<HTMLButtonElement>(null);
   const live = useInView(box, { margin: "100px" }); // pause everything off screen

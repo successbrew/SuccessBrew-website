@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { MagicCard } from "@/components/ui/magic-card";
 import { WordReveal } from "@/components/WordReveal";
 
@@ -71,7 +72,7 @@ export function EngagementCards() {
  * Touch and reduced-motion visitors get a flat card. */
 function TiltCard({ engagement: e, index }: { engagement: Engagement; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const px = useMotionValue(0);
   const py = useMotionValue(0);
   const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [5, -5]), { stiffness: 220, damping: 22 });

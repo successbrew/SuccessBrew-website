@@ -1,15 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useInView,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, motion, useInView, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const E = [0.22, 1, 0.36, 1] as const;
 const BOOKING_URL = "https://ntis.in/7oApLV";
@@ -34,7 +27,7 @@ const COUNTDOWN = ["T−3", "T−2", "T−1", "GO"];
  */
 export function LaunchCTA() {
   const ref = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
 
   // Counts down across roughly the first two-thirds of a viewport of scrolling once the section is well in view.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.55", "end 0.95"] });
@@ -200,7 +193,7 @@ const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/+";
 function BoardText({ text, delay = 0 }: { text: string; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [shown, setShown] = useState(text);
 
   useEffect(() => {
@@ -237,7 +230,7 @@ function BoardText({ text, delay = 0 }: { text: string; delay?: number }) {
  * The main CTA. Arms (a one-time pulse) when the countdown hits GO; on hover a
  * rocket blasts out of the button and comes back round from below. */
 function RocketButton({ armed }: { armed: boolean }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   return (
     <motion.a
       href={BOOKING_URL}

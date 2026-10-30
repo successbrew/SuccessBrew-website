@@ -2,7 +2,8 @@
 
 import { useId, useRef, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { MagicCard } from "@/components/ui/magic-card";
 import { WordReveal } from "@/components/WordReveal";
 import type { Service } from "@/components/ServicesPageClient";
@@ -26,7 +27,7 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
   const [active, setActive] = useState(0);
   // Mobile only: tapping the open row folds it away again.
   const [mobileOpen, setMobileOpen] = useState(true);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const baseId = useId();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 

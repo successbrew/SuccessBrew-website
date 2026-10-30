@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, MotionConfig, useInView } from "framer-motion";
+import { MOTION_CONFIG_REDUCED } from "@/lib/motion-policy";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { Circled, DoodleArrow, Grain, Scribble, Struck } from "@/components/founder/HandDrawn";
 import { PeopleWall } from "@/components/founder/PeopleWall";
@@ -152,7 +153,7 @@ export function FounderBrandingPageClient({
   const written = testimonials.filter((t) => t.quote.length >= 120).slice(0, 3);
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={MOTION_CONFIG_REDUCED}>
       <NavBar variant="dark" activePage="Services" ctaText="Build My Personal Brand" ctaHref={BOOKING_URL} />
       <main className="bg-ink pb-20 font-sans text-white md:pb-0">
 

@@ -1,16 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const E = [0.22, 1, 0.36, 1] as const;
 
@@ -19,7 +11,7 @@ const E = [0.22, 1, 0.36, 1] as const;
  * as you scroll past it. Words in `accent` light up lime. */
 export function ScrollWords({ text, accent = [], className = "" }: { text: string; accent?: string[]; className?: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.92", "end 0.62"] });
   const words = text.split(" ");
   return (
@@ -53,7 +45,7 @@ export function Polaroid({
   src: string; alt: string; caption?: React.ReactNode; tilt?: number; className?: string; imgClassName?: string; aspect?: string; priority?: boolean; innerDrift?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const drift = useTransform(scrollYProgress, [0, 1], [40, -40]);
   const inner = useTransform(scrollYProgress, [0, 1], [`-${innerDrift}%`, `${innerDrift}%`]);
@@ -83,6 +75,7 @@ export function Polaroid({
           src={src}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           style={reduced ? undefined : { y: inner, scale: zoom }}
           className={`h-full w-full object-cover ${imgClassName}`}
         />
@@ -96,7 +89,7 @@ export function Polaroid({
  * A cover image that wipes open diagonally as it scrolls in, with a slow zoom. */
 export function WipeReveal({ src, alt = "", className = "" }: { src: string; alt?: string; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.95", "start 0.45"] });
   const p = useSpring(scrollYProgress, { stiffness: 120, damping: 26 });
   // A slanted edge sweeping left → right: the top runs ahead of the bottom.

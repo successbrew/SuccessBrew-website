@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { RESPECT_REDUCED_MOTION } from "@/lib/motion-policy";
 
 const QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -11,7 +12,8 @@ function subscribe(callback: () => void) {
 }
 
 function getSnapshot() {
-  return window.matchMedia(QUERY).matches;
+  // See motion-policy.ts: when the site animates for everyone this is always false.
+  return RESPECT_REDUCED_MOTION && window.matchMedia(QUERY).matches;
 }
 
 function getServerSnapshot() {

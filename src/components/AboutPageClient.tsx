@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, MotionConfig, useInView, useScroll, useTransform } from "framer-motion";
+import { MOTION_CONFIG_REDUCED } from "@/lib/motion-policy";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import type { SiteSettings } from "@/components/SocialLinks";
@@ -91,7 +92,7 @@ function FounderReveal() {
 
 export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }) {
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={MOTION_CONFIG_REDUCED}>
       <NavBar variant="dark" activePage="About" ctaText="Join the Mission" ctaHref="/about#join" />
       <main className="overflow-x-clip bg-[#0B0B0B] font-sans text-white">
 

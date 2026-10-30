@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -10,7 +11,7 @@ const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
  * server so hydration never disagrees; reduced motion settles instantly. */
 function FlapField({ text, width, start, play, tone }: { text: string; width: number; start: number; play: boolean; tone: "ink" | "lime" }) {
   const target = text.toUpperCase().slice(0, width).padEnd(width, " ");
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [shown, setShown] = useState(" ".repeat(width));
 
   useEffect(() => {

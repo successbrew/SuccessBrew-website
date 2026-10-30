@@ -5,6 +5,8 @@ import { PageTransition } from "@/components/PageTransition";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { BookingClickTracker } from "@/components/BookingClickTracker";
 import { Providers } from "./providers";
+import { BrewBird } from "@/components/BrewBird";
+import { REDUCED_MOTION_HTML_CLASS } from "@/lib/motion-policy";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -26,12 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={montserrat.variable}>
+    <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${REDUCED_MOTION_HTML_CLASS}`.trim()}>
       <body className="font-sans antialiased bg-background text-foreground">
         <Providers>
           <SmoothScroll />
           <BookingClickTracker />
           <PageTransition>{children}</PageTransition>
+          <BrewBird />
         </Providers>
         <Analytics />
       </body>

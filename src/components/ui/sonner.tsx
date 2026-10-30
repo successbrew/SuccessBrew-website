@@ -11,7 +11,8 @@ import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  // The site is light-only; without a theme provider mounted, default to light.
+  const { theme = "light" } = useTheme()
 
   return (
     <Sonner

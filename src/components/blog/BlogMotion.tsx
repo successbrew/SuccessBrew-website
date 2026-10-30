@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
 const E = [0.22, 1, 0.36, 1] as const;
 
 /** Headline whose words rise out of a mask one after another. */
 export function RiseTitle({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const words = text.split(" ");
   return (
     <h1 className={className} aria-label={text}>
@@ -28,7 +29,7 @@ export function RiseTitle({ text, className = "", delay = 0 }: { text: string; c
  * as it scrolls into view. Transform + clip only. */
 export function CoverReveal({ src }: { src: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
   const clip = useTransform(scrollYProgress, [0, 1], ["inset(0% 7% 0% 7% round 24px)", "inset(0% 0% 0% 0% round 24px)"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1.15, 1]);
@@ -41,7 +42,7 @@ export function CoverReveal({ src }: { src: string }) {
 
 /** Fades and lifts its children in once, when scrolled into view. */
 export function FadeIn({ children, className = "", delay = 0, y = 24 }: { children: React.ReactNode; className?: string; delay?: number; y?: number }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   return (
     <motion.div className={className}
       initial={reduced ? false : { opacity: 0, y }} whileInView={{ opacity: 1, y: 0 }}
