@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import { PageTransition } from "@/components/PageTransition";
 import { SmoothScroll } from "@/components/SmoothScroll";
@@ -10,9 +10,13 @@ import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
+// Montserrat is bundled (SIL OFL, see ./fonts/Montserrat-OFL.txt) rather than
+// fetched from Google Fonts at build time: when that download fails, next/font
+// silently swaps in a fallback font and the whole site renders in the wrong face.
+const montserrat = localFont({
+  src: "./fonts/montserrat-latin-wght-normal.woff2",
   variable: "--font-montserrat",
+  weight: "100 900",
   display: "swap",
 });
 
