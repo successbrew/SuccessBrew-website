@@ -51,7 +51,7 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
   return (
     <section id="services" className="bg-sand py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
           className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between lg:mb-16">
           <div>
@@ -90,7 +90,7 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
                     }}
                     initial={{ opacity: 0, x: -16 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
+                    viewport={{ once: false, margin: "-40px" }}
                     transition={{ duration: 0.5, ease: E, delay: i * 0.05 }}
                     whileTap={{ scale: 0.99 }}
                     className="group relative flex w-full items-center gap-5 rounded-xl px-5 py-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-primary md:px-6 md:py-5"

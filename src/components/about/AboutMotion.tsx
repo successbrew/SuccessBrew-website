@@ -139,7 +139,7 @@ const GOAL = { year: 2030, n: 1_000_000, label: "1M" };
  * 2030 goal. Draws itself when scrolled into view. */
 export function GrowthChart() {
   const ref = useRef<SVGSVGElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: false, margin: "-80px" });
   const reduced = usePrefersReducedMotion();
   const W = 1000, H = 440, L = 70, R = 40, T = 50, B = 50;
   const X = (y: number) => L + ((y - 2018) / (2030 - 2018)) * (W - L - R);
@@ -173,15 +173,15 @@ export function GrowthChart() {
       {[2019, 2022, 2026, 2030].map((y) => (
         <text key={y} x={X(y)} y={H - 18} textAnchor="middle" fill="white" fillOpacity="0.35" fontSize="12">{y}</text>
       ))}
-      <motion.path d={area} fill="url(#growth-area)" initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : undefined} transition={tr(0.9, 0.8)} />
+      <motion.path d={area} fill="url(#growth-area)" initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : { opacity: 0 }} transition={tr(0.9, 0.8)} />
       <motion.path d={real} fill="none" stroke="url(#growth-line)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
-        initial={{ pathLength: 0 }} animate={show ? { pathLength: 1 } : undefined} transition={tr(0)} />
+        initial={{ pathLength: 0 }} animate={show ? { pathLength: 1 } : { pathLength: 0 }} transition={tr(0)} />
       <motion.path d={proj} fill="none" stroke="#C6FF3A" strokeWidth="2.5" strokeDasharray="6 8" strokeLinecap="round"
-        initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : undefined} transition={tr(1.4, 0.6)} />
+        initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : { opacity: 0 }} transition={tr(1.4, 0.6)} />
       {[...GROWTH, GOAL].map((g, i) => {
         const goal = g === GOAL;
         return (
-          <motion.g key={g.year} initial={{ opacity: 0, scale: 0.4 }} animate={show ? { opacity: 1, scale: 1 } : undefined}
+          <motion.g key={g.year} initial={{ opacity: 0, scale: 0.4 }} animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.4 }}
             transition={tr(goal ? 1.9 : (i / (GROWTH.length - 1)) * 1.3, 0.4)} style={{ transformBox: "fill-box", originX: 0.5, originY: 0.5 }}>
             <circle cx={X(g.year)} cy={Y(g.n)} r={goal ? 9 : 6} fill={goal ? "#C6FF3A" : "#0B0B0B"} stroke={goal ? "#C6FF3A" : "#3D6BFF"} strokeWidth="3" />
             <text x={X(g.year)} y={Y(g.n) - 18} textAnchor="middle" fill={goal ? "#C6FF3A" : "white"} fontSize={goal ? 20 : 15} fontWeight="600">{g.label}</text>

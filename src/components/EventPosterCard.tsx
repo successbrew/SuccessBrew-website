@@ -15,7 +15,7 @@ export function EventPosterCard({ pillar, count }: { pillar: EventPillar; count:
   const [hot, setHot] = useState(false);
   // Touch screens have no hover, so the room performs once as it scrolls into view instead.
   const [touch, setTouch] = useState(false);
-  const inView = useInView(ref, { once: true, margin: "-25% 0px -25% 0px" });
+  const inView = useInView(ref, { once: false, margin: "-25% 0px -25% 0px" });
 
   useEffect(() => {
     // matchMedia is client-only; reading it after mount keeps SSR and hydration identical.

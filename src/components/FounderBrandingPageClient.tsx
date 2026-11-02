@@ -59,7 +59,7 @@ function DropWords({ text }: { text: string }) {
 /** A stat row that counts up once it's on screen. */
 function CountStats({ stats, size = "lg" }: { stats: { value: string; label: string }[]; size?: "lg" | "sm" }) {
   const ref = useRef<HTMLDListElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: false, margin: "-60px" });
   if (size === "sm") {
     return (
       <dl ref={ref} className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
@@ -291,7 +291,7 @@ export function FounderBrandingPageClient({
               <Reveal className="mt-10">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/40">And the brands behind them</p>
                 {/* Logos are a mix of transparent PNGs and JPGs on white, so each sits on its own light tile */}
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger(0.05)} className="mt-5 flex flex-wrap items-center gap-3">
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: false }} variants={stagger(0.05)} className="mt-5 flex flex-wrap items-center gap-3">
                   {brandPartners.filter((b) => b.logoUrl).slice(0, 10).map((b, i) => (
                     <motion.span key={b._id}
                       variants={{ hidden: { opacity: 0, y: 16, rotate: i % 2 ? 4 : -4 }, visible: { opacity: 1, y: 0, rotate: 0, transition: { type: "spring", stiffness: 300, damping: 20 } } }}
@@ -336,7 +336,7 @@ export function FounderBrandingPageClient({
               </Reveal>
 
               <Reveal delay={0.15} className="self-end">
-                <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.22)} className="flex flex-col gap-3" aria-label="From fame to opportunity">
+                <motion.ol initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.22)} className="flex flex-col gap-3" aria-label="From fame to opportunity">
                   {[
                     { label: "Fame", note: "Not the goal", style: "text-white/30" },
                     { label: "Recognition", note: "People know what you stand for", style: "text-white" },
@@ -571,7 +571,7 @@ export function FounderBrandingPageClient({
               </p>
 
               <p className="mt-8 text-xs font-semibold uppercase tracking-[0.1em] text-white/40">Spoken at &amp; worked with</p>
-              <motion.ul initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger(0.07)} className="mt-4 flex flex-wrap gap-2">
+              <motion.ul initial="hidden" whileInView="visible" viewport={{ once: false }} variants={stagger(0.07)} className="mt-4 flex flex-wrap gap-2">
                 {ECOSYSTEMS.map((e, i) => (
                   <motion.li key={e}
                     variants={{ hidden: { opacity: 0, scale: 0.6, rotate: i % 2 ? 8 : -8 }, visible: { opacity: 1, scale: 1, rotate: i % 3 === 0 ? -1.5 : i % 3 === 1 ? 1 : 0, transition: { type: "spring", stiffness: 380, damping: 18 } } }}

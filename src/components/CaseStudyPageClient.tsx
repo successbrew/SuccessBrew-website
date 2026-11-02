@@ -220,7 +220,7 @@ export function CaseStudyPageClient({
             <motion.div
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
+              viewport={{ once: false, margin: "-60px" }}
               variants={stagger(0.12)}
             >
               <motion.div variants={fadeUp} className="mb-8">
@@ -250,7 +250,7 @@ export function CaseStudyPageClient({
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-60px" }}
+                  viewport={{ once: false, margin: "-60px" }}
                   variants={stagger(0.12)}
                 >
                   <motion.div variants={fadeUp} className="mb-12 text-center">
@@ -304,7 +304,7 @@ export function CaseStudyPageClient({
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-60px" }}
+                  viewport={{ once: false, margin: "-60px" }}
                   variants={stagger(0.12)}
                 >
                   <motion.div variants={fadeUp} className="mb-12">
@@ -357,7 +357,7 @@ export function CaseStudyPageClient({
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-60px" }}
+                  viewport={{ once: false, margin: "-60px" }}
                   variants={stagger(0.12)}
                 >
                   <motion.div variants={fadeUp} className="mb-8">
@@ -388,7 +388,7 @@ export function CaseStudyPageClient({
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-60px" }}
+                  viewport={{ once: false, margin: "-60px" }}
                   variants={stagger(0.12)}
                 >
                   <motion.div variants={fadeUp} className="mb-16 text-center">
@@ -430,7 +430,7 @@ export function CaseStudyPageClient({
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-60px" }}
+                  viewport={{ once: false, margin: "-60px" }}
                   variants={stagger(0.12)}
                 >
                   <motion.div variants={fadeUp} className="mb-12 text-center">
@@ -485,7 +485,7 @@ export function CaseStudyPageClient({
                   <motion.div
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true }}
+                    viewport={{ once: false }}
                     variants={stagger(0.12)}
                   >
                     <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">
@@ -512,7 +512,7 @@ export function CaseStudyPageClient({
                   <motion.div
                     initial={{ opacity: 0, scale: 0.97, y: 24 }}
                     whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: false }}
                     transition={{ duration: 0.7, ease: E }}
                     className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl border border-ink/10 bg-cream shadow-[0_30px_70px_-30px_rgba(0,0,0,0.25)]"
                   >
@@ -536,7 +536,7 @@ export function CaseStudyPageClient({
                 <motion.div
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-60px" }}
+                  viewport={{ once: false, margin: "-60px" }}
                   variants={stagger(0.12)}
                 >
                   <motion.div variants={fadeUp} className="mb-12">
@@ -596,7 +596,7 @@ export function CaseStudyPageClient({
             <motion.div
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               variants={stagger(0.12)}
             >
               <motion.p

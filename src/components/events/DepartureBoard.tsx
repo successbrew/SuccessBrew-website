@@ -77,7 +77,7 @@ export interface BoardRow {
  * with a real text label; the flap tiles are decoration. */
 export function DepartureBoard({ rows, heading }: { rows: BoardRow[]; heading: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const play = useInView(ref, { once: true, margin: "-60px" });
+  const play = useInView(ref, { once: false, margin: "-60px" });
 
   return (
     <div ref={ref} className="overflow-hidden rounded-2xl border border-white/10 bg-[#0B0B0B] p-4 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.8)] sm:p-6">

@@ -92,15 +92,15 @@ export function ViewsGrowthChart({ data, inView }: { data: { label: string; view
             )}
             <motion.path d={area} fill="url(#views-area)"
               initial={reducedMotion ? false : { opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
+              animate={inView || reducedMotion ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.8, delay: 0.9 }} />
             <motion.path d={area} fill="url(#views-area-lime)"
               initial={reducedMotion ? false : { opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
+              animate={inView || reducedMotion ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.8, delay: 1.1 }} />
             <motion.path d={line} fill="none" stroke="#003CD1" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke"
               initial={reducedMotion ? false : { pathLength: 0 }}
-              animate={inView ? { pathLength: 1 } : {}}
+              animate={inView || reducedMotion ? { pathLength: 1 } : { pathLength: 0 }}
               transition={{ duration: 1.4, ease: E, delay: 0.2 }} />
           </svg>
 
@@ -112,7 +112,7 @@ export function ViewsGrowthChart({ data, inView }: { data: { label: string; view
             return (
               <motion.div key={p.label} className="absolute" style={{ left: `${p.x}%`, top: `${p.y}%` }}
                 initial={reducedMotion ? false : { opacity: 0 }}
-                animate={inView ? { opacity: 1 } : {}}
+                animate={inView || reducedMotion ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.3, delay: 0.3 + (i / lastIndex) * 1.2 }}>
                 <button type="button"
                   aria-label={`${p.label}: ${formatViews(p.views)} views`}

@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/app/globals.css"
+        ],
+        "createdAt": "2026-11-02T06:47:16.574Z",
+        "reason": "Claude: L435 is .blog-prose blockquote left rule (conventional quote styling in article body), not a card accent"
+      }
+    ]
+  }
+}

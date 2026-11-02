@@ -114,7 +114,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
         {/* ══ OFFERS ════════════════════════════════════════════════════ */}
         <section className="bg-[#F2ECDD] pb-16 lg:pb-24">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
+            <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-60px" }}
               transition={{ duration: 0.75, ease: E }}
               className="mb-5 overflow-hidden rounded-[2rem] border border-[#111111]/5 bg-[linear-gradient(150deg,#003CD1_0%,#0030A8_60%,#0B1640_100%)] text-white">
               <div className="grid gap-0 lg:grid-cols-[1.2fr_1fr]">
@@ -137,7 +137,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
                 <div className="relative hidden overflow-hidden lg:block">
                   <img src="/grid-images/IMG_9736.JPG" alt="Community members" className="h-full w-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-r from-[#003CD1]/80 via-[#003CD1]/20 to-transparent" />
-                  <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }}
+                  <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.4, duration: 0.6 }}
                     className="absolute bottom-8 left-8 right-8 rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
                     <p className="text-2xl font-black text-white">8,000+</p>
                     <p className="mt-1 text-sm text-white/65">Members already inside</p>
@@ -146,7 +146,7 @@ export function CommunityOffersPageClient({ siteSettings }: { siteSettings: Site
               </div>
             </motion.div>
 
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="grid gap-6 lg:grid-cols-3">
               {membershipTiers.map((tier) => (
                 <motion.div key={tier.name} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}

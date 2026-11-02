@@ -43,7 +43,7 @@ function LogoCell({ partner, index }: { partner: BrandPartner; index: number }) 
     <motion.div
       initial={{ opacity: 0, scale: 0.85 }}
       whileInView={{ opacity: 1, scale: 1, transition: { duration: 0.5, delay: (index % 9) * 0.04, ease: E } }}
-      viewport={{ once: true, margin: "-40px" }}
+      viewport={{ once: false, margin: "-40px" }}
       whileHover={{ scale: 1.02, transition: { duration: 0.25, ease: E } }}
       className="group flex h-full w-full items-center justify-center p-4"
     >
@@ -101,7 +101,7 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: E } }}
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: false, margin: "-60px" }}
           className="mb-10 text-center"
         >
           <h2 className="text-balance text-3xl font-black tracking-tight text-[#111111] md:text-5xl">
@@ -118,7 +118,7 @@ export function CommunityPartnerGrid({ partners }: { partners: BrandPartner[] })
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0, transition: { duration: 0.7, ease: E } }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: false, margin: "-60px" }}
             className="flex flex-col items-center justify-center gap-3 border border-[#111111]/10 bg-[#FFF3D0] p-6 text-center [grid-column:var(--feat-col-base)] [grid-row:var(--feat-row-base)] sm:[grid-column:var(--feat-col-sm)] sm:[grid-row:var(--feat-row-sm)] lg:[grid-column:var(--feat-col-lg)] lg:[grid-row:var(--feat-row-lg)]"
           >
             <span className="rounded-full bg-[#003CD1]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#003CD1]">

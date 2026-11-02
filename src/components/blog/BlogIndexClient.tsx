@@ -29,7 +29,7 @@ export function BlogIndexClient({ posts, tags, siteSettings, activeTag }: Props)
   const reduced = usePrefersReducedMotion();
   const [query, setQuery] = useState("");
   const countsRef = useRef<HTMLDivElement>(null);
-  const countsInView = useInView(countsRef, { once: true });
+  const countsInView = useInView(countsRef, { once: false });
   // Headline lines rise out of a mask one after another.
   const rise = (i: number) => ({
     initial: reduced ? false : { y: "105%" },
@@ -145,7 +145,7 @@ export function BlogIndexClient({ posts, tags, siteSettings, activeTag }: Props)
                 <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
                   {grid.map((p, i) => (
                     <motion.div key={p.id} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.5, delay: Math.min(i % 3, 2) * 0.06, ease: E }}>
+                      viewport={{ once: false, margin: "-40px" }} transition={{ duration: 0.5, delay: Math.min(i % 3, 2) * 0.06, ease: E }}>
                       <PostCardView post={p} />
                     </motion.div>
                   ))}

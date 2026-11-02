@@ -220,7 +220,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         </section>
 
         {/* ══ TICKER ════════════════════════════════════════════════════ */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ duration: 0.6 }}
           className="overflow-hidden bg-[linear-gradient(90deg,#003CD1,#0030A8_50%,#003CD1)] py-3.5 text-white">
           <div className="flex w-max whitespace-nowrap animate-marquee">
             {Array.from({ length: 2 }).map((_, g) => (
@@ -239,7 +239,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         <section id="ecosystem" className="relative overflow-hidden bg-[#FFF3D0] py-16 lg:py-20">
           <AmbientBackground tone="light" />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">The Ecosystem</p>
@@ -249,7 +249,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
                 Join the ecosystem
               </motion.a>
             </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.08)}
               className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {pillars.map((p) => (
                 <motion.article key={p.num} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
@@ -292,7 +292,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
           <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[460px] w-[460px] rounded-full bg-accent/20 blur-[130px]" />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.12)}>
                 <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-white/55">Our Why</motion.p>
                 <h2 className="mt-3 text-balance text-[clamp(2.6rem,5vw,5rem)] font-black leading-[0.95] tracking-tight">
                   <WordReveal text="Talent is everywhere." />{" "}<br />
@@ -302,11 +302,11 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
                   Most ambitious Indians never get the room, the mentor, or the mic. Successbrew exists to close that gap — not by replacing hard work, but by amplifying it with access, visibility and a community that actually shows up.
                 </motion.p>
               </motion.div>
-              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.9, ease: E }} className="relative">
+              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, margin: "-80px" }} transition={{ duration: 0.9, ease: E }} className="relative">
                 <div className="aspect-square overflow-hidden rounded-[2rem] border border-white/10">
                   <img src="/grid-images/our-why-founder.jpg" alt="Successbrew founder" className="h-full w-full object-cover object-[44%_center]" />
                 </div>
-                <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
+                <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.4, duration: 0.6, ease: E }}
                   className="absolute -bottom-5 left-6 rounded-2xl bg-[#C6FF3A] px-6 py-4 text-[#111111] shadow-lg">
                   <div className="text-2xl font-black">1M</div>
                   <div className="text-xs font-medium text-black/60">Entrepreneurs · Vision 2030</div>
@@ -319,7 +319,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
               <WhyTimeline steps={[["2018", "Founded"], ["2023", "8K+"], ["2024", "200 Events"], ["2025", "150K"], ["2030", "1M 🎯"]]} />
             </div>
 
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.12)}
               className="mt-20 grid gap-6 md:grid-cols-3">
               {[
                 { label: "Access",     value: "The room. The mentor. The mic.", desc: "Members get intros, speaking slots and investment conversations they couldn't manufacture alone." },
@@ -339,7 +339,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         {/* ══ WINS (CMS) ════════════════════════════════════════════════ */}
         <section id="wins" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Community Wins</p>
@@ -350,7 +350,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
               </motion.a>
             </motion.div>
             {communityTestimonials.length > 0 ? (
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.11)}
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.11)}
                 className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {communityTestimonials.slice(0, 6).map((t, i) => (
                   <motion.figure key={t._id} custom={i} variants={dealt} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
@@ -389,7 +389,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         <section id="events" className="relative overflow-hidden bg-[#FFF3D0] py-16 lg:py-20">
           <AmbientBackground tone="light" />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Four Rooms, One Ecosystem</p>
@@ -400,13 +400,13 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
               </motion.a>
             </motion.div>
 
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {eventPillars.map((p) => (
                 <EventPosterCard key={p.slug} pillar={p} count={p.count} />
               ))}
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.2, duration: 0.6 }}
               className="mt-6 rounded-2xl border border-dashed border-[#003CD1]/30 bg-[#003CD1]/5 p-6 text-center">
               <p className="text-sm font-bold text-[#003CD1]">200+ events hosted across India</p>
               <p className="mt-1 text-xs text-[#111111]/50">Mumbai · Delhi · Bengaluru · Hyderabad · Pune</p>
@@ -417,7 +417,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         {/* ══ PODCAST (CMS) ═════════════════════════════════════════════ */}
         <section id="podcast" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Successbrew Podcast</p>
@@ -428,7 +428,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
               </motion.a>
             </motion.div>
 
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {previewEpisodes.map((ep) => (
                 <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
@@ -467,7 +467,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
                 </motion.div>
               ))}
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }}
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: 0.2, duration: 0.6 }}
               className="mt-6 rounded-2xl border border-[#111111]/5 bg-white p-6 text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]/45">100+ Episodes · 60+ Guests</p>
               <a href="/community/podcast" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#003CD1] hover:underline">All Episodes →</a>
@@ -478,7 +478,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         {/* ══ LEARNING HUB ══════════════════════════════════════════════ */}
         <section id="learning-hub" className="bg-[#F2ECDD] py-16 lg:py-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
               className="mb-8">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#003CD1]">Learning Hub</p>
@@ -492,7 +492,7 @@ export function CommunityPageClient({ events, episodes, communityTestimonials, c
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section id="cta" className="relative overflow-hidden bg-[#111111] text-white">
           <AmbientBackground tone="dark" />
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.14)}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.14)}
             className="relative mx-auto max-w-7xl px-6 py-28 text-center lg:px-10 lg:py-40">
             <InsideAvatars people={communityTestimonials} />
             <motion.p variants={fadeUp} className="mt-5 text-xs font-semibold uppercase tracking-[0.1em] text-white/50">8,000+ already inside</motion.p>

@@ -28,7 +28,7 @@ export function PeopleWall({ people }: { people: FounderClient[] }) {
     <motion.ul
       initial="pile"
       whileInView="dealt"
-      viewport={{ once: true, margin: "-120px" }}
+      viewport={{ once: false, margin: "-120px" }}
       className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-6 lg:gap-y-12"
     >
       {people.map((p, i) => {

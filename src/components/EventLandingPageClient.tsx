@@ -376,7 +376,7 @@ function RoomStamp({ pillar }: { pillar: EventPillar }) {
 /** Seats claimed vs. total, filling once when it scrolls into view. */
 function SeatsBar({ total, remaining }: { total: number; remaining: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInView(ref, { once: false });
   const reduced = usePrefersReducedMotion();
   const claimed = Math.min(1, Math.max(0, (total - remaining) / total));
   return (
@@ -386,7 +386,7 @@ function SeatsBar({ total, remaining }: { total: number; remaining: number }) {
         <span className="text-[#003CD1]">{remaining} left</span>
       </div>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#111111]/8">
-        <motion.div initial={{ scaleX: reduced ? claimed : 0 }} animate={inView ? { scaleX: claimed } : undefined}
+        <motion.div initial={{ scaleX: reduced ? claimed : 0 }} animate={inView || reduced ? { scaleX: claimed } : { scaleX: 0 }}
           transition={{ duration: 1.2, ease: E }}
           className="h-full origin-left rounded-full bg-gradient-to-r from-[#003CD1] to-[#C6FF3A]" />
       </div>
@@ -406,7 +406,7 @@ function AgendaRail({ items, timed }: { items: AgendaItem[]; timed: boolean }) {
       <motion.div aria-hidden style={{ scaleY: reduced ? 1 : scrollYProgress }}
         className="absolute bottom-0 left-0 top-0 w-0.5 origin-top rounded-full bg-gradient-to-b from-[#003CD1] to-[#C6FF3A]" />
       {items.map((item, i) => (
-        <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "0px 0px -40% 0px" }}
+        <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: false, margin: "0px 0px -40% 0px" }}
           variants={fadeUp} className="relative pb-10 last:pb-0">
           <motion.span aria-hidden
             variants={{ hidden: { scale: 0.5, backgroundColor: "#FFFFFF" }, visible: { scale: 1, backgroundColor: "#003CD1", transition: { duration: 0.4, ease: E } } }}
@@ -434,7 +434,7 @@ function Ticket({ event, pillar, registerHref, now }: { event: EventLandingData;
     { label: "Seats", value: seatsSummary(event, { totalSuffix: "seats", fallback: "Open seating" }) },
   ];
   return (
-    <motion.div initial={{ opacity: 0, y: 40, rotate: -1 }} whileInView={{ opacity: 1, y: 0, rotate: 0 }} viewport={{ once: true }}
+    <motion.div initial={{ opacity: 0, y: 40, rotate: -1 }} whileInView={{ opacity: 1, y: 0, rotate: 0 }} viewport={{ once: false }}
       transition={{ duration: 0.8, ease: E }}
       className="relative grid overflow-hidden rounded-3xl bg-white shadow-[0_40px_80px_-40px_rgba(0,0,0,0.45)] lg:grid-cols-[1fr_auto_auto]">
       <div className="p-6 sm:p-8 lg:p-10">
@@ -530,7 +530,7 @@ function SideIndex({ items, activeId, registerHref, hasRegisterUrl, calendarHref
  * a printed programme. */
 function SectionHead({ n, kicker, title }: { n: number; kicker: string; title: string }) {
   return (
-    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp} className="mb-8 flex items-baseline gap-4 border-t border-[#111111]/15 pt-6">
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={fadeUp} className="mb-8 flex items-baseline gap-4 border-t border-[#111111]/15 pt-6">
       <span className="text-xs font-semibold tabular-nums text-[#003CD1]">{String(n).padStart(2, "0")}</span>
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#111111]/45">{kicker}</p>
@@ -719,7 +719,7 @@ export function EventLandingPageClient({
             {benefitItems.length > 0 && (
               <section id="highlights" className="scroll-mt-36">
                 <SectionHead n={num("highlights")} kicker="The experience" title="What you walk away with." />
-                <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}>
+                <motion.ol initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.08)}>
                   {benefitItems.map((b, i) => (
                     <motion.li key={i} variants={fadeUp} className="group grid grid-cols-[4.5rem_1fr] gap-4 border-b border-[#111111]/10 py-6 first:pt-0 sm:grid-cols-[6rem_1fr]">
                       <span className="text-5xl font-black leading-none tracking-tighter text-transparent transition-colors duration-300 [-webkit-text-stroke:1.5px_#003CD1] group-hover:text-[#003CD1] sm:text-6xl">{String(i + 1).padStart(2, "0")}</span>
@@ -737,7 +737,7 @@ export function EventLandingPageClient({
             {hasSpeakerSection && (
               <section id="speakers" className="scroll-mt-36">
                 <SectionHead n={num("speakers")} kicker="On the mic" title="Who you'll hear from." />
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.08)}
                   className="grid grid-cols-2 gap-4 md:grid-cols-3">
                   {event.speakers.map((s) => <PersonCard key={s.id} name={s.name} role={s.role} bio={s.bio} photoUrl={s.photoUrl} badge="Speaker" />)}
                   {event.hostName && <PersonCard name={event.hostName} role={event.hostRole} bio={event.hostBio} photoUrl={event.hostPhotoUrl} badge="Host" />}
@@ -762,7 +762,7 @@ export function EventLandingPageClient({
                 <div className="hide-scrollbar -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 lg:mx-0 lg:px-0">
                   {event.galleryUrls.map((url, i) => (
                     <motion.div key={url + i}
-                      initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                      initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }}
                       transition={{ duration: 0.6, delay: Math.min(i, 5) * 0.06, ease: E }}
                       className={`relative shrink-0 snap-start overflow-hidden rounded-2xl bg-[#111111]/5 ${i % 3 === 0 ? "h-[300px] w-[240px]" : "h-[300px] w-[380px]"} sm:h-[360px] ${i % 3 === 0 ? "sm:w-[280px]" : "sm:w-[460px]"}`}>
                       <img src={url} alt={`${event.title} — photo ${i + 1}`} loading="lazy" className="h-full w-full object-cover" />
@@ -779,7 +779,7 @@ export function EventLandingPageClient({
                 <SectionHead n={num("audience")} kicker="Who's in the room" title="Built for the room, not the crowd." />
                 {event.audienceNote && <p className="max-w-2xl text-lg leading-relaxed text-[#111111]/70">{event.audienceNote}</p>}
                 {event.audienceTags.length > 0 && (
-                  <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.05)} className="mt-8 flex flex-wrap gap-3">
+                  <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.05)} className="mt-8 flex flex-wrap gap-3">
                     {event.audienceTags.map((t, i) => (
                       <motion.span key={i} variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 20 } } }}
                         className={`rounded-full px-5 py-2.5 text-sm font-bold ${["bg-[#003CD1] text-white", "bg-[#C6FF3A] text-[#111111]", "bg-white text-[#111111]", "bg-[#111111] text-white"][i % 4]}`}>
@@ -827,7 +827,7 @@ export function EventLandingPageClient({
             {testimonials.length > 0 && (
               <section id="voices" className="scroll-mt-36">
                 <SectionHead n={num("voices")} kicker="Community voices" title="People who've been in the room." />
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)} className="space-y-4">
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)} className="space-y-4">
                   {testimonials.slice(0, 3).map((t, i) => (
                     <motion.figure key={t.id} variants={fadeUp}
                       className={`relative rounded-3xl p-6 sm:p-8 ${i === 0 ? "bg-[#111111] text-white" : "bg-white"}`}>
@@ -870,7 +870,7 @@ export function EventLandingPageClient({
             <Scissors className="h-4 w-4 -rotate-90" />
             <span className="h-0 flex-1 border-t-2 border-dashed border-current" />
           </div>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.12)}
             className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 lg:flex-row lg:items-end lg:justify-between lg:px-10">
             <div>
               <motion.p variants={fadeUp} className={`text-xs font-semibold uppercase tracking-[0.14em] ${ink ? "text-[#003CD1]" : "text-[#C6FF3A]"}`}>

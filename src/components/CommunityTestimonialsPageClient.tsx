@@ -80,7 +80,7 @@ function Note({ t, i }: { t: Testimonial; i: number }) {
       initial={reduced ? false : { opacity: 0, y: 40, rotate: r * 3 }}
       whileInView={{ opacity: 1, y: 0, rotate: r }}
       whileHover={reduced ? undefined : { rotate: 0, y: -6, scale: 1.02, zIndex: 10 }}
-      viewport={{ once: true, margin: "-40px" }}
+      viewport={{ once: false, margin: "-40px" }}
       transition={{ type: "spring", stiffness: 160, damping: 20 }}
       className={`relative mb-6 break-inside-avoid rounded-2xl p-7 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.45)] ${paper.card}`}>
       <span aria-hidden className={`absolute -top-3 left-1/2 h-6 w-20 -translate-x-1/2 rotate-[-3deg] rounded-sm ${paper.tape}`} />
@@ -171,7 +171,7 @@ export function CommunityTestimonialsPageClient({ testimonials, siteSettings }: 
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section id="cta" className="bg-[#C6FF3A] py-20 lg:py-28">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.12)}
             className="mx-auto flex max-w-7xl flex-col gap-10 px-6 lg:flex-row lg:items-end lg:justify-between lg:px-10">
             <div>
               <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.14em] text-[#111111]/60">There&rsquo;s space on the wall</motion.p>

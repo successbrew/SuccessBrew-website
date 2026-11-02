@@ -68,7 +68,7 @@ function bentoSpan(i: number, total: number) {
 
 export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings }) {
   const heroRef = useRef<HTMLDivElement>(null);
-  const heroInView = useInView(heroRef, { once: true });
+  const heroInView = useInView(heroRef, { once: false });
 
   return (
     <>
@@ -113,13 +113,13 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
         <section className="bg-background py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <motion.p
-              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }}
               transition={{ duration: 0.6 }}
               className="mb-10 text-xs font-semibold uppercase tracking-[0.1em] text-ink/30">
               What's coming
             </motion.p>
             <motion.div
-              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+              initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
               variants={stagger(0.08)}
               className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
               {sections.map((s, i) => (
@@ -147,7 +147,7 @@ export function CoursesPageClient({ siteSettings }: { siteSettings: SiteSettings
         {/* ══ NOTIFY CTA ════════════════════════════════════════════════ */}
         <section className="bg-sand py-20 lg:py-24">
           <div className="mx-auto max-w-2xl px-6 text-center lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger(0.12)}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false }} variants={stagger(0.12)}>
               <motion.h2 variants={fadeUp} className="text-3xl font-black tracking-tight text-ink md:text-5xl">
                 Don't want to miss it?
               </motion.h2>

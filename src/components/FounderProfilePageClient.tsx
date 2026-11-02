@@ -122,7 +122,7 @@ export function FounderProfilePageClient({ siteSettings }: { siteSettings: SiteS
                 Where content, community and entrepreneurship <GradientText>meet.</GradientText>
               </h2>
             </Reveal>
-            <motion.ul initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)}
+            <motion.ul initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.08)}
               className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {FOCUS_AREAS.map((f, i) => (
                 <motion.li key={f.title} variants={fadeUp}

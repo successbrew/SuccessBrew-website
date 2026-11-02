@@ -116,7 +116,7 @@ export function MarkerRow({ n, title, desc }: { n: string; title: string; desc: 
       whileHover="marked"
       whileFocus="marked"
       whileInView="seen"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: false, margin: "-60px" }}
       tabIndex={0}
       className="group relative grid cursor-default grid-cols-[2.5rem_1fr] gap-x-4 overflow-hidden border-b border-white/10 py-8 outline-none focus-visible:ring-2 focus-visible:ring-accent sm:grid-cols-[3rem_0.8fr_1.2fr] sm:items-baseline"
     >

@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { SocialLinks, type SiteSettings } from "@/components/SocialLinks";
 import { FooterMarquee, FooterRise } from "@/components/FooterMotion";
-import { FooterBrewMark } from "@/components/FooterBrewMark";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
@@ -79,7 +78,6 @@ export function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
         ))}
       </div>
       </FooterRise>
-      <FooterBrewMark />
       <div className="border-t border-background/10">
         <div className="mx-auto px-6 py-6 text-xs text-background/50 lg:px-10">
           © 2026 Successbrew Studio. Building 1M entrepreneurs by 2030.

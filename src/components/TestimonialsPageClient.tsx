@@ -207,7 +207,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
         {testimonials.length > 0 && (
           <section className="bg-cream py-20 lg:py-28">
             <div className="mx-auto max-w-7xl px-6 lg:px-10">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)} className="mb-12 max-w-2xl">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)} className="mb-12 max-w-2xl">
                 <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">The full record</motion.p>
                 <motion.h2 variants={fadeUp} className="mt-3 text-balance text-4xl font-black tracking-tight md:text-6xl">Every founder, in full.</motion.h2>
                 <motion.p variants={fadeUp} className="mt-4 text-ink/60">Pick a name to read what they said — the whole thing, not a pull quote.</motion.p>
@@ -219,7 +219,7 @@ export function TestimonialsPageClient({ testimonials, siteSettings }: Props) {
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-[linear-gradient(135deg,#003CD1_0%,#002A93_55%,#0B1640_100%)] py-20 text-white lg:py-28">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.12)}
             className="relative mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[1.3fr_1fr] lg:items-end lg:px-10">
             <div>
               <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">Ready to join them?</motion.p>

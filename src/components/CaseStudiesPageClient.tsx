@@ -230,7 +230,7 @@ function Featured({ cs }: { cs: CaseStudy }) {
             <span className="text-sm text-white/55">{metric.label}</span>
           </p>
         )}
-        <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+        <motion.ol initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } } }}
           className="mt-8 space-y-4 border-l border-white/15 pl-5">
           {beats.map((b, i) => (
@@ -284,7 +284,7 @@ function StoryIndex({ stories, startAt }: { stories: CaseStudy[]; startAt: numbe
           const on = hovered === cs._id;
           return (
             <motion.li key={cs._id}
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-40px" }}
               transition={{ duration: 0.55, ease: E, delay: i * 0.06 }}
               className="border-b border-ink/10">
               <Link href={`/case-studies/${cs._id}`}
@@ -344,7 +344,7 @@ function StoryIndex({ stories, startAt }: { stories: CaseStudy[]; startAt: numbe
 
 function ProofBoard({ proof }: { proof: { c: CaseStudy; m: { value: string; label: string } }[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: false, margin: "-80px" });
   return (
     <section className="relative overflow-hidden bg-cream py-20 lg:py-28">
       <AmbientBackground tone="light" />
@@ -354,7 +354,7 @@ function ProofBoard({ proof }: { proof: { c: CaseStudy; m: { value: string; labe
         <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-4">
           {proof.slice(0, 4).map(({ c, m }, i) => (
             <motion.div key={c._id}
-              initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
               transition={{ duration: 0.6, ease: E, delay: i * 0.1 }}
               className="flex flex-col bg-background p-7">
               <span className="text-5xl font-black tracking-tight text-primary md:text-6xl">
@@ -386,7 +386,7 @@ function ClosingCTA() {
           {[...row, ...row].map((t, i) => <span key={i}>{t} →</span>)}
         </div>
       </div>
-      <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: E }}
+      <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ duration: 0.7, ease: E }}
         className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">
         <p className="text-xs font-semibold uppercase tracking-[0.1em] text-white/55">Let&apos;s work together</p>
         <h2 className="mt-4 text-balance text-4xl font-black tracking-tight md:text-6xl">Ready to create your own success story?</h2>

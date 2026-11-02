@@ -59,7 +59,7 @@ function MaskLines({ lines, className = "" }: { lines: React.ReactNode[]; classN
 
 function HeroStats() {
   const ref = useRef<HTMLDListElement>(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInView(ref, { once: false });
   return (
     <dl ref={ref} className="grid grid-cols-2 divide-white/10 border-t border-white/10 lg:grid-cols-4 lg:divide-x">
       {COMPANY_STATS.map((s, i) => (
@@ -187,7 +187,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <Kicker n="05" text="What we stand for" />
             <h2 className="mt-5 max-w-3xl text-balance text-[clamp(2.25rem,4.4vw,4rem)] font-black leading-[1] tracking-tight">Six principles. One direction.</h2>
-            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.08)} className="mt-16 border-t border-white/10">
+            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.08)} className="mt-16 border-t border-white/10">
               {VALUES.map((v, i) => (
                 <motion.li key={v.title} variants={fadeUp}
                   className="group grid gap-3 border-b border-white/10 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-[5rem_1fr_1fr] md:items-baseline md:gap-8 md:py-10">
@@ -232,7 +232,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
               </div>
               <span className="rounded-full bg-accent px-5 py-2.5 text-sm font-black text-[#111111]">1,000,000 · 2030</span>
             </div>
-            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.12)}
+            <motion.ol initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.12)}
               className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:items-end">
               {ROADMAP.map((r, i) => (
                 <motion.li key={r.title} variants={{ hidden: { opacity: 0, y: 60 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: E } } }}
@@ -253,7 +253,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
         <section className="py-28 lg:py-40">
           <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24 lg:px-10">
             <FounderReveal />
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.12)}>
               <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">The founder</motion.p>
               <motion.blockquote variants={fadeUp} className="mt-8 text-balance text-[clamp(2rem,3.8vw,3.5rem)] font-semibold leading-[1.1] tracking-tight">
                 &ldquo;{FOUNDER.quote}&rdquo;
@@ -274,7 +274,7 @@ export function AboutPageClient({ siteSettings }: { siteSettings: SiteSettings }
         <section id="join" className="relative scroll-mt-20 overflow-hidden">
           <BrewShader intensity={1.2} />
           <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#0B0B0B] to-transparent" />
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.12)}
             className="relative mx-auto max-w-7xl px-6 py-36 lg:px-10 lg:py-52">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.16em] text-white/60">You&rsquo;re invited</motion.p>
             <h2 className="mt-6 text-[clamp(3.25rem,10vw,9rem)] font-black leading-[0.88] tracking-[-0.03em]">

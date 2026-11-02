@@ -110,7 +110,7 @@ function RoomPicker({ value, onChange, counts }: { value: string; onChange: (v: 
           <motion.div key={p.slug}
             initial={reduced ? false : { opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: false, margin: "-60px" }}
             transition={{ duration: 0.6, delay: i * 0.08, ease: E }}>
             <motion.div animate={{ y: on ? -14 : 0, opacity: dim ? 0.45 : 1, scale: dim ? 0.97 : 1 }} transition={{ duration: 0.45, ease: E }}
               className={`group relative aspect-[3/4] overflow-hidden rounded-2xl ${theme.surface} ${on ? "ring-2 ring-[#C6FF3A] ring-offset-4 ring-offset-[#111111]" : ""}`}>
@@ -146,7 +146,7 @@ function NextUp({ event }: { event: EventItem }) {
   return (
     <section className="bg-[#F2ECDD] pt-16 lg:pt-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.1)}
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.1)}
           className="grid items-center gap-10 rounded-[2rem] bg-[#111111] p-6 text-white sm:p-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:p-14">
           <motion.div variants={fadeUp} className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-[#1A1A1A]">
             {event.imageUrl ? (
@@ -362,7 +362,7 @@ export function CommunityEventsPageClient({ events, siteSettings, now, pillar }:
 
         {/* ══ CTA ═══════════════════════════════════════════════════════ */}
         <section className="bg-[#C6FF3A] py-20 lg:py-28">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger(0.12)}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-80px" }} variants={stagger(0.12)}
             className="mx-auto flex max-w-7xl flex-col gap-10 px-6 lg:flex-row lg:items-end lg:justify-between lg:px-10">
             <motion.h2 variants={fadeUp} className="max-w-3xl text-balance text-5xl font-black leading-[0.92] tracking-tight text-[#111111] md:text-7xl">
               Members hear about every room first.

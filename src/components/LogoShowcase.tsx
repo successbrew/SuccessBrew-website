@@ -166,7 +166,7 @@ export function LogoShowcase({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: E } }}
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: false, margin: "-60px" }}
           className="mb-14 text-center"
         >
           <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">{eyebrow}</p>

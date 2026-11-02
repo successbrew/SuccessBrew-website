@@ -18,7 +18,7 @@ function useDraw(delay = 0, duration = 0.9) {
   return {
     initial: { pathLength: reduced ? 1 : 0, opacity: reduced ? 1 : 0 },
     whileInView: { pathLength: 1, opacity: 1 },
-    viewport: { once: true, margin: "-80px" },
+    viewport: { once: false, margin: "-80px" },
     transition: { pathLength: { duration, ease: [0.65, 0, 0.35, 1] as const, delay }, opacity: { duration: 0.01, delay } },
   };
 }

@@ -109,7 +109,7 @@ export function LaunchCTA() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: false, margin: "-80px" }}
           transition={{ duration: 0.8, ease: E }}
           className="relative rounded-xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md md:p-8"
         >
@@ -192,7 +192,7 @@ const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/+";
 
 function BoardText({ text, delay = 0 }: { text: string; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: false, margin: "-60px" });
   const reduced = usePrefersReducedMotion();
   const [shown, setShown] = useState(text);
 

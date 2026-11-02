@@ -64,7 +64,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
           <AmbientBackground tone="light" />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             {episodes.length > 0 ? (
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger(0.07)}
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }} variants={stagger(0.07)}
                 className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {episodes.map((ep) => (
                   <motion.div key={ep._id} variants={cardUp} whileHover={{ y: -2, transition: { duration: 0.3, ease: E } }}
@@ -109,7 +109,7 @@ export function CommunityPodcastPageClient({ episodes, siteSettings }: Props) {
           <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-[#C6FF3A]/20 blur-[130px]" />
           <motion.div
             initial="hidden" whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
+            viewport={{ once: false, margin: "-80px" }}
             variants={stagger(0.12)}
             className="relative mx-auto max-w-3xl px-6 text-center lg:px-10">
             <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-[#C6FF3A]">Never miss an episode</motion.p>

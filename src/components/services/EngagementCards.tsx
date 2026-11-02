@@ -37,7 +37,7 @@ export function EngagementCards() {
   return (
     <section id="engagements" className="relative overflow-hidden bg-sand py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
           className="mb-14 max-w-3xl lg:mb-16">
           <motion.p variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: E } } }}
@@ -57,7 +57,7 @@ export function EngagementCards() {
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-8 text-sm italic text-ink/55"
         >
@@ -95,7 +95,7 @@ function TiltCard({ engagement: e, index }: { engagement: Engagement; index: num
       ref={ref}
       initial={{ opacity: 0, y: 40, rotateX: reduced ? 0 : 8 }}
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: false, margin: "-80px" }}
       transition={{ duration: 0.8, ease: E, delay: index * 0.12 }}
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
@@ -125,7 +125,7 @@ function TiltCard({ engagement: e, index }: { engagement: Engagement; index: num
             <motion.ul
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: "-40px" }}
+              viewport={{ once: false, margin: "-40px" }}
               variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.09, delayChildren: 0.35 + index * 0.12 } } }}
               className={`mt-8 grid grid-cols-2 gap-x-4 gap-y-3 border-t pt-6 text-sm ${dark ? "border-white/15 text-white/85" : "border-ink/10 text-ink/75"}`}
             >

@@ -245,13 +245,13 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
     <motion.a href={`/case-studies/${cs._id}`}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, delay: (i % 3) * 0.08, ease: E } }}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: false, margin: "-60px" }}
       whileHover={{ y: -2, transition: { duration: 0.25, ease: E } }}
       className="edge-gradient group block overflow-hidden rounded-2xl border border-ink/5 bg-background transition-shadow duration-300 hover:shadow-[0_24px_48px_-24px_rgba(0,0,0,0.18)]">
       <motion.div className="relative h-52 overflow-hidden"
         initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
         whileInView={{ clipPath: "inset(0% 0% 0% 0%)", transition: { duration: 0.9, delay: 0.15 + (i % 3) * 0.08, ease: E } }}
-        viewport={{ once: true, margin: "-60px" }}>
+        viewport={{ once: false, margin: "-60px" }}>
         <img src={cs.imageUrl ?? "/grid-images/IMG_9736.JPG"} alt={cs.title} draggable={false}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -translate-x-[160%] -skew-x-12 bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-[900ms] ease-out group-hover:translate-x-[260%]" />
@@ -347,7 +347,7 @@ export const WHY_SUCCESSBREW = [
 export function ServicesPageClient({ services, processSteps, caseStudies, testimonials, stats, brandPartners, siteSettings }: ServicesPageProps) {
   const statsRef = useRef<HTMLDivElement>(null);
   const processRef = useRef<HTMLOListElement>(null);
-  const statsInView = useInView(statsRef, { once: true, margin: "-80px" });
+  const statsInView = useInView(statsRef, { once: false, margin: "-80px" });
   const { scrollYProgress: processProgress } = useScroll({ target: processRef, offset: ["start 85%", "end 65%"] });
   const [activeStep, setActiveStep] = useState(-1);
   useMotionValueEvent(processProgress, "change", (v) => {
@@ -408,7 +408,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
         {/* â•â• STATS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section className="bg-background py-24 lg:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
               variants={stagger(0.12)} className="mb-14 lg:mb-16">
               <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">By the numbers</motion.p>
               <h2 className="mt-3 max-w-2xl text-balance text-xl font-black tracking-tight md:text-3xl">
@@ -431,7 +431,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
           <AmbientBackground tone="dark" noise={false} />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
             {/* Header: headline left, short promise + CTA right */}
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-14 grid gap-8 lg:mb-20 lg:grid-cols-[1.25fr_1fr] lg:items-end">
               <div>
                 <motion.p variants={fadeUp} className="text-xs font-semibold uppercase tracking-[0.1em] text-accent">How we work</motion.p>
@@ -450,7 +450,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
               </motion.div>
             </motion.div>
 
-            <motion.ol ref={processRef} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+            <motion.ol ref={processRef} initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
               variants={stagger(0.12)} className="relative grid gap-4 md:grid-cols-5 md:gap-5">
               {/* Progress rail — horizontal through the step markers on desktop,
                   vertical down the left on mobile. Fills lime as you scroll. */}
@@ -496,7 +496,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
         <section id="work" className="relative overflow-hidden bg-cream py-24 lg:py-32">
           <AmbientBackground tone="light" />
           <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Selected work</p>
@@ -513,7 +513,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
         {/* â•â• VOICES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
         <section id="voices" className="bg-background py-24 lg:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, margin: "-60px" }}
               variants={stagger(0.1)} className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <motion.div variants={fadeUp}>
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Founder voices</p>
@@ -525,7 +525,7 @@ export function ServicesPageClient({ services, processSteps, caseStudies, testim
             </motion.div>
             {testimonials.length > 0 && (
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1, transition: { duration: 0.8, ease: E } }}
-                viewport={{ once: true, margin: "-60px" }}
+                viewport={{ once: false, margin: "-60px" }}
                 className="-mx-6 lg:-mx-10">
                 <DraggableMarquee trackClassName="items-stretch gap-5 px-6 lg:px-10">
                   {[...testimonials, ...testimonials].map((t, i) => {

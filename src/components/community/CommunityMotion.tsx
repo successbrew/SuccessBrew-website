@@ -64,7 +64,7 @@ export function StatCard({ num, label, sub, bg, subColor, index }: {
   num: string; label: string; sub: string; bg: string; subColor: string; index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const inView = useInView(ref, { once: false, margin: "-40px" });
   const reduced = usePrefersReducedMotion();
 
   return (
@@ -79,7 +79,7 @@ export function StatCard({ num, label, sub, bg, subColor, index }: {
       {!reduced && (
         <motion.span aria-hidden
           initial={{ x: "-160%" }}
-          animate={inView ? { x: "260%" } : undefined}
+          animate={inView ? { x: "260%" } : { x: "-160%" }}
           transition={{ duration: 1.1, delay: 0.5 + index * 0.12, ease: "easeInOut" }}
           className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/45 to-transparent" />
       )}
@@ -91,7 +91,7 @@ export function StatCard({ num, label, sub, bg, subColor, index }: {
  * as the line reaches it; the 2030 goal gets one ring pulse on arrival. */
 export function WhyTimeline({ steps }: { steps: [string, string][] }) {
   const ref = useRef<HTMLOListElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: false, margin: "-80px" });
   const reduced = usePrefersReducedMotion();
   const draw = reduced ? 0 : 1.6;
   const last = steps.length - 1;
@@ -100,7 +100,7 @@ export function WhyTimeline({ steps }: { steps: [string, string][] }) {
     <ol ref={ref} className="relative grid gap-0" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
       <div aria-hidden className="absolute left-0 right-0 top-[18px] h-px bg-white/15 sm:top-6" />
       <motion.div aria-hidden
-        initial={{ scaleX: reduced ? 1 : 0 }} animate={inView ? { scaleX: 1 } : undefined}
+        initial={{ scaleX: reduced ? 1 : 0 }} animate={inView || reduced ? { scaleX: 1 } : { scaleX: 0 }}
         transition={{ duration: draw, ease: [0.65, 0, 0.35, 1] }}
         className="absolute left-0 right-0 top-[18px] h-px origin-left bg-gradient-to-r from-white/40 via-white/60 to-[#C6FF3A] sm:top-6" />
       {steps.map(([yr, lbl], i) => {
@@ -111,20 +111,20 @@ export function WhyTimeline({ steps }: { steps: [string, string][] }) {
             {goal && !reduced && (
               <motion.span aria-hidden
                 initial={{ scale: 1, opacity: 0 }}
-                animate={inView ? { scale: [1, 1.9], opacity: [0.7, 0] } : undefined}
+                animate={inView ? { scale: [1, 1.9], opacity: [0.7, 0] } : { scale: 1, opacity: 0 }}
                 transition={{ duration: 1.1, delay: at + 0.15, ease: "easeOut" }}
                 className="absolute left-1/2 top-0 -ml-[18px] h-9 w-9 rounded-full border-2 border-[#C6FF3A] sm:-ml-6 sm:h-12 sm:w-12" />
             )}
             <motion.div
               initial={reduced ? false : { scale: 0.7, opacity: 0.35 }}
-              animate={inView ? { scale: 1, opacity: 1 } : undefined}
+              animate={inView || reduced ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0.35 }}
               transition={{ duration: 0.45, delay: at, ease: E }}
               className={`relative z-10 mx-auto grid h-9 w-9 place-items-center rounded-full border text-xs font-bold sm:h-12 sm:w-12 sm:text-sm ${goal ? "border-[#C6FF3A] bg-[#C6FF3A] text-[#111111]" : "border-white/30 bg-[#003CD1] text-white"}`}>
               {yr}
             </motion.div>
             <motion.div
               initial={reduced ? false : { opacity: 0, y: 6 }}
-              animate={inView ? { opacity: 1, y: 0 } : undefined}
+              animate={inView || reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
               transition={{ duration: 0.4, delay: at + 0.1, ease: E }}
               className={`mt-2 text-[9px] font-bold leading-tight sm:mt-3 sm:text-xs ${goal ? "text-[#C6FF3A]" : "text-white/60"}`}>
               {lbl}
@@ -171,7 +171,7 @@ export function ResourceAccordion({ resources }: { resources: ResourceItem[] }) 
             <motion.div key={r.type}
               initial={reduced ? false : { opacity: 0, y: 22 }}
               whileInView={{ opacity: 1, y: 0, transition: { duration: 0.65, delay: i * 0.09, ease: E } }}
-              viewport={{ once: true, margin: "-60px" }}
+              viewport={{ once: false, margin: "-60px" }}
               animate={{ flexGrow: on ? 2.4 : 1 }}
               transition={reduced ? { duration: 0 } : { duration: 0.55, ease: E }}
               onMouseEnter={() => setActive(r.type)} onFocus={() => setActive(r.type)} onClick={() => setActive(r.type)}

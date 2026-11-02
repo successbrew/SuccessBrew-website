@@ -51,7 +51,7 @@ export function WordReveal({ text, className, mode = "standalone", staggerDelay 
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true }}
+      viewport={{ once: false }}
       variants={{ hidden: {}, visible: { transition: { staggerChildren: staggerDelay } } }}
     >
       {words.map((word, i) => (

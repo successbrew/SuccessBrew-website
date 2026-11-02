@@ -12,7 +12,7 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
  */
 export function GapSlider() {
   const box = useRef<HTMLDivElement>(null);
-  const inView = useInView(box, { once: true, margin: "-120px" });
+  const inView = useInView(box, { once: false, margin: "-120px" });
   const reduced = usePrefersReducedMotion();
   const pos = useMotionValue(50); // % of width revealed on the "built" side
   const [value, setValue] = useState(50);

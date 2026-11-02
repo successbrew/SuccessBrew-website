@@ -79,7 +79,7 @@ export function ProgrammeList({ items, compact = false, empty }: { items: Progra
             <motion.li key={it.id}
               initial={reduced ? false : { opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
+              viewport={{ once: false, margin: "-40px" }}
               transition={{ duration: 0.55, delay: Math.min(i, 6) * 0.05, ease: E }}
               className="border-t border-[#111111]/15">
               <a href={it.href} target={it.external ? "_blank" : undefined} rel={it.external ? "noreferrer noopener" : undefined}

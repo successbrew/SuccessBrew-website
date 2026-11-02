@@ -8,7 +8,6 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
  * The footer's motion pieces (the Footer itself stays a server component):
  * - FooterMarquee: an endless band of the brand lines, flowing left, pausing on hover;
  * - FooterRise: the columns rise up out of the page as the footer scrolls in;
- * (The big "Successbrew" wordmark lives in FooterBrewMark.tsx.)
  * Reduced motion: everything renders still, in its final state.
  */
 

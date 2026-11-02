@@ -77,7 +77,7 @@ export function StatsProofBento({
           <motion.div
             key={s._id}
             initial={{ opacity: 0, y: 16 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             transition={{ duration: 0.6, ease: E, delay: i * 0.08 }}
             className={`flex min-h-[260px] flex-col rounded-xl border p-6 md:p-8 ${tone.tile} ${spans[i]}`}
           >
